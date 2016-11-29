@@ -1,17 +1,27 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Grid, Row, Form, FormGroup, FormControl, Col, ControlLabel, Button } from 'react-bootstrap'
+import { Grid, Row, Form, FormGroup, FormControl, Col, ControlLabel, ButtonGroup, Button, Alert } from 'react-bootstrap'
 
 class AddPlayer extends Component {
   constructor(props) {
 
     super(props);
-
     this.state = {
       name: '',
       email: '',
-      color: undefined
+      color: undefined,
+      errors: []
     }
+  }
+  verify() {
+    let errors = [];
+    if(!this.state.name) {
+      errors.push('Введите имя игрока');
+    }
+    if(!this.state.color) {
+      errors.push('Выберите цвет');
+    }
+    this.setState({ errors: errors });
   }
   handleName(e){
     this.setState({name: e.target.value});
@@ -19,20 +29,43 @@ class AddPlayer extends Component {
   handleEmail(e) {
     this.setState({email: e.target.value});
   }
-  onSubmit() {
-    console.log(this.state)
+  handleColor(e) {
+    this.setState({color: e.target.dataset.color});
+  }
+  onSubmit(e) {
+    this.verify();
+    e.preventDefault();
+    return false;
   }
   render() {
+
+    const colors = this.props.colors || [];
+
+    let errors;
+    if(this.state.errors.length){
+      errors = (
+        <Alert bsStyle='warning'>
+          {
+            this.state.errors.map((error, index) => (
+              <div key={ index }><strong>Ошибка!</strong> {error}</div>
+            ))
+          }
+        </Alert>
+      )
+    }
+
     return (
       <div>
         <br/>
+
+        {errors}
 
         <Grid>
         
         <Row className='show-grid'>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4}>
-            <Form horizontal onSubmit={this.onSubmit}>
+            <Form horizontal>
               <FormGroup controlId='formHorizontalName'>
                 <Col componentClass={ControlLabel} sm={2}>
                   Имя
@@ -61,14 +94,35 @@ class AddPlayer extends Component {
 
 
               <FormGroup>
+                <Col componentClass={ControlLabel} sm={2}>
+                  Цвет
+                </Col>
                 <Col smOffset={2} sm={10}>
+                  <ButtonGroup>
+                  {
+                    colors.map((color, index) => {
 
+                      const styles = {
+                        backgroundColor: '#'+color,
+                        width:'30px',
+                        height:'30px',
+                        margin: '2px'
+                      };
+
+                      return <Button
+                        style={ styles }
+                        key={ index }
+                        data-color={color}
+                        onClick={::this.handleColor}/>;
+                    })
+                  }
+                  </ButtonGroup>
                 </Col>
               </FormGroup>
 
               <FormGroup>
                 <Col smOffset={2} sm={10}>
-                  <Button type='submit'>
+                  <Button type='submit' onClick={::this.onSubmit}>
                     Добавить
                   </Button>
                 </Col>
@@ -76,7 +130,7 @@ class AddPlayer extends Component {
             </Form>
             
           </Col>
-          <Col xsHidden md={4}></Col>
+          <Col xhidden md={4}></Col>
         </Row>
 
       </Grid>
@@ -86,9 +140,9 @@ class AddPlayer extends Component {
   }
 }
 
-const mapStateToProps = function (/*state*/) {
+const mapStateToProps = function (state) {
   return {
-    // colors: state.colors
+    colors: state.server.colors
   }
 }
 

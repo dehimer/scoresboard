@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 
 const Datastore = require('nedb');
-const playersDB = new Datastore({filename:'players', autoload:true });
+const playersDB = new Datastore({filename:'db/players', autoload:true });
 
 const config  = require('./config');
 
