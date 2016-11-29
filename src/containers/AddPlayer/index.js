@@ -22,7 +22,7 @@ class AddPlayer extends Component {
       errors.push('Выберите цвет');
     }
     this.setState({ errors: errors });
-    cb && cb(errors.length);
+    cb && cb(errors.length > 0);
   }
   handleName(e){
     this.setState({name: e.target.value});
@@ -39,6 +39,11 @@ class AddPlayer extends Component {
         const { name, email, color} = this.state;
         this.props.addPlayer({
           name, email, color
+        });
+        this.setState({
+          name: '',
+          email: '',
+          color: undefined
         })
       }
     });
@@ -49,12 +54,16 @@ class AddPlayer extends Component {
 
     const colors = this.props.colors || [];
 
-    let errors;
-    if(this.state.errors.length){
-      errors = (
+    let errors = [].concat(this.state.errors);
+    let showerrors;
+    if(!colors.length){
+      errors.unshift('Все цвета заняты');
+    }
+    if(errors.length){
+      showerrors = (
         <Alert bsStyle='warning'>
           {
-            this.state.errors.map((error, index) => (
+            errors.map((error, index) => (
               <div key={ index }><strong>Ошибка!</strong> {error}</div>
             ))
           }
@@ -66,7 +75,7 @@ class AddPlayer extends Component {
       <div>
         <br/>
 
-        {errors}
+        {showerrors}
 
         <Grid>
         

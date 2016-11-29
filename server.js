@@ -70,7 +70,12 @@ io.on('connection', function(socket){
           updatePlayers(io);
         }
       });
-
+    }else if(action.type === 'server/delete_player'){
+      db.players.remove({color:action.data}, function (err, newPlayer) {
+        if(!err){
+          updatePlayers(io);
+        }
+      });
     }
   });
   // socket.on('disconnect', function() {
