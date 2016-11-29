@@ -44,11 +44,20 @@ io.attach(server);
 const updatePlayers = function(socket) {
   db.players.find({}).exec((err, players)=>{
     socket.emit('action', {type:'players', data:players});
+    const busyColors = players.reduce(function (colors, player) {
+      colors[player.color] = true;
+      return colors;
+    }, {});
+    console.log(busyColors);
+    const freeColors = config.colors.filter(function(color) {
+      return !busyColors[color];
+    })
+    socket.emit('action', {type:'colors', data:freeColors});
   })
 }
 io.on('connection', function(socket){
   // sockets[socket.id] = socket;
-  socket.emit('action', {type:'colors', data:config.colors});
+  
   db.players.find({}).exec((err, players)=>{
     socket.emit('action', {type:'players', data:players});
     updatePlayers(socket);
