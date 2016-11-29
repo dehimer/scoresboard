@@ -3,10 +3,10 @@ import { Route, IndexRedirect } from 'react-router'
 
 import App from './containers/App'
 import Admin from './layouts/Admin'
-import ScoreBoard from './pages/ScoreBoard'
+import ScoreBoard from './containers/ScoreBoard'
 import ScreenSaver from './components/ScreenSaver'
-import AddPlayer from './pages/AddPlayer'
-import PlayersList from './pages/PlayersList'
+import AddPlayer from './containers/AddPlayer'
+import PlayersList from './containers/PlayersList'
 
 export const routes = (
   <div>

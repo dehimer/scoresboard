@@ -2,6 +2,11 @@ const http = require('http');
 const express = require('express');
 const app = express();
 
+const Datastore = require('nedb');
+const playersDB = new Datastore({filename:'players', autoload:true });
+
+const config  = require('./config');
+
 (function initWebpack() {
   const webpack = require('webpack');
   const webpackConfig = require('./webpack/common.config');
@@ -33,11 +38,10 @@ var socket_io = require('socket.io');
 var io = socket_io();
 io.attach(server);
 io.on('connection', function(socket){
-  console.log("Socket connected: " + socket.id);
+  socket.emit('action', {type:'colors', data:config.colors});
   socket.on('action', (action) => {
-    if(action.type === 'server/hello'){
-      console.log('Got hello data!', action.data);
-      socket.emit('action', {type:'message', data:'good day!'});
+    if(action.type === 'server/x'){
+      
     }
   });
 });

@@ -10,11 +10,6 @@ import configureStore from './store/configureStore'
 
 
 const store = configureStore();
-store.subscribe(()=>{
-  console.log('new client state', store.getState());
-});
-store.dispatch({type:'server/hello', data:'Hello!'});
-
 
 render(
   <Provider store={store}>
