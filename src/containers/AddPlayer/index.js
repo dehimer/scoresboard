@@ -13,7 +13,7 @@ class AddPlayer extends Component {
       errors: []
     }
   }
-  verify() {
+  verify(cb) {
     let errors = [];
     if(!this.state.name) {
       errors.push('Введите имя игрока');
@@ -22,6 +22,7 @@ class AddPlayer extends Component {
       errors.push('Выберите цвет');
     }
     this.setState({ errors: errors });
+    cb && cb(errors.length);
   }
   handleName(e){
     this.setState({name: e.target.value});
@@ -33,7 +34,14 @@ class AddPlayer extends Component {
     this.setState({color: e.target.dataset.color});
   }
   onSubmit(e) {
-    this.verify();
+    this.verify( err => {
+      if(!err){
+        const { name, email, color} = this.state;
+        this.props.addPlayer({
+          name, email, color
+        })
+      }
+    });
     e.preventDefault();
     return false;
   }
@@ -146,11 +154,11 @@ const mapStateToProps = function (state) {
   }
 }
 
-const mapDispatchToProps = (/*dispatch*/) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    // getColors: () => {
-    //   dispatch(getColors())
-    // }
+    addPlayer: (player) => {
+      dispatch({type:'server/add_player', data:player});
+    }
   }
 }
 
