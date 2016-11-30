@@ -1,3 +1,3 @@
 module.exports = {
-	"colors":	['ff0000', '00ff00', '0000ff']
+	"colors":	['f00', '0f0', '00f']
 }

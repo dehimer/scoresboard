@@ -1,4 +1,4 @@
-export default function reducer(state = {}, action){
+export default function reducer(state = {colors:[],players:[]}, action){
   console.log(action);
   switch(action.type){
     case 'colors':

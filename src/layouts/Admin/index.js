@@ -23,6 +23,9 @@ export default class Admin extends Component {
             <LinkContainer to='/admin/playerslist'>
               <NavItem eventKey={2}>Список игроков</NavItem>
             </LinkContainer>
+            <LinkContainer to='/scoreboard'>
+              <NavItem eventKey={2}>Турнирная таблица</NavItem>
+            </LinkContainer>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

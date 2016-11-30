@@ -1,13 +1,6 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-// import { get as getColors } from 'actions/colors'
 
-import './styles.scss'
-
-class App extends Component {
-	// componentWillMount() {
-		// this.props.getColors();
-	// }
+export default class App extends Component {
   render() {
     return (
       <div className='container'>
@@ -16,22 +9,3 @@ class App extends Component {
     )
   }
 }
-
-const mapStateToProps = function (state) {
-  return {
-    colors: state.user
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getColors: () => {
-      dispatch({type:'server/colors'});
-    }
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);

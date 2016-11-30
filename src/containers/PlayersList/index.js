@@ -11,24 +11,26 @@ class PlayersList extends Component {
   }
   render() {
     const players = this.props.players;
-    console.log(this.props);
     return (
       <div>
         <Table responsive>
           <thead>
             <tr>
               <th>Цвет</th>
+              <th>Номер</th>
               <th>Имя</th>
               <th>Email</th>
-              <th>Очки</th>
+              <th>Баллы</th>
               <th>Действия</th>
             </tr>
           </thead>
           <tbody>
             {
-              players.map((player, index) => (
-                <tr key={ index }>
+              players.map((player, index) => {
+                const playerNum = parseInt(player.color, 16);
+                return (<tr key={ index }>
                   <th><div style={{backgroundColor:'#'+player.color, width:'20px', height:'20px'}}></div></th>
+                  <th>{ playerNum }</th>
                   <th>{ player.name }</th>
                   <th>{ player.email }</th>
                   <th>{ player.scores }</th>
@@ -39,8 +41,8 @@ class PlayersList extends Component {
                       Удалить
                     </Button>
                   </th>
-                </tr>
-              ))
+                </tr>)
+              })
             }
           </tbody>
         </Table>

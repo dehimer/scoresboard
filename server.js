@@ -40,7 +40,7 @@ server.listen(process.env.PORT || 3000, function onListen() {
 var socket_io = require('socket.io');
 var io = socket_io();
 io.attach(server);
-// let sockets = {};
+
 const updatePlayers = function(socket) {
   db.players.find({}).exec((err, players)=>{
     socket.emit('action', {type:'players', data:players});
@@ -56,8 +56,7 @@ const updatePlayers = function(socket) {
   })
 }
 io.on('connection', function(socket){
-  // sockets[socket.id] = socket;
-  
+
   db.players.find({}).exec((err, players)=>{
     socket.emit('action', {type:'players', data:players});
     updatePlayers(socket);
@@ -65,7 +64,7 @@ io.on('connection', function(socket){
   socket.on('action', (action) => {
     console.log(action);
     if(action.type === 'server/add_player'){
-      db.players.insert(action.data, function (err, newPlayer) {
+      db.players.insert({scores:0, ...action.data}, function (err, newPlayer) {
         if(!err){
           updatePlayers(io);
         }
@@ -78,8 +77,4 @@ io.on('connection', function(socket){
       });
     }
   });
-  // socket.on('disconnect', function() {
-  //   console.log(`disconnect ${socket.id}`);
-  //   delete sockets[socket.id];
-  // })
 });
