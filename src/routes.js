@@ -19,6 +19,7 @@ export const routes = (
       </Route>
       <Route path='scoreboard' component={ScoreBoard} />
       <Route path='screensaver' component={ScreenSaver} />
+      <Route path='*' component={Admin} />
     </Route>
     <Route path='*' component={App} />
   </div>

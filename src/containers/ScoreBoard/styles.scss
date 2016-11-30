@@ -1,4 +1,19 @@
-.active {
-  font-weight: bold;
-  text-decoration: unset;
+.scoreboard {
+  width: 1920px;
+  height: 1080px;
+  display: flex;
+  font-size: 50px;
+
+  &__half {
+    width: 50%;
+    height: 100%;
+  }
+
+  &__header {
+    display: flex;
+  }
+
+  &__cell {
+    margin: 5px;
+  }
 }

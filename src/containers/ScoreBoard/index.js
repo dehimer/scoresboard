@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Grid, Row, Col, Table } from 'react-bootstrap'
 
+import './styles.scss'
 
 class ScoreBoard extends Component {
   constructor(props) {
@@ -17,46 +17,37 @@ class ScoreBoard extends Component {
     ];
 
     return (
-      <div>
-        <Grid>
-          <Row className='show-grid'>
-            {
-              playersByCols.map((players, index) => (
-                <Col key={ index } md={6} mdPush={6}>
-                  <Table responsive>
-                    <thead>
-                      <tr>
-                        <th>Место</th>
-                        <th>Номер</th>
-                        <th>Имя</th>
-                        <th>Время</th>
-                        <th>Баллы</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        players.map((player, index) => {
-                          
-                          const place = index+1;
-                          const num = parseInt(player.color, 16);
-                          const time = player.time || '--:--'
+      <div className='scoreboard'>
+        {
+          playersByCols.map((players, index) => (
+            <div key={ index } className='scoreboard__half'>
+              <div className='scoreboard__header'>
+                <div className='scoreboard__cell'>Место</div>
+                <div className='scoreboard__cell'>Номер</div>
+                <div className='scoreboard__cell'>Имя</div>
+                <div className='scoreboard__cell'>Время</div>
+                <div className='scoreboard__cell'>Баллы</div>
+              </div>
+              {
+                players.map((player, index) => {
+                  
+                  const place = index+1;
+                  const num = parseInt(player.color, 16);
+                  const time = player.time || '--:--'
 
-                          return (<tr key={ index }>
-                              <th>{ place }</th>
-                              <th>{ num }</th>
-                              <th>{ player.name }</th>
-                              <th>{ time }</th>
-                              <th>{ player.scores }</th>
-                          </tr>)
-                        })
-                      }
-                    </tbody>
-                  </Table>
-                </Col>
-              ))
-            }
-          </Row>
-        </Grid>
+                  return (<div key={ index } className='scoreboard__row'>
+                      <div className='scoreboard__cell'>{ place }</div>
+                      <div className='scoreboard__cell'>{ num }</div>
+                      <div className='scoreboard__cell'>{ player.name }</div>
+                      <div className='scoreboard__cell'>{ time }</div>
+                      <div className='scoreboard__cell'>{ player.scores }</div>
+                  </div>)
+                })
+              }
+            </div>
+
+          ))
+        }
       </div>
     )
   }
