@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Grid, Row, Form, FormGroup, FormControl, Col, ControlLabel, ButtonGroup, Button, Alert } from 'react-bootstrap'
+import { Grid, Row, Form, FormGroup, FormControl, Col, ControlLabel, ButtonGroup, Button, Alert, Table } from 'react-bootstrap'
 import classNames from 'classnames'
 
 import './styles.scss'
@@ -17,12 +17,17 @@ class AddPlayer extends Component {
       errors: []
     }
   }
+  componentWillMount() {
+    console.log('componentWillMount');
+    this.props.syncFreeColors();
+    this.props.syncActivePlayers();
+  }
   verify(cb) {
     let errors = [];
     if(!this.state.name) {
       errors.push('Введите имя игрока');
     }
-    if(!this.state.colorId) {
+    if(this.state.colorId === 0) {
       errors.push('Выберите цвет');
     }
     this.setState({ errors: errors });
@@ -54,9 +59,13 @@ class AddPlayer extends Component {
     e.preventDefault();
     return false;
   }
+  removePlayer(e) {
+    this.props.removePlayer(e.target.dataset.colorid);
+  }
   render() {
 
-    const colors = this.props.colors || [];
+    const players = this.props.players;
+    const colors = this.props.colors;
 
     let errors = [].concat(this.state.errors);
     let showerrors;
@@ -75,89 +84,127 @@ class AddPlayer extends Component {
       )
     }
 
-    console.log(colors);
+    let showplayers;
+    if(players.length){
+      showplayers = (<Row className='show-grid'>
+        <Col>
+          <h2>Активные игроки</h2>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>Цвет</th>
+                <th>Номер</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Баллы</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                players.map((player, index) => {
+                  const playerNum = parseInt(player.color, 16);
+                  return (<tr key={ index }>
+                    <th><div style={{backgroundColor:'#'+this.props.colorsById[player.colorId].code, width:'20px', height:'20px'}}></div></th>
+                    <th>{ playerNum }</th>
+                    <th>{ player.name }</th>
+                    <th>{ player.email }</th>
+                    <th>{ player.scores }</th>
+                    <th>
+                      <Button
+                        data-colorid={ player.colorId }
+                        onClick={ ::this.removePlayer }>
+                          Удалить
+                      </Button>
+                    </th>
+                  </tr>)
+                })
+              }
+            </tbody>
+          </Table>
+        </Col>
+      </Row>)
+    }
 
     return (
       <div>
-        <br/>
-
         {showerrors}
-
         <Grid>
-        
-        <Row className='show-grid'>
-          <Col xs={6} md={4}></Col>
-          <Col xs={6} md={4}>
-            <Form horizontal>
-              <FormGroup controlId='formHorizontalName'>
-                <Col componentClass={ControlLabel} sm={2}>
-                  Имя
-                </Col>
-                <Col sm={10}>
-                  <FormControl
-                    type='text'
-                    placeholder='Имя'
-                    value={this.state.name}
-                    onChange={::this.handleName}/>
-                </Col>
-              </FormGroup>
+          {showplayers}          
+          <Row className='show-grid'>
+            <Col xs={6} md={4}></Col>
+            <Col xs={6} md={4}>
+              <h3>Добавить игрока</h3>
+              <Form horizontal>
+                <FormGroup controlId='formHorizontalName'>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Имя
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl
+                      type='text'
+                      placeholder='Имя'
+                      value={this.state.name}
+                      onChange={::this.handleName}/>
+                  </Col>
+                </FormGroup>
 
-              <FormGroup controlId='formHorizontalEmail'>
-                <Col componentClass={ControlLabel} sm={2}>
-                  Email
-                </Col>
-                <Col sm={10}>
-                  <FormControl
-                    type='email'
-                    placeholder='Email'
-                    value={this.state.email}
-                    onChange={::this.handleEmail}/>
-                </Col>
-              </FormGroup>
+                <FormGroup controlId='formHorizontalEmail'>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Email
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl
+                      type='email'
+                      placeholder='Email'
+                      value={this.state.email}
+                      onChange={::this.handleEmail}/>
+                  </Col>
+                </FormGroup>
 
 
-              <FormGroup>
-                <Col componentClass={ControlLabel} sm={2}>
-                  Цвет
-                </Col>
-                <Col smOffset={2} sm={10}>
-                  <ButtonGroup>
-                  {
-                    colors.map((color, index) => {
+                <FormGroup>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    Цвет
+                  </Col>
+                  <Col smOffset={2} sm={10}>
+                    <ButtonGroup>
+                    {
+                      colors.map((color, index) => {
 
-                      const styles = {
-                        backgroundColor: '#'+color.code,
-                        width:'30px',
-                        height:'30px',
-                        margin: '2px'
-                      };
+                        const styles = {
+                          backgroundColor: '#'+color.code,
+                          width:'30px',
+                          height:'30px',
+                          margin: '2px'
+                        };
 
-                      return <Button
-                        className={classNames({'add-player__color--selected':+this.state.colorId === +color.id})}
-                        style={ styles }
-                        key={ index }
-                        data-color_id={color.id}
-                        onClick={::this.handleColorId}/>;
-                    })
-                  }
-                  </ButtonGroup>
-                </Col>
-              </FormGroup>
+                        return <Button
+                          className={classNames({'add-player__color--selected':+this.state.colorId === +color.id})}
+                          style={ styles }
+                          key={ index }
+                          data-color_id={color.id}
+                          onClick={::this.handleColorId}/>;
+                      })
+                    }
+                    </ButtonGroup>
+                  </Col>
+                </FormGroup>
 
-              <FormGroup>
-                <Col smOffset={2} sm={10}>
-                  <Button type='submit' onClick={::this.onSubmit}>
-                    Добавить
-                  </Button>
-                </Col>
-              </FormGroup>
-            </Form>
-            
-          </Col>
-          <Col xhidden md={4}></Col>
-        </Row>
+                <FormGroup>
+                  <Col smOffset={2} sm={10}>
+                    <Button type='submit' onClick={::this.onSubmit}>
+                      Добавить
+                    </Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+              
+            </Col>
+            <Col xhidden md={4}></Col>
+          </Row>
 
-      </Grid>
+        </Grid>
 
       </div>
     )
@@ -166,7 +213,9 @@ class AddPlayer extends Component {
 
 const mapStateToProps = function (state) {
   return {
-    colors: state.server.colors
+    colors: state.server.free_colors,
+    colorsById: state.server.colorsById,
+    players: state.server.active_players
   }
 }
 
@@ -174,6 +223,15 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addPlayer: (player) => {
       dispatch({type:'server/add_player', data:player});
+    },
+    syncFreeColors: () => {
+      dispatch({type:'server/free_colors'});
+    },
+    syncActivePlayers: () => {
+      dispatch({type:'server/active_players'});
+    },
+    removePlayer: colorId => {
+      dispatch({type:'server/remove_player', data:colorId});
     }
   }
 }

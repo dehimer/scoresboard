@@ -6,13 +6,20 @@ class PlayersList extends Component {
   constructor(props) {
     super(props);
   }
-  handleClick(e) {
-    this.props.deletePlayer(e.target.dataset.color);
+  componentWillMount() {
+    this.props.syncAllPlayers();
+  }
+  removeAllPlayers(e) {
+    this.props.removeAllPlayers(e.target.dataset.color);
   }
   render() {
     const players = this.props.players;
     return (
       <div>
+        <Button
+          onClick={ ::this.removeAllPlayers }>
+          Удалить всех
+        </Button>
         <Table responsive>
           <thead>
             <tr>
@@ -21,7 +28,6 @@ class PlayersList extends Component {
               <th>Имя</th>
               <th>Email</th>
               <th>Баллы</th>
-              <th>Действия</th>
             </tr>
           </thead>
           <tbody>
@@ -29,18 +35,11 @@ class PlayersList extends Component {
               players.map((player, index) => {
                 const playerNum = parseInt(player.color, 16);
                 return (<tr key={ index }>
-                  <th><div style={{backgroundColor:'#'+player.color, width:'20px', height:'20px'}}></div></th>
+                  <th><div style={{backgroundColor:'#'+this.props.colorsById[player.colorId].code, width:'20px', height:'20px'}}></div></th>
                   <th>{ playerNum }</th>
                   <th>{ player.name }</th>
                   <th>{ player.email }</th>
                   <th>{ player.scores }</th>
-                  <th>
-                    <Button
-                      data-color={ player.color }
-                      onClick={ ::this.handleClick }>
-                      Удалить
-                    </Button>
-                  </th>
                 </tr>)
               })
             }
@@ -53,14 +52,18 @@ class PlayersList extends Component {
 
 const mapStateToProps = function (state) {
   return {
-    players: state.server.players
+    players: state.server.all_players,
+    colorsById: state.server.colorsById
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deletePlayer: (color) => {
-      dispatch({type:'server/delete_player', data:color});
+    syncAllPlayers: () => {
+      dispatch({type:'server/all_players'});
+    },
+    removeAllPlayers: () => {
+      dispatch({type:'server/clear'});
     }
   }
 }

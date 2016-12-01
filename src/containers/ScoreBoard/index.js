@@ -7,6 +7,9 @@ class ScoreBoard extends Component {
   constructor(props) {
     super(props);
   }
+  componentWillMount() {
+    this.props.syncTop20players();
+  }
   render() {
     const players = this.props.players.sort((playerA, playerB) => {
       return +playerA.score > +playerB;
@@ -55,10 +58,19 @@ class ScoreBoard extends Component {
 
 const mapStateToProps = function (state) {
   return {
-    players: state.server.players
+    players: state.server.top20players
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    syncTop20players: () => {
+      dispatch({type:'server/top20players'});
+    }
   }
 }
 
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(ScoreBoard);

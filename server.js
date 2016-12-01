@@ -41,40 +41,87 @@ var socket_io = require('socket.io');
 var io = socket_io();
 io.attach(server);
 
-const updatePlayers = function(socket) {
-  db.players.find({}).exec((err, players)=>{
-    socket.emit('action', {type:'players', data:players});
-    const busyColors = players.reduce(function (colors, player) {
+const syncActivePlayers = socket => {
+  db.players.find({colorId: {$ne:'0'}}).exec((err, players) => {
+    console.log('active_players');
+    console.log(players);
+    socket.emit('action', {type:'active_players', data:players});
+  });
+}
+
+const syncFreeColors = socket => {
+  db.players.find({colorId: {$ne:'0'}}).exec((err, players) => {
+
+    //free colors
+    const busyColors = players.reduce((colors, player) => {
       colors[player.colorId] = true;
       return colors;
     }, {});
-    console.log(busyColors);
-    const freeColors = config.colors.filter(function(color) {
+    
+    const freeColors = config.colors.filter(color => {
       return !busyColors[color.id];
-    })
-    socket.emit('action', {type:'colors', data:freeColors});
+    });
+    socket.emit('action', {type:'free_colors', data:freeColors});
+  });
+}
+
+const syncTop20 = socket => {
+  //TODO - mix active players
+  db.players.find({}).sort({scores:1}).limit(20).exec((err, players) => {
+    socket.emit('action', {type:'top20players', data:players});
   })
 }
-io.on('connection', function(socket){
 
-  db.players.find({}).exec((err, players)=>{
-    socket.emit('action', {type:'players', data:players});
-    updatePlayers(socket);
-  })
-  socket.on('action', (action) => {
+const syncAllPlayers = socket => {
+  db.players.find({}).sort({scores:1}).exec((err, players)=>{
+    socket.emit('action', {type:'all_players', data:players});
+  });
+}
+
+io.on('connection', socket => {
+
+  socket.on('action', action => {
+
     console.log(action);
-    if(action.type === 'server/add_player'){
-      db.players.insert({scores:0, ...action.data}, function (err, newPlayer) {
-        if(!err){
-          updatePlayers(io);
-        }
-      });
-    }else if(action.type === 'server/delete_player'){
-      db.players.remove({color:action.data}, function (err, newPlayer) {
-        if(!err){
-          updatePlayers(io);
-        }
-      });
+
+    socket.emit('action', {type:'colors', data:config.colors});
+
+    switch (action.type){
+      case 'server/active_players':
+        syncActivePlayers(socket);
+        break;
+      case 'server/free_colors':
+        syncFreeColors(socket);
+        break;
+      case 'server/top20players':
+        syncTop20(socket);
+        break;
+      case 'server/all_players':
+        syncAllPlayers(socket);
+        break;
+      case 'server/add_player':
+        db.players.insert({scores:0, ...action.data}, (err, newPlayer) => {
+          if(!err){
+            syncTop20(io);
+            syncFreeColors(io);
+            syncActivePlayers(io);
+          }
+        })
+        break;
+      case 'server/remove_player':
+        db.players.remove({colorId: action.data}, err => {
+          if(!err){
+            syncActivePlayers(socket);
+            syncFreeColors(socket);
+          }
+        });
+        break;
+      case 'server/clear':
+        db.players.remove({}, {multi:true}, err => {
+          if(!err){
+            syncAllPlayers(socket);
+          }
+        })
     }
   });
 });
