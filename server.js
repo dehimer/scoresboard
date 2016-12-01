@@ -27,14 +27,25 @@ const config  = require('./config');
   app.use(express.static(__dirname + '/'));
 })();
 
+let updatedPlayers = [];
 let updateio = () => {};
 app.get('/api/gameover', (req, res) => {
   const { num, scores, time } = req.query;
   //find and remember last state of player (we need colorId)
   db.players.findOne({num:+num}, (err, player) => {
     if(!err && player){
+
+      const nextPlayerState = {scores:+scores, time:+time, colorId:0};
+
+      updatedPlayers.push({...player, scores:+scores, time:+time});
+      console.log(updatedPlayers);
+      setTimeout(() => {
+        updatedPlayers = updatedPlayers.filter(updatedPlayer => updatedPlayer._id != player._id);
+        console.log(updatedPlayers);
+        updateio();
+      }, config.highlighted_delay*1 || 5000);
+
       //update state of player
-      const nextPlayerState = {...{scores:+scores, time:+time, colorId:0}};
       db.players.update({num:+num}, {$set:nextPlayerState}, err => {
         if(!err){
           //get position in global scoreboard
@@ -74,7 +85,6 @@ io.attach(server);
 
 const syncActivePlayers = socket => {
   db.players.find({colorId: {$gt:0}}).exec((err, players) => {
-    console.log('active_players');
     console.log(players);
     socket.emit('action', {type:'active_players', data:players});
   });
@@ -97,8 +107,44 @@ const syncFreeColors = socket => {
 }
 
 const syncTop20 = socket => {
+
+  const limit = 20;
+
+  // console.log(updatedPlayers)
+  const updatedPlayersIds = updatedPlayers.map(player => player._id);
+  // console.log(updatedPlayersIds);
   //TODO - mix active players
-  db.players.find({}).sort({scores:-1}).limit(20).exec((err, players) => {
+  db.players.find({}).sort({scores:-1}).limit(limit).exec((err, players) => {
+
+    // console.log(players); 
+    //remove changed from result
+    players = players.filter(player => updatedPlayersIds.indexOf(player._id) < 0);
+    const countintail = updatedPlayersIds.length - (limit-players.length);
+    // console.log(players);
+    players = players.slice(0, limit-countintail);
+    //add changed and sort by scores
+    players = players.concat(updatedPlayers)
+      .sort((pA, pB) => {
+        if(+pA.scores < +pB.scores){
+          return 1;
+        }else if(+pA.scores > +pB.scores){
+          return -1;
+        }else{
+          if(+pA.num > +pB.num){
+            return 1;
+          }else if(+pA.num < +pB.num){
+            return -1;
+          }else{
+            return 0;
+          }
+        }
+      })
+    console.log('res length: '+players.length);
+    // const overflow = players.length-limit;
+
+    // players = players.slice(0, limit);
+    // console.log(players);
+
     socket.emit('action', {type:'top20players', data:players});
   })
 }
@@ -111,9 +157,6 @@ const syncAllPlayers = socket => {
 
 const getNextNum = (cb) => {
   db.lastplayernum.findOne({}, (err, lastplayernum) => {
-
-    console.log(err);
-    console.log(lastplayernum);
 
     const nextnum = lastplayernum?(lastplayernum.num+1):1;
 
@@ -139,6 +182,7 @@ io.on('connection', socket => {
     console.log(action);
 
     socket.emit('action', {type:'colors', data:config.colors});
+    socket.emit('action', {type:'screensaver_params', data:config.screensaver_params});
 
     switch (action.type){
       case 'server/active_players':
@@ -157,9 +201,9 @@ io.on('connection', socket => {
         getNextNum(nextNum => {
           db.players.insert({scores:0, num:nextNum, ...action.data}, (err, newPlayer) => {
             if(!err){
-              syncTop20(io);
-              syncFreeColors(io);
               syncActivePlayers(io);
+              syncFreeColors(io);
+              syncTop20(io);
             }
           })
         })
@@ -167,8 +211,8 @@ io.on('connection', socket => {
       case 'server/remove_player':
         db.players.remove({num: action.data}, err => {
           if(!err){
-            syncActivePlayers(socket);
-            syncFreeColors(socket);
+            syncActivePlayers(io);
+            syncFreeColors(io);
             syncTop20(io);
 
           }
@@ -177,10 +221,10 @@ io.on('connection', socket => {
       case 'server/clear':
         db.players.remove({}, {multi:true}, err => {
           if(!err){
-            syncAllPlayers(socket);
-            syncTop20(io);
-            syncFreeColors(io);
             syncActivePlayers(io);
+            syncFreeColors(io);
+            syncTop20(io);
+            syncAllPlayers(io);
           }
         })
     }

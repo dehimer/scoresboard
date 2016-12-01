@@ -15,5 +15,16 @@ module.exports = {
 			"name": "Голубой",
 			"code": "0000ff"
 		}
-	]
+	],
+	"highlighted_delay": 3000,
+	"screensaver_params": {
+		"delay": 2000,
+		"videos": [{
+			"src": "/media/big_buck_bunny.mp4",
+			"type": "video/mp4"
+		}, {
+			"src": "/media/big_buck_bunny.ogv",
+			"type": "video/ogv"
+		}]
+	}
 }

@@ -4,23 +4,29 @@ export default function reducer(state = {
   colorsById:{},
   top20players:[],
   active_players: [],
-  all_players: []
+  all_players: [],
+  screensaver_params: {
+    videos:[]
+  }
 }, action) {
   console.log(action);
   switch(action.type){
     case 'free_colors':
-      return {...state, ...{free_colors: action.data}};
+      return {...state, free_colors: action.data};
     case 'colors':
       return {...state, colors: action.data, colorsById:action.data.reduce((res, color) => {
         res[color.id] = color;
         return res;
       }, {})};
     case 'top20players':
-      return {...state, ...{top20players: action.data}};
+      return {...state, top20players: action.data};
     case 'active_players':
-      return {...state, ...{active_players: action.data}};
+      return {...state, active_players: action.data};
     case 'all_players':
-      return {...state, ...{all_players: action.data}};
+      return {...state, all_players: action.data};
+    case 'screensaver_params':
+      console.log(action.data);
+      return {...state, screensaver_params: action.data};
     default:
       return state;
   }
