@@ -16,8 +16,8 @@ class ScoreBoard extends Component {
       return +playerA.score > +playerB;
     });
     const playersByCols = [
-      players.slice(0, 9),
-      players.slice(9, 19)
+      players.slice(0, 10),
+      players.slice(10, 20)
     ];
 
     return (

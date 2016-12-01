@@ -34,8 +34,8 @@ app.get('/api/gameover', (req, res) => {
   db.players.findOne({num:+num}, (err, player) => {
     if(!err && player){
       //update state of player
-      const nextPlayerState = {...player, ...{scores:+scores, time:+time, colorId:0}};
-      db.players.update({num:+num}, nextPlayerState, err => {
+      const nextPlayerState = {...{scores:+scores, time:+time, colorId:0}};
+      db.players.update({num:+num}, {$set:nextPlayerState}, err => {
         if(!err){
           //get position in global scoreboard
           db.players.find({}).sort({scores:-1}).exec((err, players) => {
@@ -165,10 +165,12 @@ io.on('connection', socket => {
         })
         break;
       case 'server/remove_player':
-        db.players.remove({colorId: action.data}, err => {
+        db.players.remove({num: action.data}, err => {
           if(!err){
             syncActivePlayers(socket);
             syncFreeColors(socket);
+            syncTop20(io);
+
           }
         });
         break;
@@ -176,6 +178,9 @@ io.on('connection', socket => {
         db.players.remove({}, {multi:true}, err => {
           if(!err){
             syncAllPlayers(socket);
+            syncTop20(io);
+            syncFreeColors(io);
+            syncActivePlayers(io);
           }
         })
     }

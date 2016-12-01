@@ -40,7 +40,7 @@ class AddPlayer extends Component {
     this.setState({email: e.target.value});
   }
   handleColorId(e) {
-    this.setState({colorId: e.target.dataset.color_id*1});
+    this.setState({colorId: +e.target.dataset.color_id});
   }
   onSubmit(e) {
     this.verify( err => {
@@ -60,7 +60,7 @@ class AddPlayer extends Component {
     return false;
   }
   removePlayer(e) {
-    this.props.removePlayer(e.target.dataset.colorid);
+    this.props.removePlayer(+e.target.dataset.num);
   }
   render() {
 
@@ -116,7 +116,7 @@ class AddPlayer extends Component {
                     <th>{ player.scores }</th>
                     <th>
                       <Button
-                        data-colorid={ player.colorId }
+                        data-num={ player.num }
                         onClick={ ::this.removePlayer }>
                           Удалить
                       </Button>
@@ -239,8 +239,8 @@ const mapDispatchToProps = (dispatch) => {
     syncActivePlayers: () => {
       dispatch({type:'server/active_players'});
     },
-    removePlayer: colorId => {
-      dispatch({type:'server/remove_player', data:colorId});
+    removePlayer: playerNum => {
+      dispatch({type:'server/remove_player', data:playerNum});
     }
   }
 }
