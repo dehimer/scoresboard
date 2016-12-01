@@ -5,6 +5,7 @@ const app = express();
 const Datastore = require('nedb');
 
 const db = {
+  lastplayernum: new Datastore({filename:'db/lastplayernum', autoload:true }),
   players: new Datastore({filename:'db/players', autoload:true })
 };
 
@@ -78,6 +79,22 @@ const syncAllPlayers = socket => {
   });
 }
 
+const getNextNum = (cb) => {
+  db.lastplayernum.findOne({}, (err, lastplayernum) => {
+
+    console.log(err);
+    console.log(lastplayernum);
+
+    const nextnum = lastplayernum?(lastplayernum.num+1):1;
+
+    db.lastplayernum.update({}, {num:nextnum}, {upsert:true}, err => {
+      if(!err){
+        cb && cb(nextnum);
+      }
+    });
+  })
+}
+
 io.on('connection', socket => {
 
   socket.on('action', action => {
@@ -100,12 +117,14 @@ io.on('connection', socket => {
         syncAllPlayers(socket);
         break;
       case 'server/add_player':
-        db.players.insert({scores:0, ...action.data}, (err, newPlayer) => {
-          if(!err){
-            syncTop20(io);
-            syncFreeColors(io);
-            syncActivePlayers(io);
-          }
+        getNextNum(nextNum => {
+          db.players.insert({scores:0, num:nextNum, ...action.data}, (err, newPlayer) => {
+            if(!err){
+              syncTop20(io);
+              syncFreeColors(io);
+              syncActivePlayers(io);
+            }
+          })
         })
         break;
       case 'server/remove_player':

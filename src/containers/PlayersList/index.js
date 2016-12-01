@@ -40,10 +40,9 @@ class PlayersList extends Component {
                 <tbody>
                   {
                     players.map((player, index) => {
-                      const playerNum = parseInt(player.color, 16);
                       return (<tr key={ index }>
                         <th><div style={{backgroundColor:'#'+this.props.colorsById[player.colorId].code, width:'20px', height:'20px'}}></div></th>
-                        <th>{ playerNum }</th>
+                        <th>{ player.num }</th>
                         <th>{ player.name }</th>
                         <th>{ player.email }</th>
                         <th>{ player.scores }</th>

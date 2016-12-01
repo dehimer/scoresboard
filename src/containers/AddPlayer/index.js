@@ -70,24 +70,29 @@ class AddPlayer extends Component {
     let errors = [].concat(this.state.errors);
     let showerrors;
     if(!colors.length){
-      errors.unshift('Все цвета заняты');
+      errors.unshift('Все цвета заняты.');
     }
     if(errors.length){
-      showerrors = (
-        <Alert bsStyle='warning'>
-          {
-            errors.map((error, index) => (
-              <div key={ index }><strong>Ошибка!</strong> {error}</div>
-            ))
-          }
-        </Alert>
-      )
+      showerrors = (<Row className='show-grid'>
+        <Col md={1}></Col>
+        <Col md={10}>
+          <Alert bsStyle='warning'>
+            {
+              errors.map((error, index) => (
+                <div key={ index }><strong>Ошибка!</strong> {error}</div>
+              ))
+            }
+          </Alert>
+        </Col>
+        <Col md={1}></Col>
+      </Row>)
     }
 
     let showplayers;
     if(players.length){
       showplayers = (<Row className='show-grid'>
-        <Col>
+        <Col md={1}></Col>
+        <Col md={10}>
           <h2>Активные игроки</h2>
           <Table responsive>
             <thead>
@@ -103,10 +108,9 @@ class AddPlayer extends Component {
             <tbody>
               {
                 players.map((player, index) => {
-                  const playerNum = parseInt(player.color, 16);
                   return (<tr key={ index }>
                     <th><div style={{backgroundColor:'#'+this.props.colorsById[player.colorId].code, width:'20px', height:'20px'}}></div></th>
-                    <th>{ playerNum }</th>
+                    <th>{ player.num }</th>
                     <th>{ player.name }</th>
                     <th>{ player.email }</th>
                     <th>{ player.scores }</th>
@@ -123,87 +127,92 @@ class AddPlayer extends Component {
             </tbody>
           </Table>
         </Col>
+        <Col md={1}></Col>
+      </Row>)
+    }
+
+    let showaddform;
+    if(colors.length){
+      showaddform = (<Row className='show-grid'>
+        <Col xs={6} md={4}></Col>
+        <Col xs={6} md={4}>
+          <h3>Добавить игрока</h3>
+          <Form horizontal>
+            <FormGroup controlId='formHorizontalName'>
+              <Col componentClass={ControlLabel} sm={2}>
+                Имя
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                  type='text'
+                  placeholder='Имя'
+                  value={this.state.name}
+                  onChange={::this.handleName}/>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId='formHorizontalEmail'>
+              <Col componentClass={ControlLabel} sm={2}>
+                Email
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                  type='email'
+                  placeholder='Email'
+                  value={this.state.email}
+                  onChange={::this.handleEmail}/>
+              </Col>
+            </FormGroup>
+
+
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={2}>
+                Цвет
+              </Col>
+              <Col smOffset={2} sm={10}>
+                <ButtonGroup>
+                {
+                  colors.map((color, index) => {
+
+                    const styles = {
+                      backgroundColor: '#'+color.code,
+                      width:'30px',
+                      height:'30px',
+                      margin: '2px'
+                    };
+
+                    return <Button
+                      className={classNames({'add-player__color--selected':+this.state.colorId === +color.id})}
+                      style={ styles }
+                      key={ index }
+                      data-color_id={color.id}
+                      onClick={::this.handleColorId}/>;
+                  })
+                }
+                </ButtonGroup>
+              </Col>
+            </FormGroup>
+
+            <FormGroup>
+              <Col smOffset={2} sm={10}>
+                <Button type='submit' onClick={::this.onSubmit}>
+                  Добавить
+                </Button>
+              </Col>
+            </FormGroup>
+          </Form>
+          
+        </Col>
+        <Col xhidden md={4}></Col>
       </Row>)
     }
 
     return (
       <div>
-        {showerrors}
         <Grid>
+          {showerrors}
           {showplayers}          
-          <Row className='show-grid'>
-            <Col xs={6} md={4}></Col>
-            <Col xs={6} md={4}>
-              <h3>Добавить игрока</h3>
-              <Form horizontal>
-                <FormGroup controlId='formHorizontalName'>
-                  <Col componentClass={ControlLabel} sm={2}>
-                    Имя
-                  </Col>
-                  <Col sm={10}>
-                    <FormControl
-                      type='text'
-                      placeholder='Имя'
-                      value={this.state.name}
-                      onChange={::this.handleName}/>
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId='formHorizontalEmail'>
-                  <Col componentClass={ControlLabel} sm={2}>
-                    Email
-                  </Col>
-                  <Col sm={10}>
-                    <FormControl
-                      type='email'
-                      placeholder='Email'
-                      value={this.state.email}
-                      onChange={::this.handleEmail}/>
-                  </Col>
-                </FormGroup>
-
-
-                <FormGroup>
-                  <Col componentClass={ControlLabel} sm={2}>
-                    Цвет
-                  </Col>
-                  <Col smOffset={2} sm={10}>
-                    <ButtonGroup>
-                    {
-                      colors.map((color, index) => {
-
-                        const styles = {
-                          backgroundColor: '#'+color.code,
-                          width:'30px',
-                          height:'30px',
-                          margin: '2px'
-                        };
-
-                        return <Button
-                          className={classNames({'add-player__color--selected':+this.state.colorId === +color.id})}
-                          style={ styles }
-                          key={ index }
-                          data-color_id={color.id}
-                          onClick={::this.handleColorId}/>;
-                      })
-                    }
-                    </ButtonGroup>
-                  </Col>
-                </FormGroup>
-
-                <FormGroup>
-                  <Col smOffset={2} sm={10}>
-                    <Button type='submit' onClick={::this.onSubmit}>
-                      Добавить
-                    </Button>
-                  </Col>
-                </FormGroup>
-              </Form>
-              
-            </Col>
-            <Col xhidden md={4}></Col>
-          </Row>
-
+          {showaddform}
         </Grid>
 
       </div>
