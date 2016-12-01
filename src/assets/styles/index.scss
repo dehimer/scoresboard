@@ -25,7 +25,3 @@ $bravorg-path: '#{$fonts-path}/BravoSCT/BravoSCT';
        url('#{$bravorg-path}.ttf')  format('truetype'), /* Safari, Android, iOS */
        url('#{$bravorg-path}.svg#svgFontName') format('svg'); /* Legacy iOS */
 }
-
-.app {
-	font-family: 'BravoSCT'
-}

@@ -45,12 +45,12 @@ const updatePlayers = function(socket) {
   db.players.find({}).exec((err, players)=>{
     socket.emit('action', {type:'players', data:players});
     const busyColors = players.reduce(function (colors, player) {
-      colors[player.color] = true;
+      colors[player.colorId] = true;
       return colors;
     }, {});
     console.log(busyColors);
     const freeColors = config.colors.filter(function(color) {
-      return !busyColors[color];
+      return !busyColors[color.id];
     })
     socket.emit('action', {type:'colors', data:freeColors});
   })

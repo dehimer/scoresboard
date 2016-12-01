@@ -8,6 +8,8 @@ import { Router, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import configureStore from './store/configureStore'
 
+import './assets/styles/index.scss'
+
 
 const store = configureStore();
 

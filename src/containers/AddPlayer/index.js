@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Grid, Row, Form, FormGroup, FormControl, Col, ControlLabel, ButtonGroup, Button, Alert } from 'react-bootstrap'
+import classNames from 'classnames'
+
+import './styles.scss'
+
 
 class AddPlayer extends Component {
   constructor(props) {
@@ -9,7 +13,7 @@ class AddPlayer extends Component {
     this.state = {
       name: '',
       email: '',
-      color: undefined,
+      colorId: 0,
       errors: []
     }
   }
@@ -18,7 +22,7 @@ class AddPlayer extends Component {
     if(!this.state.name) {
       errors.push('Введите имя игрока');
     }
-    if(!this.state.color) {
+    if(!this.state.colorId) {
       errors.push('Выберите цвет');
     }
     this.setState({ errors: errors });
@@ -30,20 +34,20 @@ class AddPlayer extends Component {
   handleEmail(e) {
     this.setState({email: e.target.value});
   }
-  handleColor(e) {
-    this.setState({color: e.target.dataset.color});
+  handleColorId(e) {
+    this.setState({colorId: e.target.dataset.color_id});
   }
   onSubmit(e) {
     this.verify( err => {
       if(!err){
-        const { name, email, color} = this.state;
+        const { name, email, colorId} = this.state;
         this.props.addPlayer({
-          name, email, color
+          name, email, colorId
         });
         this.setState({
           name: '',
           email: '',
-          color: undefined
+          colorId: 0
         })
       }
     });
@@ -70,6 +74,8 @@ class AddPlayer extends Component {
         </Alert>
       )
     }
+
+    console.log(colors);
 
     return (
       <div>
@@ -120,17 +126,18 @@ class AddPlayer extends Component {
                     colors.map((color, index) => {
 
                       const styles = {
-                        backgroundColor: '#'+color,
+                        backgroundColor: '#'+color.code,
                         width:'30px',
                         height:'30px',
                         margin: '2px'
                       };
 
                       return <Button
+                        className={classNames({'add-player__color--selected':+this.state.colorId === +color.id})}
                         style={ styles }
                         key={ index }
-                        data-color={color}
-                        onClick={::this.handleColor}/>;
+                        data-color_id={color.id}
+                        onClick={::this.handleColorId}/>;
                     })
                   }
                   </ButtonGroup>
