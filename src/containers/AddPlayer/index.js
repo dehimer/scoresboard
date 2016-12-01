@@ -40,7 +40,7 @@ class AddPlayer extends Component {
     this.setState({email: e.target.value});
   }
   handleColorId(e) {
-    this.setState({colorId: e.target.dataset.color_id});
+    this.setState({colorId: e.target.dataset.color_id*1});
   }
   onSubmit(e) {
     this.verify( err => {
