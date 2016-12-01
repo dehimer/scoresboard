@@ -42,7 +42,6 @@ class PlayersList extends Component {
                     players.map((player, index) => {
                       
                       const colorId = player.colorId;
-
                       const squareStyle = {
                         backgroundColor:colorId?('#'+this.props.colorsById[player.colorId].code):'inherit',
                         width:'20px',

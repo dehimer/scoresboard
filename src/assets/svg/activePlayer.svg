@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="839" height="73" viewBox="0 0 839 73">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0d313d;
+        fill-rule: evenodd;
+        opacity: 0.65;
+        filter: url(#filter);
+      }
+    </style>
+    <filter id="filter" x="-115" y="717" width="954" height="73" filterUnits="userSpaceOnUse">
+      <feOffset result="offset" dx="10" in="SourceAlpha"/>
+      <feGaussianBlur result="blur"/>
+      <feFlood result="flood" flood-color="#feb900" flood-opacity="0.3"/>
+      <feComposite result="composite" operator="in" in2="blur"/>
+      <feOffset result="offset-2" dx="-8.91" dy="-4.54" in="SourceAlpha"/>
+      <feGaussianBlur result="blur-2"/>
+      <feFlood result="flood-2" flood-color="#ff3a00" flood-opacity="0.3"/>
+      <feComposite result="composite-2" operator="in" in2="blur-2"/>
+      <feBlend result="blend" in2="composite"/>
+      <feBlend result="blend-2" in="SourceGraphic"/>
+      <feImage preserveAspectRatio="none" x="-106" y="722" width="935" height="68" result="image" xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iOTM1IiBoZWlnaHQ9IjY4IiB2aWV3Qm94PSIwIDAgOTM1IDY4Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiB1cmwoI2xpbmVhci1ncmFkaWVudCk7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudCIgeTE9IjM0IiB4Mj0iOTM1IiB5Mj0iMzQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjA3IiBzdG9wLWNvbG9yPSIjZmYxZTAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC45MyIgc3RvcC1jb2xvcj0iI2ZmZDMwMyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iOTM1IiBoZWlnaHQ9IjY4Ii8+Cjwvc3ZnPgo="/>
+      <feComposite result="composite-3" operator="in" in2="SourceGraphic"/>
+      <feBlend result="blend-3" in2="blend-2"/>
+    </filter>
+  </defs>
+  <path id="Shape_2_copy_10" data-name="Shape 2 copy 10" class="cls-1" d="M-106,722H764.965L829,790H-40.553" transform="translate(0 -717)"/>
+</svg>

@@ -27,39 +27,32 @@ const config  = require('./config');
   app.use(express.static(__dirname + '/'));
 })();
 
+let updateio = () => {};
 app.get('/api/gameover', (req, res) => {
-  console.log('/api/gameover');
-  console.log(req.query);
   const { num, scores, time } = req.query;
-  console.log(+num,+scores,+time);
   //find and remember last state of player (we need colorId)
   db.players.findOne({num:+num}, (err, player) => {
-    console.log(err);
-    console.log(player);
     if(!err && player){
       //update state of player
       const nextPlayerState = {...player, ...{scores:+scores, time:+time, colorId:0}};
-      console.log(nextPlayerState);
       db.players.update({num:+num}, nextPlayerState, err => {
-        console.log(err);
         if(!err){
           //get position in global scoreboard
           db.players.find({}).sort({scores:-1}).exec((err, players) => {
-            console.log(err);
-            console.log(players);
             if(!err){
+              
               const place = players.findIndex(player => {
                 return +player.num === +num;
               });
-              console.log(place);
+              
               res.send({Status:'ok', Place:place+1});
+              
+              updateio();
+              
             }
-
           })
-
         }
       })
-      
     }
   });
 });
@@ -130,6 +123,13 @@ const getNextNum = (cb) => {
       }
     });
   })
+}
+
+updateio = () => {
+  syncTop20(io);
+  syncActivePlayers(io);
+  syncFreeColors(io);
+  syncAllPlayers(io);
 }
 
 io.on('connection', socket => {

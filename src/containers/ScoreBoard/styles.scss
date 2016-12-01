@@ -3,17 +3,34 @@
   height: 1080px;
   display: flex;
   font-size: 50px;
+  font-family: 'BravoRG';
+  font-size: 55px;
+  color: white;
+  background-image: url(../../assets/images/bg.png);
+  padding-top: 200px;
 
   &__half {
     width: 50%;
     height: 100%;
+    padding-left:50px;
   }
 
-  &__header {
-    display: flex;
+  &__row {
+    margin-top:-100px;
   }
-
   &__cell {
     margin: 5px;
+    display: inline-block;
+    vertical-align: top;
+    
+    &-place {
+      text-align: right;
+      width: 100px;
+    }
+
+    &-name {
+      padding-left:50px;
+      width: 530px;
+    }
   }
 }
