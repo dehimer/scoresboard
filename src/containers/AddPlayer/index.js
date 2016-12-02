@@ -12,7 +12,7 @@ class AddPlayer extends Component {
     super(props);
     this.state = {
       name: '',
-      email: '',
+      contact: '',
       colorId: 0,
       errors: []
     }
@@ -36,8 +36,8 @@ class AddPlayer extends Component {
   handleName(e){
     this.setState({name: e.target.value});
   }
-  handleEmail(e) {
-    this.setState({email: e.target.value});
+  handleContact(e) {
+    this.setState({contact: e.target.value});
   }
   handleColorId(e) {
     this.setState({colorId: +e.target.dataset.color_id});
@@ -45,13 +45,13 @@ class AddPlayer extends Component {
   onSubmit(e) {
     this.verify( err => {
       if(!err){
-        const { name, email, colorId} = this.state;
+        const { name, contact, colorId} = this.state;
         this.props.addPlayer({
-          name, email, colorId
+          name, contact, colorId
         });
         this.setState({
           name: '',
-          email: '',
+          contact: '',
           colorId: 0
         })
       }
@@ -91,8 +91,8 @@ class AddPlayer extends Component {
     let showplayers;
     if(players.length){
       showplayers = (<Row className='show-grid'>
-        <Col md={1}></Col>
-        <Col md={10}>
+        <Col md={1} sm={1}></Col>
+        <Col md={10} sm={10}>
           <h2>Активные игроки</h2>
           <Table responsive>
             <thead>
@@ -100,7 +100,7 @@ class AddPlayer extends Component {
                 <th>Цвет</th>
                 <th>Номер</th>
                 <th>Имя</th>
-                <th>Email</th>
+                <th>Контакты</th>
                 <th>Баллы</th>
                 <th>Действия</th>
               </tr>
@@ -112,7 +112,7 @@ class AddPlayer extends Component {
                     <th><div style={{backgroundColor:'#'+this.props.colorsById[player.colorId].code, width:'20px', height:'20px'}}></div></th>
                     <th>{ player.num }</th>
                     <th>{ player.name }</th>
-                    <th>{ player.email }</th>
+                    <th>{ player.contact }</th>
                     <th>{ player.scores }</th>
                     <th>
                       <Button
@@ -127,15 +127,15 @@ class AddPlayer extends Component {
             </tbody>
           </Table>
         </Col>
-        <Col md={1}></Col>
+        <Col md={1} sm={1}></Col>
       </Row>)
     }
 
     let showaddform;
     if(colors.length){
       showaddform = (<Row className='show-grid'>
-        <Col xs={6} md={4}></Col>
-        <Col xs={6} md={4}>
+        <Col md={3} sm={3} xs={2}></Col>
+        <Col md={4} sm={6} xs={8}>
           <h3>Добавить игрока</h3>
           <Form horizontal>
             <FormGroup controlId='formHorizontalName'>
@@ -151,16 +151,16 @@ class AddPlayer extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId='formHorizontalEmail'>
+            <FormGroup controlId='formHorizontalContact'>
               <Col componentClass={ControlLabel} sm={2}>
-                Email
+                Контакты
               </Col>
               <Col sm={10}>
                 <FormControl
-                  type='email'
-                  placeholder='Email'
-                  value={this.state.email}
-                  onChange={::this.handleEmail}/>
+                  type='text'
+                  placeholder='Контакты'
+                  value={this.state.contact}
+                  onChange={::this.handleContact}/>
               </Col>
             </FormGroup>
 
@@ -203,7 +203,7 @@ class AddPlayer extends Component {
           </Form>
           
         </Col>
-        <Col xhidden md={4}></Col>
+        <Col md={3} sm={3} xs={2}></Col>
       </Row>)
     }
 

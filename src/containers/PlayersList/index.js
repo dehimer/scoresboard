@@ -40,7 +40,7 @@ class PlayersList extends Component {
                 <tr>
                   <th>Номер</th>
                   <th>Имя</th>
-                  <th>Email</th>
+                  <th>Контакты</th>
                   <th>Баллы</th>
                 </tr>
               </thead>
@@ -50,7 +50,7 @@ class PlayersList extends Component {
                     <tr key={ index }>
                       <th>{ player.num }</th>
                       <th>{ player.name }</th>
-                      <th>{ player.email }</th>
+                      <th>{ player.contact }</th>
                       <th>{ player.scores }</th>
                     </tr>)
                   )
