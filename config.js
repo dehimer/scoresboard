@@ -18,7 +18,7 @@ module.exports = {
 	],
 	"highlighted_delay": 3000,
 	"screensaver_params": {
-		"delay": 2000,
+		"delay": 10000,
 		"videos": [{
 			"src": "/media/big_buck_bunny.mp4",
 			"type": "video/mp4"
