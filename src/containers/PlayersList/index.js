@@ -1,67 +1,101 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Grid, Row, Col, Table, Button } from 'react-bootstrap'
+import { Grid, Row, Col, Table, Button, Modal } from 'react-bootstrap'
 
 class PlayersList extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      waitacceptclear: false
+    }
   }
   componentWillMount() {
     this.props.syncAllPlayers();
   }
-  removeAllPlayers(e) {
-    this.props.removeAllPlayers(e.target.dataset.color);
+  handleAcceptClear(clear) {
+    if(clear){
+      this.props.removeAllPlayers();
+    }
+
+    this.setState({waitacceptclear:false});
+  }
+  showtable(){
+
+    const players = this.props.players || [];
+
+    if(players.length){
+      return (<Grid>
+        <Row className='show-grid'>
+          <Col>
+            <Button bsStyle='danger'
+              onClick={ () => (this.setState({waitacceptclear:true})) }>
+              Удалить всех
+            </Button>
+          </Col>
+        </Row>
+        <Row className='show-grid'>
+          <Col>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Номер</th>
+                  <th>Имя</th>
+                  <th>Email</th>
+                  <th>Баллы</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  players.map((player, index) => (
+                    <tr key={ index }>
+                      <th>{ player.num }</th>
+                      <th>{ player.name }</th>
+                      <th>{ player.email }</th>
+                      <th>{ player.scores }</th>
+                    </tr>)
+                  )
+                }
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+      </Grid>)
+    }else{
+      return (<Grid>
+        <Row className='show-grid'>
+          <Col>
+            Список игроков пуст
+          </Col>
+        </Row>
+      </Grid>)
+    }
   }
   render() {
-    const players = this.props.players;
+
+    let showacceptclear;
+    if(this.state.waitacceptclear){
+      showacceptclear = (<div className='static-modal'>
+        <Modal.Dialog bsSize='small'>
+
+          <Modal.Body>
+            Все игроки будут удалены.
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button onClick={ () => {this.handleAcceptClear(false)} }>Отмена</Button>
+            <Button bsStyle='primary' onClick={ () => {this.handleAcceptClear(true)} }>
+              Подтвердить удаление
+            </Button>
+          </Modal.Footer>
+
+        </Modal.Dialog>
+      </div>)
+    }
+
     return (
       <div>
-        <Grid>
-          <Row className='show-grid'>
-            <Col>
-              <Button
-                onClick={ ::this.removeAllPlayers }>
-                Удалить всех
-              </Button>
-            </Col>
-          </Row>
-          <Row className='show-grid'>
-            <Col>
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <th>Цвет</th>
-                    <th>Номер</th>
-                    <th>Имя</th>
-                    <th>Email</th>
-                    <th>Баллы</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    players.map((player, index) => {
-                      
-                      const colorId = player.colorId;
-                      const squareStyle = {
-                        backgroundColor:colorId?('#'+this.props.colorsById[player.colorId].code):'inherit',
-                        width:'20px',
-                        height:'20px'
-                      };
-                      
-                      return (<tr key={ index }>
-                        <th><div style={ squareStyle }></div></th>
-                        <th>{ player.num }</th>
-                        <th>{ player.name }</th>
-                        <th>{ player.email }</th>
-                        <th>{ player.scores }</th>
-                      </tr>)
-                    })
-                  }
-                </tbody>
-              </Table>
-            </Col>
-          </Row>
-        </Grid>
+        { showacceptclear }
+        { this.showtable() }
       </div>
     )
   }

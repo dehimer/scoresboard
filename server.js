@@ -30,11 +30,14 @@ const config  = require('./config');
 let updatedPlayers = [];
 let updateio = () => {};
 app.get('/api/gameover', (req, res) => {
-  const { num, scores, time } = req.query;
+  const { num:colorId, scores, time } = req.query;
   //find and remember last state of player (we need colorId)
-  db.players.findOne({num:+num}, (err, player) => {
+  db.players.findOne({colorId:+colorId}, (err, player) => {
+    console.log(err);
+    console.log(player);
     if(!err && player){
 
+      const playerId = player._id;
       const nextPlayerState = {scores:+scores, time:+time, colorId:0};
 
       updatedPlayers.push({...player, scores:+scores, time:+time});
@@ -46,14 +49,14 @@ app.get('/api/gameover', (req, res) => {
       }, config.highlighted_delay*1 || 5000);
 
       //update state of player
-      db.players.update({num:+num}, {$set:nextPlayerState}, err => {
+      db.players.update({_id:playerId}, {$set:nextPlayerState}, err => {
         if(!err){
           //get position in global scoreboard
           db.players.find({}).sort({scores:-1}).exec((err, players) => {
             if(!err){
               
               const place = players.findIndex(player => {
-                return +player.num === +num;
+                return +player._id === +playerId;
               });
               
               res.send({Status:'ok', Place:place+1});
@@ -64,6 +67,8 @@ app.get('/api/gameover', (req, res) => {
           })
         }
       })
+    }else{
+      res.send({Status:'error'});
     }
   });
 });
