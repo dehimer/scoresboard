@@ -1,5 +1,5 @@
 {
-  "name": "react-router-ru-tutorial",
+  "name": "scoresboard",
   "version": "1.0.0",
   "description": "React-router RU tutorial",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "install-windows-service": "winser -i",
     "uninstall-windows-service": "winser -r"
   },
-  "author": "Maxim Patsianskiy",
+  "author": "Denis Novikov (den-vse@yandex.ru)",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^6.3.3",
