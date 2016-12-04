@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const app = express();
 
+//SETUP DB
 const Datastore = require('nedb');
 
 const db = {
@@ -9,6 +10,9 @@ const db = {
   players: new Datastore({filename:'db/players', autoload:true })
 };
 
+
+
+//RUN WEBPACK HOT LOADER
 const config  = require('./config');
 
 (function initWebpack() {
@@ -27,24 +31,23 @@ const config  = require('./config');
   app.use(express.static(__dirname + '/'));
 })();
 
+
+//PROCESS HTTP REQUESTS
 let updatedPlayers = [];
 let updateio = () => {};
+//process messages from players
 app.get('/api/gameover', (req, res) => {
   const { num:colorId, scores, time } = req.query;
   //find and remember last state of player (we need colorId)
   db.players.findOne({colorId:+colorId}, (err, player) => {
-    console.log(err);
-    console.log(player);
     if(!err && player){
 
       const playerId = player._id;
       const nextPlayerState = {scores:+scores, time:+time, colorId:0};
 
       updatedPlayers.push({...player, scores:+scores, time:+time});
-      console.log(updatedPlayers);
       setTimeout(() => {
         updatedPlayers = updatedPlayers.filter(updatedPlayer => updatedPlayer._id != player._id);
-        console.log(updatedPlayers);
         updateio();
       }, config.highlighted_delay*1 || 5000);
 
@@ -77,6 +80,9 @@ app.get(/.*/, function root(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+
+//STARTUP SERVERS
+//run http server
 const server = http.createServer(app);
 server.listen(process.env.PORT || 3000, function onListen() {
   const address = server.address();
@@ -84,17 +90,21 @@ server.listen(process.env.PORT || 3000, function onListen() {
   console.log(' -> that probably means: http://localhost:%d', address.port);
 });
 
+//run socket server
 var socket_io = require('socket.io');
 var io = socket_io();
 io.attach(server);
 
+
+//METHODS TO PROCESS SOCKETS MESSAGES
+//send to all socket clients new array with active players (who have color)
 const syncActivePlayers = socket => {
   db.players.find({colorId: {$gt:0}}).exec((err, players) => {
-    console.log(players);
     socket.emit('action', {type:'active_players', data:players});
   });
 }
 
+//send to all socket clients array of available to select colors
 const syncFreeColors = socket => {
   db.players.find({colorId: {$gt:0}}).exec((err, players) => {
 
@@ -111,21 +121,19 @@ const syncFreeColors = socket => {
   });
 }
 
+//update by socket the list of top 20 players
 const syncTop20 = socket => {
 
   const limit = 20;
 
-  // console.log(updatedPlayers)
   const updatedPlayersIds = updatedPlayers.map(player => player._id);
-  // console.log(updatedPlayersIds);
-  //TODO - mix active players
+
   db.players.find({}).sort({scores:-1}).limit(limit).exec((err, players) => {
 
-    // console.log(players); 
     //remove changed from result
     players = players.filter(player => updatedPlayersIds.indexOf(player._id) < 0);
     const countintail = updatedPlayersIds.length - (limit-players.length);
-    // console.log(players);
+
     players = players.slice(0, limit-countintail);
     //add changed and sort by scores
     players = players.concat(updatedPlayers)
@@ -144,23 +152,21 @@ const syncTop20 = socket => {
           }
         }
       })
-    console.log('res length: '+players.length);
-    // const overflow = players.length-limit;
-
-    // players = players.slice(0, limit);
-    // console.log(players);
 
     socket.emit('action', {type:'top20players', data:players});
   })
 }
 
+//send list of all players to all players list page
 const syncAllPlayers = socket => {
   db.players.find({}).sort({scores:-1}).exec((err, players)=>{
     socket.emit('action', {type:'all_players', data:players});
   });
 }
 
+//return next num of new player (imitation of autoincrements)
 const getNextNum = (cb) => {
+  //get current record of lastplayernum collection from db
   db.lastplayernum.findOne({}, (err, lastplayernum) => {
 
     const nextnum = lastplayernum?(lastplayernum.num+1):1;
@@ -173,6 +179,8 @@ const getNextNum = (cb) => {
   })
 }
 
+//triggered when /api/gameover request is processed
+//for notice all socket clients about new state 
 updateio = () => {
   syncTop20(io);
   syncActivePlayers(io);
@@ -180,11 +188,10 @@ updateio = () => {
   syncAllPlayers(io);
 }
 
+//process socket messages
 io.on('connection', socket => {
 
   socket.on('action', action => {
-
-    console.log(action);
 
     socket.emit('action', {type:'colors', data:config.colors});
     socket.emit('action', {type:'screensaver_params', data:config.screensaver_params});
