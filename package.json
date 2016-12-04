@@ -1,7 +1,7 @@
 {
   "name": "scoresboard",
   "version": "1.0.0",
-  "description": "React-router RU tutorial",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node bin/server.js",
