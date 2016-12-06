@@ -139,10 +139,10 @@ class AddPlayer extends Component {
           <h3>Добавить игрока</h3>
           <Form horizontal>
             <FormGroup controlId='formHorizontalName'>
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 Имя
               </Col>
-              <Col sm={10}>
+              <Col sm={9}>
                 <FormControl
                   type='text'
                   placeholder='Имя'
@@ -152,10 +152,10 @@ class AddPlayer extends Component {
             </FormGroup>
 
             <FormGroup controlId='formHorizontalContact'>
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 Контакты
               </Col>
-              <Col sm={10}>
+              <Col sm={9}>
                 <FormControl
                   type='text'
                   placeholder='Контакты'
@@ -166,10 +166,10 @@ class AddPlayer extends Component {
 
 
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={2}>
+              <Col componentClass={ControlLabel} sm={3}>
                 Цвет
               </Col>
-              <Col smOffset={2} sm={10}>
+              <Col sm={9}>
                 <ButtonGroup>
                 {
                   colors.map((color, index) => {
@@ -194,7 +194,7 @@ class AddPlayer extends Component {
             </FormGroup>
 
             <FormGroup>
-              <Col smOffset={2} sm={10}>
+              <Col smOffset={3} sm={9}>
                 <Button type='submit' onClick={::this.onSubmit}>
                   Добавить
                 </Button>

@@ -59,7 +59,7 @@ app.get('/api/gameover', (req, res) => {
             if(!err){
               
               const place = players.findIndex(player => {
-                return +player._id === +playerId;
+                return player._id === playerId;
               });
               
               res.send({Status:'ok', Place:place+1});
