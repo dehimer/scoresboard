@@ -12,7 +12,7 @@ const db = {
 
 //READ CONFIGS
 const config  = require('./config');
-
+console.log(config);
 
 //RUN WEBPACK HOT LOADER
 if(process.env.npm_lifecycle_event == 'dev'){
@@ -194,13 +194,14 @@ updateio = () => {
   syncAllPlayers(io);
 }
 
-//process socket messages
+//process sockets messages
 io.on('connection', socket => {
+  console.log('connection');
+  
+  socket.emit('action', {type:'colors', data:config.colors});
+  socket.emit('action', {type:'screensaver_params', data:config.screensaver_params});
 
   socket.on('action', action => {
-
-    socket.emit('action', {type:'colors', data:config.colors});
-    socket.emit('action', {type:'screensaver_params', data:config.screensaver_params});
 
     switch (action.type){
       case 'server/active_players':

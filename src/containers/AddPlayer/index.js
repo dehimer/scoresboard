@@ -18,7 +18,6 @@ class AddPlayer extends Component {
     }
   }
   componentWillMount() {
-    console.log('componentWillMount');
     this.props.syncFreeColors();
     this.props.syncActivePlayers();
   }

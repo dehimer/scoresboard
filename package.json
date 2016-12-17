@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "babel": "^6.5.2",
+    "hh-mm-ss": "^1.1.0",
     "jquery": "^2.2.1",
     "nedb": "^1.8.0",
     "react": "^0.14.7",

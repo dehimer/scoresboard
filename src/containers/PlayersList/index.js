@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Grid, Row, Col, Table, Button, Modal } from 'react-bootstrap'
 
+import TimeFormat from 'hh-mm-ss'
+
 class PlayersList extends Component {
   constructor(props) {
     super(props);
@@ -41,19 +43,24 @@ class PlayersList extends Component {
                   <th>Номер</th>
                   <th>Имя</th>
                   <th>Контакты</th>
+                  <th>Время</th>
                   <th>Баллы</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  players.map((player, index) => (
-                    <tr key={ index }>
-                      <th>{ player.num }</th>
-                      <th>{ player.name }</th>
-                      <th>{ player.contact }</th>
-                      <th>{ player.scores }</th>
-                    </tr>)
-                  )
+                  players.map((player, index) => {
+                    const time = +player.time >0 ? TimeFormat.fromS(+player.time) : '-';
+                    return (
+                      <tr key={ index }>
+                        <th>{ player.num }</th>
+                        <th>{ player.name }</th>
+                        <th>{ player.contact || '-' }</th>
+                        <th>{ time }</th>
+                        <th>{ player.scores }</th>
+                      </tr>)
+                  })
+                  
                 }
               </tbody>
             </Table>

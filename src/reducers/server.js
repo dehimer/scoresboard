@@ -25,7 +25,6 @@ export default function reducer(state = {
     case 'all_players':
       return {...state, all_players: action.data};
     case 'screensaver_params':
-      console.log(action.data);
       return {...state, screensaver_params: action.data};
     default:
       return state;
