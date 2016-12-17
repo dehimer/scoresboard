@@ -35,6 +35,7 @@ class PlayersList extends Component {
             </Button>
           </Col>
         </Row>
+        <br/>
         <Row className='show-grid'>
           <Col>
             <Table responsive>
