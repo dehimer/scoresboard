@@ -21,12 +21,3 @@ npm run build
 npm run install-windows-service
 
 3) found and start scoresboard service in services list of windows
-
-
-TODO
-. read list of backgrounds
-. define start number of current bg
-. define which top and which bottom
-. transition style
-. transitionend event
-	. change src for faded bg img

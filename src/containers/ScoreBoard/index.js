@@ -3,19 +3,32 @@ import { connect } from 'react-redux'
 import PositionLine from 'components/PositionLine'
 import ScreenSaver from 'components/ScreenSaver'
 import TimeFormat from 'hh-mm-ss'
+import classNames from 'classnames'
 
 import './styles.scss'
 
 class ScoreBoard extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      active_bg_images: 0
+    }
   }
   componentWillMount() {
     this.props.syncTop20players();
     this.props.syncActivePlayers();
   }
+  componentDidMount() {
+    setInterval(() => {
+      console.log('active_bg_images: '+this.state.active_bg_images);
+
+      this.setState({active_bg_images: (this.state.active_bg_images+1)%4});
+    }, 10000);
+  }
   render() {
-    const players = this.props.players;
+    const {active_bg_images} = this.state;
+    const {players} = this.props;
 
     const playersByCols = [
       players.slice(0, 10),
@@ -27,11 +40,17 @@ class ScoreBoard extends Component {
       showscreensaver = <ScreenSaver params={ this.props.screensaver_params }/>
     }
 
+    // this.setState({
+
+    // })
+
     return (
       <div className='scoreboard'>
         <div className='scoreboard__background'>
-          <img className='scoreboard__background_bottom' src={require('../../assets/images/bg_1.png')}/>
-          <img className='scoreboard__background_top' src={require('../../assets/images/bg_2.png')}/>
+          <img className={classNames('scoreboard__background_img', {'scoreboard__background_img--active': active_bg_images === 0})} src={require('../../assets/images/bg_1.png')}/>
+          <img className={classNames('scoreboard__background_img', {'scoreboard__background_img--active': active_bg_images === 1})} src={require('../../assets/images/bg_2.png')}/>
+          <img className={classNames('scoreboard__background_img', {'scoreboard__background_img--active': active_bg_images === 2})} src={require('../../assets/images/bg_3.png')}/>
+          <img className={classNames('scoreboard__background_img', {'scoreboard__background_img--active': active_bg_images === 3})} src={require('../../assets/images/bg_4.png')}/>
         </div>
         <img className='scoreboard__logo_back' src={require('../../assets/images/logo_back.png')}/>
         <img className='scoreboard__logo' src={require('../../assets/images/logo.png')}/>
@@ -49,9 +68,10 @@ class ScoreBoard extends Component {
                 players.map((player, index) => {
                   
                   const place = index+1+10*colIndex;
+                  const time = +player.time >0 ? TimeFormat.fromS(+player.time) : '00:00';
+                  
                   const colorId = player.colorId;
                   const color = colorId?('#'+this.props.colorsById[player.colorId].code):false;
-                  const time = +player.time >0 ? TimeFormat.fromS(+player.time) : '00:00';
 
                   return (<div key={ index }>
                     <PositionLine color={ color }/>
