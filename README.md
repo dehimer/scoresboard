@@ -24,4 +24,9 @@ npm run install-windows-service
 
 
 TODO
-1. need to update fonts (logo and background must be on diff layers)
+. read list of backgrounds
+. define start number of current bg
+. define which top and which bottom
+. transition style
+. transitionend event
+	. change src for faded bg img
