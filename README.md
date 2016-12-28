@@ -21,3 +21,7 @@ npm run build
 npm run install-windows-service
 
 3) found and start scoresboard service in services list of windows
+
+
+TODO
+1. need to update fonts (logo and background must be on diff layers)
