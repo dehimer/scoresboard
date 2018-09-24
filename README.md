@@ -1,23 +1,19 @@
-How to create and run build:
+<b>How to create and run build:</b>
 
-npm run build
+<code>npm run build</code>
 
-npm start
-
-
-How to run as dev:
-
-npm run dev
+<code>npm start</code>
 
 
-How to run as windows service:
+<b>How to run as dev:</b>
+
+<code>npm run dev</code>
+
+<hr>
+<b>How to run as windows service:</b>
 
 1) make build:
-
-npm run build
-
+<code>npm run build</code>
 2) run cmd console as admin and execute command in directory:
-
-npm run install-windows-service
-
+<code>npm run install-windows-service</code>
 3) found and start scoresboard service in services list of windows
