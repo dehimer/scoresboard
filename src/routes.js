@@ -21,4 +21,4 @@ export const routes = (
     </Route>
     <Route path='*' component={App} />
   </div>
-)
+);

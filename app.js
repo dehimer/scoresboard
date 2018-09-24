@@ -104,14 +104,14 @@ io.attach(server);
 //METHODS TO PROCESS SOCKETS MESSAGES
 //send to all socket clients new array with active players (who have color)
 const syncActivePlayers = socket => {
-  db.players.find({colorId: {$gt:0}}).exec((err, players) => {
-    socket.emit('action', {type:'active_players', data:players});
+  db.players.find({ colorId: { $gt: 0 } }).exec((err, players) => {
+    socket.emit('action', {type: 'active_players', data:players});
   });
 };
 
 //send to all socket clients array of available to select colors
 const syncFreeColors = socket => {
-  db.players.find({colorId: {$gt:0}}).exec((err, players) => {
+  db.players.find({ colorId: { $gt: 0 }}).exec((err, players) => {
 
     //free colors
     const busyColors = players.reduce((colors, player) => {
@@ -122,7 +122,7 @@ const syncFreeColors = socket => {
     const freeColors = config.colors.filter(color => {
       return !busyColors[color.id];
     });
-    socket.emit('action', {type:'free_colors', data:freeColors});
+    socket.emit('action', { type: 'free_colors', data: freeColors });
   });
 };
 
@@ -133,7 +133,7 @@ const syncTop20 = socket => {
 
   const updatedPlayersIds = updatedPlayers.map(player => player._id);
 
-  db.players.find({}).sort({scores:-1}).limit(limit).exec((err, players) => {
+  db.players.find({}).sort({ scores: -1 }).limit(limit).exec((err, players) => {
 
     //remove changed from result
     players = players.filter(player => updatedPlayersIds.indexOf(player._id) < 0);
@@ -158,14 +158,14 @@ const syncTop20 = socket => {
         }
       });
 
-    socket.emit('action', {type:'top20players', data:players});
+    socket.emit('action', {type: 'top20players', data:players});
   })
-}
+};
 
 //send list of all players to all players list page
 const syncAllPlayers = socket => {
   db.players.find({}).sort({scores:-1}).exec((err, players)=>{
-    socket.emit('action', {type:'all_players', data:players});
+    socket.emit('action', { type: 'all_players', data: players });
   });
 };
 
@@ -176,7 +176,7 @@ const getNextNum = (cb) => {
 
     const nextnum = lastplayernum?(lastplayernum.num+1):1;
 
-    db.lastplayernum.update({}, {num:nextnum}, {upsert:true}, err => {
+    db.lastplayernum.update({}, { num: nextnum }, { upsert: true }, err => {
       if(!err){
         cb && cb(nextnum);
       }
@@ -197,8 +197,8 @@ updateio = () => {
 io.on('connection', socket => {
   console.log('connection');
 
-  socket.emit('action', {type:'colors', data:config.colors});
-  socket.emit('action', {type:'screensaver_params', data:config.screensaver_params});
+  socket.emit('action', {type: 'colors', data:config.colors});
+  socket.emit('action', {type: 'screensaver_params', data:config.screensaver_params});
 
   socket.on('action', action => {
 

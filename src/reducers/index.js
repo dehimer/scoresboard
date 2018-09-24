@@ -3,4 +3,4 @@ import server from './server'
 
 export const rootReducer = combineReducers({
   server
-})
+});

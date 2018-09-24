@@ -13,13 +13,12 @@ export default function configureStore() {
     applyMiddleware(socketIoMiddleware),
     applyMiddleware(thunkMiddleware),
     applyMiddleware(createLogger())
-  )(createStore)(rootReducer)
+  )(createStore)(rootReducer);
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers', () => {
-      const nextRootReducer = require('../reducers').rootReducer
-      store.replaceReducer(nextRootReducer)
+      store.replaceReducer(require('../reducers').rootReducer)
     });
   }
 
