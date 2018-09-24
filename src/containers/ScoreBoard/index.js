@@ -12,7 +12,8 @@ class ScoreBoard extends Component {
     super(props);
 
     this.state = {
-      active_bg_images: 0
+      active_bg_images: 0,
+      showscreensaver: false
     }
   }
   componentWillMount() {
@@ -22,27 +23,27 @@ class ScoreBoard extends Component {
   componentDidMount() {
     setInterval(() => {
       console.log('active_bg_images: '+this.state.active_bg_images);
-
-      this.setState({active_bg_images: (this.state.active_bg_images+1)%4});
+      if (!this.state.showscreensaver) {
+        this.setState({ active_bg_images: (this.state.active_bg_images+1)%4 });
+      }
     }, 10000);
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      showscreensaver: (!nextProps.active_players.length && nextProps.screensaver_params.videos.length)
+    })
+  }
+
   render() {
-    const {active_bg_images} = this.state;
-    const {players} = this.props;
+    const { active_bg_images, showscreensaver } = this.state;
+    const { players } = this.props;
 
     const playersByCols = [
       players.slice(0, 10),
       players.slice(10, 20)
     ];
 
-    let showscreensaver;
-    if(!this.props.active_players.length && this.props.screensaver_params.videos.length){
-      showscreensaver = <ScreenSaver params={ this.props.screensaver_params }/>
-    }
-
-    // this.setState({
-
-    // })
 
     return (
       <div className='scoreboard'>
@@ -66,10 +67,10 @@ class ScoreBoard extends Component {
               </div>
               {
                 players.map((player, index) => {
-                  
+
                   const place = index+1+10*colIndex;
                   const time = +player.time >0 ? TimeFormat.fromS(+player.time) : '00:00';
-                  
+
                   const colorId = player.colorId;
                   const color = colorId?('#'+this.props.colorsById[player.colorId].code):false;
 
@@ -88,7 +89,7 @@ class ScoreBoard extends Component {
 
           ))
         }
-        { showscreensaver }
+        { showscreensaver ? <ScreenSaver params={ this.props.screensaver_params }/> : null }
       </div>
     )
   }
@@ -101,18 +102,18 @@ const mapStateToProps = function (state) {
     colorsById: state.server.colorsById,
     screensaver_params: state.server.screensaver_params
   }
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     syncTop20players: () => {
-      dispatch({type:'server/top20players'});
+      dispatch({ type: 'server/top20players' });
     },
     syncActivePlayers: () => {
-      dispatch({type:'server/active_players'});
+      dispatch({ type: 'server/active_players' });
     }
   }
-}
+};
 
 export default connect(
   mapStateToProps,

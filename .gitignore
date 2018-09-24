@@ -13,3 +13,5 @@ npm-debug.log
 db
 
 /dist
+.idea
+package-lock.json

@@ -4,7 +4,6 @@ import { Route, IndexRedirect } from 'react-router'
 import App from './containers/App'
 import Admin from './layouts/Admin'
 import ScoreBoard from './containers/ScoreBoard'
-import ScreenSaver from './components/ScreenSaver'
 import AddPlayer from './containers/AddPlayer'
 import PlayersList from './containers/PlayersList'
 
@@ -15,10 +14,9 @@ export const routes = (
       <Route path='admin' component={Admin}>
         <IndexRedirect to='playerslist' />
         <Route path='addplayer' component={AddPlayer} />
-        <Route path='playerslist' component={PlayersList} />	
+        <Route path='playerslist' component={PlayersList} />
       </Route>
       <Route path='scoreboard' component={ScoreBoard} />
-      <Route path='screensaver' component={ScreenSaver} />
       <Route path='*' component={Admin} />
     </Route>
     <Route path='*' component={App} />

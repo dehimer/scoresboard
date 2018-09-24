@@ -6,8 +6,8 @@ const app = express();
 const Datastore = require('nedb');
 
 const db = {
-  lastplayernum: new Datastore({filename:'db/lastplayernum', autoload:true }),
-  players: new Datastore({filename:'db/players', autoload:true })
+  lastplayernum: new Datastore({ filename: 'db/lastplayernum', autoload:true }),
+  players: new Datastore({ filename: 'db/players', autoload:true })
 };
 
 //READ CONFIGS
@@ -15,21 +15,21 @@ const config  = require('./config');
 console.log(config);
 
 //RUN WEBPACK HOT LOADER
-if(process.env.npm_lifecycle_event == 'dev'){
+if(process.env.npm_lifecycle_event === 'dev'){
   (function initWebpack() {
     const webpack = require('webpack');
     const webpackConfig = require('./webpack/common.config');
     const compiler = webpack(webpackConfig);
 
     app.use(require('webpack-dev-middleware')(compiler, {
-      noInfo: true, publicPath: webpackConfig.output.publicPath,
+      noInfo: true, publicPath: webpackConfig.output.publicPath
     }));
 
     app.use(require('webpack-hot-middleware')(compiler, {
-      log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000,
+      log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
     }));
   })();
-};
+}
 
 
 //PROCESS HTTP REQUESTS
@@ -39,33 +39,32 @@ let updateio = () => {};
 app.get('/api/gameover', (req, res) => {
   const { num:colorId, scores, time } = req.query;
   //find and remember last state of player (we need colorId)
-  db.players.findOne({colorId:+colorId}, (err, player) => {
+  db.players.findOne({ colorId: +colorId }, (err, player) => {
     if(!err && player){
 
       const playerId = player._id;
-      const nextPlayerState = {scores:+scores, time:+time, colorId:0};
+      const nextPlayerState = { scores: +scores, time: +time, colorId: 0 };
 
-      updatedPlayers.push({...player, scores:+scores, time:+time});
+      updatedPlayers.push({ ...player, scores: +scores, time: +time });
       setTimeout(() => {
-        updatedPlayers = updatedPlayers.filter(updatedPlayer => updatedPlayer._id != player._id);
+        updatedPlayers = updatedPlayers.filter(updatedPlayer => updatedPlayer._id !== player._id);
         updateio();
-      }, config.highlighted_delay*1 || 5000);
+      }, config.highlighted_delay || 5000);
 
       //update state of player
-      db.players.update({_id:playerId}, {$set:nextPlayerState}, err => {
+      db.players.update({ _id: playerId}, { $set:nextPlayerState }, err => {
         if(!err){
           //get position in global scoreboard
-          db.players.find({}).sort({scores:-1}).exec((err, players) => {
+          db.players.find({}).sort({ scores:-1 }).exec((err, players) => {
             if(!err){
-              
               const place = players.findIndex(player => {
                 return player._id === playerId;
               });
-              
+
               res.send({Status:'ok', Place:place+1});
-              
+
               updateio();
-              
+
             }
           })
         }
@@ -108,7 +107,7 @@ const syncActivePlayers = socket => {
   db.players.find({colorId: {$gt:0}}).exec((err, players) => {
     socket.emit('action', {type:'active_players', data:players});
   });
-}
+};
 
 //send to all socket clients array of available to select colors
 const syncFreeColors = socket => {
@@ -119,13 +118,13 @@ const syncFreeColors = socket => {
       colors[player.colorId] = true;
       return colors;
     }, {});
-    
+
     const freeColors = config.colors.filter(color => {
       return !busyColors[color.id];
     });
     socket.emit('action', {type:'free_colors', data:freeColors});
   });
-}
+};
 
 //update by socket the list of top 20 players
 const syncTop20 = socket => {
@@ -157,7 +156,7 @@ const syncTop20 = socket => {
             return 0;
           }
         }
-      })
+      });
 
     socket.emit('action', {type:'top20players', data:players});
   })
@@ -168,7 +167,7 @@ const syncAllPlayers = socket => {
   db.players.find({}).sort({scores:-1}).exec((err, players)=>{
     socket.emit('action', {type:'all_players', data:players});
   });
-}
+};
 
 //return next num of new player (imitation of autoincrements)
 const getNextNum = (cb) => {
@@ -183,21 +182,21 @@ const getNextNum = (cb) => {
       }
     });
   })
-}
+};
 
 //triggered when /api/gameover request is processed
-//for notice all socket clients about new state 
+//for notice all socket clients about new state
 updateio = () => {
   syncTop20(io);
   syncActivePlayers(io);
   syncFreeColors(io);
   syncAllPlayers(io);
-}
+};
 
 //process sockets messages
 io.on('connection', socket => {
   console.log('connection');
-  
+
   socket.emit('action', {type:'colors', data:config.colors});
   socket.emit('action', {type:'screensaver_params', data:config.screensaver_params});
 
@@ -218,14 +217,14 @@ io.on('connection', socket => {
         break;
       case 'server/add_player':
         getNextNum(nextNum => {
-          db.players.insert({scores:0, num:nextNum, ...action.data}, (err, newPlayer) => {
+          db.players.insert({scores:0, num:nextNum, ...action.data}, (err) => {
             if(!err){
               syncActivePlayers(io);
               syncFreeColors(io);
               syncTop20(io);
             }
           })
-        })
+        });
         break;
       case 'server/remove_player':
         db.players.remove({num: action.data}, err => {

@@ -21,9 +21,9 @@ export default class ScreenSaver extends Component {
     this.setState({timer:timer});
   }
   resetTimer(){
-    this.setState({show:false});
+    this.setState({show: false});
     this.state.timer && clearTimeout(this.state.timer);
-    this.setState({timer:null});
+    this.setState({timer: null});
   }
   componentWillMount() {
     this.setTimer();
@@ -36,13 +36,15 @@ export default class ScreenSaver extends Component {
       ReactDOM.findDOMNode(this.refs.video).load(); // you can add logic to check if sources have been changed
     }
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (JSON.stringify(nextState) !== JSON.stringify(this.state));
+  }
+
   videoFinished() {
     this.setTimer();
   }
   render() {
-
-    console.log(this.state);
-
     let video;
     if(this.state.show){
       video = (
