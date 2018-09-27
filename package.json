@@ -49,11 +49,12 @@
     "webpack-merge": "^0.8.3"
   },
   "dependencies": {
+    "await-to-js": "^2.0.1",
     "babel": "^6.5.2",
     "express": "^4.14.0",
     "hh-mm-ss": "^1.1.0",
     "jquery": "^2.2.1",
-    "nedb": "^1.8.0",
+    "mongodb": "^3.1.6",
     "react": "^0.14.7",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^0.14.7",
