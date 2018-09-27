@@ -1,4 +1,18 @@
+$form-items-width: 400px;
+
 .new-player {
   flex: 1;
-  background-color: blue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__header {
+    width: $form-items-width;
+  }
+
+  &__input {
+    width: $form-items-width;
+    margin: 10px;
+  }
 }
