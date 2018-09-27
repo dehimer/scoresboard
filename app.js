@@ -71,7 +71,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
     }, config.highlighted_delay || 5000);
 
     //update state of player
-    const [updateErr] = await to(collections.players.update({ _id: playerId }, { $set: nextPlayerState }));
+    const [updateErr] = await to(collections.players.updateOne({ _id: playerId }, { $set: nextPlayerState }));
     if (updateErr) {
       console.log(updateErr);
       return;
