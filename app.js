@@ -36,7 +36,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   // Use connect method to connect to the server
   // const db = await MongoClient.connect(url, { useNewUrlParser: true });
 
-  let mongoclient = new MongoClient(new Server(dbconfig.address, dbconfig.port), {native_parser: true});
+  let mongoclient = new MongoClient(new Server(dbconfig.address, dbconfig.port), { native_parser: true });
   mongoclient = await mongoclient.connect();
   const db = mongoclient.db(dbconfig.name);
 
@@ -56,7 +56,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
     const [err, player]= await to(collections.players.findOne({ colorId: +colorId }));
     if (err || !player) {
       console.log(`player with ${colorId} is not found`);
-      res.send({Status: 'error'});
+      res.send({ Status: 'error' });
       return;
     }
 
