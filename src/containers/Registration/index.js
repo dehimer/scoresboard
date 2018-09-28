@@ -7,10 +7,14 @@ import RegisteredPlayer from './components/RegisteredPlayer'
 import './index.scss'
 
 class Registration extends Component {
+  register(player) {
+    console.log('register');
+    console.log(player);
+  }
   render() {
     return (
       <div className='registration'>
-        <NewPlayer/>
+        <NewPlayer register={::this.register}/>
         <RegisteredPlayer/>
       </div>
     );
