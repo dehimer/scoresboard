@@ -16,9 +16,7 @@ export default (props) => {
       <TextField className='new-player__input' type='phone' label='Телефон' variant='outlined' margin='dense'/>
       <TextField className='new-player__input' type='text' label='Ноутбук (марка и модель)' variant='outlined' margin='dense'/>
       <TextField className='new-player__input' type='text' label='Ссылка на страницу в соц. сетях' variant='outlined' margin='dense'/>
-
       <FormControlLabel className='new-player__input' control={<Switch/>} label='Принёс ноутбук' />
-
 
       <Button className='new-player__input' variant='contained' color='primary'>
         Зарегистрировать и показать ID
