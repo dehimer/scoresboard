@@ -15,7 +15,9 @@ export default (props) => {
       <input className='new-player__input' type='phone' placeholder='Телефон'/>
       <input className='new-player__input' type='text' placeholder='Ноутбук (марка и модель)'/>
       <input className='new-player__input' type='text' placeholder='Ссылка на страницу в соц. сетях'/>
-      <input className='new-player__input' type='checkbox'>Принёс ноутбук</input>
+      <div className='new-player__input' >
+        <input type='checkbox'/>Принёс ноутбук
+      </div>
       <input className='new-player__input' type='button' value='Зарегистрировать и показать ID'/>
     </form>
   )
