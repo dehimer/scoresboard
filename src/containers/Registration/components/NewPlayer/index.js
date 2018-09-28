@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, TextField, FormControlLabel, Switch } from '@material-ui/core'
 
 import './index.scss'
 
@@ -7,18 +8,21 @@ export default (props) => {
   return (
     <form className='new-player'>
       <h3 className='new-player__header'>Не регистрировался на сайте</h3>
-      <input className='new-player__input' type='text' placeholder='Никнейм'/>
-      <input className='new-player__input' type='text' placeholder='ФИО'/>
-      <input className='new-player__input' type='text' placeholder='Дата рождения'/>
-      <input className='new-player__input' type='text' placeholder='Город проживания'/>
-      <input className='new-player__input' type='email' placeholder='E-mail'/>
-      <input className='new-player__input' type='phone' placeholder='Телефон'/>
-      <input className='new-player__input' type='text' placeholder='Ноутбук (марка и модель)'/>
-      <input className='new-player__input' type='text' placeholder='Ссылка на страницу в соц. сетях'/>
-      <div className='new-player__input' >
-        <input type='checkbox'/>Принёс ноутбук
-      </div>
-      <input className='new-player__input' type='button' value='Зарегистрировать и показать ID'/>
+      <TextField className='new-player__input' type='text' label='Никнейм' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='text' label='ФИО' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='text' label='Дата рождения' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='text' label='Город проживания' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='email' label='E-mail' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='phone' label='Телефон' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='text' label='Ноутбук (марка и модель)' variant='outlined' margin='dense'/>
+      <TextField className='new-player__input' type='text' label='Ссылка на страницу в соц. сетях' variant='outlined' margin='dense'/>
+
+      <FormControlLabel className='new-player__input' control={<Switch/>} label='Принёс ноутбук' />
+
+
+      <Button className='new-player__input' variant='contained' color='primary'>
+        Зарегистрировать и показать ID
+      </Button>
     </form>
   )
 };
