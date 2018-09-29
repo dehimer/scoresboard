@@ -95,8 +95,6 @@ app.get(/.*/, function root(req, res) {
             const { email, broughtNotebook} = action.data;
 
             const [findErr, player] = await to(collections.players.findOne({ email }));
-            console.log('player');
-            console.log(player);
             if (findErr) {
               console.log(findErr);
               console.log(`Player with ${email} is not found`);

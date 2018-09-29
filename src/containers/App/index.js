@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import {Route, Switch} from 'react-router-dom';
-import Registration from '../Registration';
+import {Route, Switch} from 'react-router-dom'
+import Registration from '../Registration'
+import SetScores from '../SetScores'
 
 export default class App extends Component {
   render() {
@@ -8,6 +9,7 @@ export default class App extends Component {
       <div className='app'>
         <Switch>
           <Route exact path='/registration' component={Registration} />
+          <Route exact path='/game' component={SetScores} />
         </Switch>
       </div>
     )
