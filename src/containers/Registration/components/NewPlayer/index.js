@@ -1,9 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Button, TextField, FormControlLabel, Switch } from '@material-ui/core'
 
 import './index.scss'
 
 export default class NewPlayer extends Component {
+  requiredFields = ['nickname', 'fullname', 'birthday', 'city', 'phone', 'email'];
+
   state = {
     nickname: '',
     fullname: '',
@@ -27,7 +29,7 @@ export default class NewPlayer extends Component {
   };
 
   render() {
-    const disabled = Object.keys(this.state).some(fieldName => (fieldName !== 'broughtNotebook' && !this.state[fieldName]));
+    const disabled = Object.keys(this.state).some(fieldName => (this.requiredFields[fieldName] && !this.state[fieldName]));
 
     return (
       <form className='new-player'>
@@ -86,7 +88,7 @@ export default class NewPlayer extends Component {
         <FormControlLabel
           className='new-player__input'
           control={
-            <Switch checked={this.state.broughtNotebook} value='broughtNotebook' onChange={this.handleChange('broughtNotebook')}/>
+            <Switch checked={this.state.broughtNotebook} value='broughtNotebook' onChange={::this.handleChange('broughtNotebook')}/>
           }
           label='Принёс ноутбук'
         />

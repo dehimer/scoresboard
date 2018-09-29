@@ -74,6 +74,25 @@ app.get(/.*/, function root(req, res) {
         case 'server/all_players':
           break;
         case 'server/add_player':
+          {
+            const [errCount, playersCount] = await to(collections.players.countDocuments({}));
+            if (errCount) {
+              console.log(errCount);
+
+              return;
+            }
+            const code = playersCount + 1;
+            const userData = { ...action.data, code };
+
+            const [errInsert] = await to(collections.players.insertOne(userData));
+            if (errInsert) {
+              console.log(errInsert);
+
+              return;
+            }
+
+            socket.emit('action', { type: 'player_added', data: userData })
+          }
           break;
         case 'server/remove_player':
           break;
