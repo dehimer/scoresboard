@@ -23,8 +23,10 @@ export default class NewPlayer extends Component {
   }
 
   handleChange = name => event => {
+    const value = (name === 'broughtNotebook') ? event.target.checked : event.target.value;
+
     this.setState({
-      [name]: (name === 'broughtNotebook') ? event.target.checked : event.target.value
+      [name]: value
     });
   };
 

@@ -33,16 +33,15 @@ class Registration extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { player } = this.state;
     const { last_added_player, last_found_player } = nextProps;
 
-    if (last_added_player && last_added_player.email === player.email) {
+    if (last_added_player) {
       this.setState({
         player: last_added_player
       })
     }
 
-    if (last_found_player && last_found_player.email === player.email) {
+    if (last_found_player) {
       this.setState({
         player: last_found_player
       })
