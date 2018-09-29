@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import NewPlayer from './components/NewPlayer'
 import RegisteredPlayer from './components/RegisteredPlayer'
+import PlayerID from './components/PlayerID'
 
 import './index.scss'
 
@@ -18,15 +19,15 @@ class Registration extends Component {
     })
   }
 
+  cleanupPlayer() {
+    this.setState({
+      player: {}
+    })
+  }
+
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps');
-    console.log(nextProps);
     const { player } = this.state;
     const { last_added_player } = nextProps;
-    console.log('player');
-    console.log(player);
-    console.log('last_added_player');
-    console.log(last_added_player);
 
     if (last_added_player && last_added_player.email === player.email) {
       this.setState({
@@ -36,17 +37,13 @@ class Registration extends Component {
   }
 
   render() {
-    console.log('render');
     const { player } = this.state;
-    console.log(player);
 
     let content = null;
 
     if (player.code) {
       content = (
-        <React.Fragment>
-          ID: { player.code }
-        </React.Fragment>
+        <PlayerID player={player} cleanupPlayer={::this.cleanupPlayer} />
       )
     } else {
       content = (

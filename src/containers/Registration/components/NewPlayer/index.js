@@ -19,7 +19,7 @@ export default class NewPlayer extends Component {
   };
   handleClick() {
     const { register } = this.props;
-    register(this.state);
+    register({ ...this.state });
   }
 
   handleChange = name => event => {
