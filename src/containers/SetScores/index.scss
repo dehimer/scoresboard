@@ -25,4 +25,8 @@ $form-items-width: 400px;
     width: $form-items-width;
     margin: 10px;
   }
+
+  &__spacer {
+    margin-top: 10px;
+  }
 }

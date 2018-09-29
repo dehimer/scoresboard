@@ -34,11 +34,13 @@ class SetScores extends Component {
                 onChange={this.handleChange('code')}
               />
               <TextField
-                className='set-scores__input' type='text' label='Количество баллов'
+                className='set-scores__input' type='number' label='Количество баллов'
                 variant='outlined' margin='dense'
                 value={this.state.scores}
                 onChange={this.handleChange('scores')}
               />
+
+              <div className='set-scores__spacer'/>
 
               <Button disabled={!this.state.code} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
                 Начислить
