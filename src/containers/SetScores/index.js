@@ -11,16 +11,26 @@ class SetScores extends Component {
   };
 
   handleClick() {
-
+    const { setScores } = this.props;
+    setScores(this.state);
   }
 
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value
+    }, () => {
+      const { code } = this.state;
+      const { findPlayer } = this.props;
+
+      findPlayer({ code: code*1 });
     });
   };
 
   render() {
+    const { last_found_player } = this.props;
+    console.log('last_found_player');
+    console.log(last_found_player);
+
     return (
       <div className='set-scores-wrapper'>
         <Card>
@@ -31,15 +41,19 @@ class SetScores extends Component {
               <TextField
                 className='set-scores__input' type='text' label='ID'
                 variant='outlined' margin='dense'
-                value={this.state.code}
-                onChange={this.handleChange('code')}
+                value={ this.state.code }
+                onChange={ this.handleChange('code') }
               />
               <TextField
                 className='set-scores__input' type='number' label='Количество баллов'
                 variant='outlined' margin='dense'
-                value={this.state.scores}
-                onChange={this.handleChange('scores')}
+                value={ this.state.scores }
+                onChange={ this.handleChange('scores') }
               />
+
+              <div>
+                { last_found_player ? last_found_player.email : 'User with this ID is not exist' }
+              </div>
 
               <div className='set-scores__spacer'/>
 
@@ -54,14 +68,23 @@ class SetScores extends Component {
   }
 }
 
-const mapStateToProps = function (/*state*/) {
-  // const {} = state.server;
+const mapStateToProps = function (state) {
+  const { last_found_player } = state.server;
 
-  return {}
+  return {
+    last_found_player
+  }
 };
 
-const mapDispatchToProps = (/*dispatch*/) => {
-  return {}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setScores: (player) => {
+      dispatch({ type: 'server/set_player_scores', data: player });
+    },
+    findPlayer: (player) => {
+      dispatch({ type: 'server/find_player', data: player });
+    }
+  }
 };
 
 export default connect(

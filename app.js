@@ -92,21 +92,21 @@ app.get(/.*/, function root(req, res) {
           break;
         case 'server/find_player':
           {
-            const { email, broughtNotebook} = action.data;
+            const { broughtNotebook, ...data } = action.data;
 
-            const [findErr, player] = await to(collections.players.findOne({ email }));
+            const [findErr, player] = await to(collections.players.findOne(data));
             if (findErr) {
               console.log(findErr);
-              console.log(`Player with ${email} is not found`);
+              console.log(`Player with ${Object.keys(data).join(' and ')} is not found`);
               return;
             }
 
             if (!player) {
-              socket.emit('action', { type: 'found_player', data: { email, code: -1 } })
+              socket.emit('action', { type: 'found_player', data: { ...data, code: -1 } });
               return;
             }
 
-            const [updateErr] = await to(collections.players.updateOne({ email }, { $set: { broughtNotebook } }));
+            const [updateErr] = await to(collections.players.updateOne({ ...data }, { $set: { broughtNotebook } }));
             if (updateErr) {
               console.log(updateErr);
               return;
