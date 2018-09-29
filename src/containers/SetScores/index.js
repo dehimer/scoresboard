@@ -27,6 +27,7 @@ class SetScores extends Component {
           <CardContent>
             <form className='set-scores'>
               <h3 className='set-scores__header'>Начисление баллов</h3>
+
               <TextField
                 className='set-scores__input' type='text' label='ID'
                 variant='outlined' margin='dense'
