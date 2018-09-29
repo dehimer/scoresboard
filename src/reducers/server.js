@@ -8,6 +8,8 @@ export default function reducer(state = defaultState, action) {
   switch(type){
     case 'player_added':
       return { ...state, last_added_player: data };
+    case 'found_player':
+      return { ...state, last_found_player: data };
     case 'top10players':
       return { ...state, top10players: data };
     case 'all_players':

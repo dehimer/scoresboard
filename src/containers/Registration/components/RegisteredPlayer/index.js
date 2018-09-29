@@ -9,6 +9,11 @@ export default class RegisteredPlayer extends Component {
     broughtNotebook: false
   };
 
+  handleClick() {
+    const { checkId } = this.props;
+    checkId({ ...this.state });
+  }
+
   handleChange = name => event => {
     this.setState({
       [name]: (name === 'broughtNotebook') ? event.target.checked : event.target.value
@@ -34,7 +39,7 @@ export default class RegisteredPlayer extends Component {
           }
           label='Принёс ноутбук'
         />
-        <Button disabled={disabled} className='registered-player__input' variant='contained' color='primary'>
+        <Button disabled={disabled} className='registered-player__input' onClick={::this.handleClick}  variant='contained' color='primary'>
           Показать ID
         </Button>
       </form>

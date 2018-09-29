@@ -19,6 +19,13 @@ class Registration extends Component {
     })
   }
 
+  findPlayer(player) {
+    this.props.findPlayer(player);
+    this.setState({
+      player
+    })
+  }
+
   cleanupPlayer() {
     this.setState({
       player: {}
@@ -27,11 +34,17 @@ class Registration extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { player } = this.state;
-    const { last_added_player } = nextProps;
+    const { last_added_player, last_found_player } = nextProps;
 
     if (last_added_player && last_added_player.email === player.email) {
       this.setState({
         player: last_added_player
+      })
+    }
+
+    if (last_found_player && last_found_player.email === player.email) {
+      this.setState({
+        player: last_found_player
       })
     }
   }
@@ -49,7 +62,7 @@ class Registration extends Component {
       content = (
         <React.Fragment>
           <NewPlayer register={::this.register}/>
-          <RegisteredPlayer/>
+          <RegisteredPlayer checkId={::this.findPlayer}/>
         </React.Fragment>
       )
     }
@@ -63,10 +76,11 @@ class Registration extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { last_added_player } = state.server;
+  const { last_added_player, last_found_player } = state.server;
 
   return {
-    last_added_player
+    last_added_player,
+    last_found_player
   }
 };
 
@@ -74,6 +88,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addPlayer: (player) => {
       dispatch({ type: 'server/add_player', data: player });
+    },
+    findPlayer: (player) => {
+      dispatch({ type: 'server/find_player', data: player });
     }
   }
 };

@@ -6,19 +6,19 @@ export default ({ player, cleanupPlayer}) => {
     <Card>
       <CardContent>
         <Typography variant='display4' gutterBottom>
-          ID: { player.code }
+          ID: <b>{ player.code }</b>
         </Typography>
 
         <Typography variant='display1' gutterBottom>
-          Никнейм: { player.nickname }
+          Никнейм: <b>{ player.nickname }</b>
         </Typography>
 
         <Typography variant='display1' gutterBottom>
-          Email: { player.email }
+          Email: <b>{ player.email }</b>
         </Typography>
 
         <Typography variant='display1' gutterBottom>
-          Ноутбук: { player.notebook }
+          Ноутбук: <b>{ player.notebook }</b>
         </Typography>
 
         <Button className='new-player__input' onClick={cleanupPlayer} variant='contained'>
