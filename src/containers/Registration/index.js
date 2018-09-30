@@ -33,18 +33,31 @@ class Registration extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { last_added_player, last_found_player } = nextProps;
+    console.log('nextProps');
+    const { last_added_player: added_player_next, last_found_player: found_player_next } = nextProps;
+    const { last_added_player: added_player_prev, last_found_player: found_player_prev } = this.props;
+    console.log('added_player_prev_next');
+    console.log(added_player_prev);
+    console.log(added_player_next);
+    console.log('found_player_prev_next');
+    console.log(found_player_prev);
+    console.log(found_player_next);
 
-    if (last_added_player) {
-      this.setState({
-        player: last_added_player
-      })
+
+    if (added_player_next) {
+      if (!added_player_prev || added_player_next.code !== added_player_prev.code) {
+        this.setState({
+          player: added_player_next
+        })
+      }
     }
 
-    if (last_found_player) {
-      this.setState({
-        player: last_found_player
-      })
+    if (found_player_next) {
+      if (!found_player_prev || found_player_next.code !== found_player_prev.code) {
+        this.setState({
+          player: found_player_next
+        })
+      }
     }
   }
 
