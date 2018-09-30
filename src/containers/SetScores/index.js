@@ -2,34 +2,69 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import './index.scss'
-import {Button, Card, CardContent, TextField} from '@material-ui/core';
+import { Button, Card, CardContent, TextField, Chip } from '@material-ui/core';
 
 class SetScores extends Component {
   state = {
-    code: '',
-    scores: 0
+    idInputTouched: false,
+    player: {
+      code: '',
+      scores: 0
+    }
   };
 
   handleClick() {
     const { setScores } = this.props;
-    setScores(this.state);
+    setScores(this.state.player);
   }
 
   handleChange = name => event => {
     this.setState({
-      [name]: event.target.value
+      idInputTouched: true,
+      player: {
+        ...this.state.player,
+        [name]: event.target.value * 1
+      }
     }, () => {
-      const { code } = this.state;
+      console.log(this.state);
+      const { code } = this.state.player;
       const { findPlayer } = this.props;
 
-      findPlayer({ code: code*1 });
+      console.log('code');
+      console.log(code);
+      findPlayer({ code });
     });
   };
 
   render() {
     const { last_found_player } = this.props;
+    const { player, idInputTouched } = this.state;
     console.log('last_found_player');
     console.log(last_found_player);
+
+    const userFound = last_found_player && last_found_player.code > 0;
+
+    let foundPlayerEmail = null;
+    if (idInputTouched) {
+      if (userFound) {
+        foundPlayerEmail = (
+          <Chip
+            label={last_found_player.email}
+            color='primary'
+            variant='outlined'
+          />
+        )
+      } else {
+        foundPlayerEmail = (
+          <Chip
+            label='Пользователь с указанным ID не существует'
+            color='secondary'
+            variant='outlined'
+          />
+        )
+      }
+    }
+
 
     return (
       <div className='set-scores-wrapper'>
@@ -39,25 +74,28 @@ class SetScores extends Component {
               <h3 className='set-scores__header'>Начисление баллов</h3>
 
               <TextField
+                error={idInputTouched && !userFound}
+
                 className='set-scores__input' type='text' label='ID'
                 variant='outlined' margin='dense'
-                value={ this.state.code }
+                value={ player.code }
                 onChange={ this.handleChange('code') }
-              />
-              <TextField
-                className='set-scores__input' type='number' label='Количество баллов'
-                variant='outlined' margin='dense'
-                value={ this.state.scores }
-                onChange={ this.handleChange('scores') }
               />
 
               <div>
-                { last_found_player ? last_found_player.email : 'User with this ID is not exist' }
+                { foundPlayerEmail }
               </div>
+
+              <TextField
+                className='set-scores__input' type='number' label='Количество баллов'
+                variant='outlined' margin='dense'
+                value={ player.scores }
+                onChange={ this.handleChange('scores') }
+              />
 
               <div className='set-scores__spacer'/>
 
-              <Button disabled={!this.state.code} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
+              <Button disabled={!userFound} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
                 Начислить
               </Button>
             </form>
