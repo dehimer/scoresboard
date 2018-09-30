@@ -44,7 +44,8 @@ app.get(/.*/, function root(req, res) {
   const db = mongoclient.db(dbconfig.name);
 
   const collections = {
-    players: db.collection('players')
+    players: db.collection('players'),
+    settings: db.collection('settings'),
   };
 
 
@@ -134,6 +135,42 @@ app.get(/.*/, function root(req, res) {
             }
 
             socket.emit('action', { type: 'player_updated', data: { ...player, scores } })
+          }
+          break;
+        case 'server/set_tournament_number':
+          {
+            const tournamentNumber = action.data;
+
+            const [updateErr] = await to(collections.settings.replaceOne({
+              type: 'tournamentNumber'
+            }, {
+              type: 'tournamentNumber',
+              value: tournamentNumber
+            }, { upsert: true }));
+
+            if (updateErr) {
+              console.log(updateErr);
+              return;
+            }
+
+            socket.emit('action', { type: 'tournament_number_updated', data: tournamentNumber })
+          }
+          break;
+        case 'server/get_tournament_number':
+          {
+            const [findErr, tournament] = await to(collections.settings.findOne({
+              type: 'tournamentNumber'
+            }));
+
+            if (findErr) {
+              console.log(findErr);
+              return;
+            }
+
+            const { value: tournament_number } = tournament;
+
+            socket.emit('action', { type: 'tournament_number', data: tournament_number })
+
           }
           break;
         case 'server/top10players':

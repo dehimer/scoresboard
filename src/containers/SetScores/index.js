@@ -16,12 +16,12 @@ class SetScores extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      last_updated_player: updated_player_next,
-      last_found_player: found_player_next
+      updated_player: updated_player_next,
+      found_player: found_player_next
     } = nextProps;
     const {
-      last_updated_player: updated_player_prev,
-      last_found_player: found_player_prev
+      updated_player: updated_player_prev,
+      found_player: found_player_prev
     } = this.props;
 
     let updated_player_changed = false;
@@ -95,17 +95,17 @@ class SetScores extends Component {
   };
 
   render() {
-    const { last_found_player, last_updated_player } = this.props;
+    const { found_player, updated_player } = this.props;
     const { player, idInputTouched } = this.state;
 
-    const userFound = last_found_player && last_found_player.code > 0;
+    const userFound = found_player && found_player.code > 0;
 
     let foundPlayerEmail = null;
     if (idInputTouched) {
       if (userFound) {
         foundPlayerEmail = (
           <Chip
-            label={ `Пользователь найден: ${last_found_player.email}` }
+            label={ `Пользователь найден: ${found_player.email}` }
             color='primary'
             variant='outlined'
           />
@@ -134,7 +134,7 @@ class SetScores extends Component {
           ContentProps={{
             'aria-describedby': 'message-id'
           }}
-          message={<span id='message-id'>Player with ID {last_updated_player && last_updated_player.code} is succesfully updated</span>}
+          message={<span id='message-id'>Игрок с ID {updated_player && updated_player.code} успешно обновлён</span>}
         />
         <Card>
           <CardContent>
@@ -173,11 +173,11 @@ class SetScores extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { last_found_player, last_updated_player } = state.server;
+  const { found_player, updated_player } = state.server;
 
   return {
-    last_found_player,
-    last_updated_player
+    found_player,
+    updated_player
   }
 };
 
