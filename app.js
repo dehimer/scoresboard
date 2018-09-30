@@ -115,6 +115,27 @@ app.get(/.*/, function root(req, res) {
             socket.emit('action', { type: 'found_player', data: {...player, broughtNotebook} })
           }
           break;
+        case 'server/set_player_scores':
+          {
+            const { code, scores } = action.data;
+            console.log(`code: ${code}; scores: ${scores}`);
+
+            const [findErr, player] = await to(collections.players.findOne({ code }));
+            if (findErr) {
+              console.log(findErr);
+              console.log(`Player with ID ${code} is not found`);
+              return;
+            }
+
+            const [updateErr] = await to(collections.players.updateOne({ code }, { $set: { scores } }));
+            if (updateErr) {
+              console.log(updateErr);
+              return;
+            }
+
+            socket.emit('action', { type: 'player_updated', data: { ...player, scores } })
+          }
+          break;
         case 'server/top10players':
           break;
         case 'server/all_players':
