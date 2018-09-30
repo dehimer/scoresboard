@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { Button, Card, CardContent, TextField, Chip } from '@material-ui/core';
 
 import './index.scss'
-import { Button, Card, CardContent, TextField, Chip } from '@material-ui/core';
 
 class SetScores extends Component {
   state = {
@@ -26,12 +26,9 @@ class SetScores extends Component {
         [name]: event.target.value * 1
       }
     }, () => {
-      console.log(this.state);
       const { code } = this.state.player;
       const { findPlayer } = this.props;
 
-      console.log('code');
-      console.log(code);
       findPlayer({ code });
     });
   };
@@ -39,8 +36,6 @@ class SetScores extends Component {
   render() {
     const { last_found_player } = this.props;
     const { player, idInputTouched } = this.state;
-    console.log('last_found_player');
-    console.log(last_found_player);
 
     const userFound = last_found_player && last_found_player.code > 0;
 
@@ -64,7 +59,6 @@ class SetScores extends Component {
         )
       }
     }
-
 
     return (
       <div className='set-scores-wrapper'>
