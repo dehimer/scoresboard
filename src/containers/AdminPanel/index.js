@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { Table, TableBody, TableFooter, TablePagination, TableRow, TableCell } from '@material-ui/core'
+import {
+  Paper, Table, TableHead,  TableBody, TableFooter,
+  TablePagination, TableRow, TableCell
+} from '@material-ui/core'
 
 import './index.scss'
 
@@ -47,42 +50,62 @@ class AdminPanel extends Component {
 
     return (
       <div className='admin-panel'>
-        {
-          rows.length > 0 ? (
-            <Table>
-              <TableBody>
-                {
-                  rows.map(row => {
-                    return (
-                      <TableRow key={row.code}>
-                        <TableCell numeric>{row.code}</TableCell>
-                        <TableCell component='th' scope='row'>
-                          {row.nickname}
-                        </TableCell>
-                        <TableCell numeric>{row.email}</TableCell>
-                        <TableCell numeric>{row.fullname}</TableCell>
-                      </TableRow>
-                    );
-                  })
-                }
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TablePagination
-                    colSpan={3}
-                    count={rowsLength}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={::this.handleChangePage}
-                    onChangeRowsPerPage={::this.handleChangeRowsPerPage}
-                  />
-                </TableRow>
-              </TableFooter>
-            </Table>
-          ) : (
-            'Участников пока нет'
-          )
-        }
+        <Paper>
+          {
+            rows.length > 0 ? (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Ник</TableCell>
+                    <TableCell>ФИО</TableCell>
+                    <TableCell>День рождения</TableCell>
+                    <TableCell>Город</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Телефон</TableCell>
+                    <TableCell>Модель ноутбука</TableCell>
+                    <TableCell>Принёс ноутбук</TableCell>
+                    <TableCell>Ссылка на соцсеть</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    rows.map(row => {
+                      return (
+                        <TableRow key={row.code}>
+                          <TableCell numeric>{row.code}</TableCell>
+                          <TableCell>{row.nickname}</TableCell>
+                          <TableCell>{row.fullname}</TableCell>
+                          <TableCell>{row.birthday}</TableCell>
+                          <TableCell>{row.email}</TableCell>
+                          <TableCell>{row.city}</TableCell>
+                          <TableCell>{row.phone}</TableCell>
+                          <TableCell>{row.notebook}</TableCell>
+                          <TableCell>{ row.broughtNotebook ? 'Да' : 'Нет'}</TableCell>
+                          <TableCell>{row.link}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                  }
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      colSpan={3}
+                      count={rowsLength}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onChangePage={::this.handleChangePage}
+                      onChangeRowsPerPage={::this.handleChangeRowsPerPage}
+                    />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            ) : (
+              'Участников пока нет'
+            )
+          }
+        </Paper>
       </div>
     );
   }
