@@ -170,7 +170,23 @@ app.get(/.*/, function root(req, res) {
             const { value: tournament_number } = tournament;
 
             socket.emit('action', { type: 'tournament_number', data: tournament_number })
+          }
+          break;
+        case 'server/get_players_count':
+          {
+            const [countErr, playersCount] = await to(collections.players.countDocuments({}));
+            if (countErr) {
+              console.log(countErr);
+              return;
+            }
 
+            io.sockets.emit('action', { type: 'players_count', data: playersCount })
+          }
+          break;
+        case 'server/get_players':
+          {
+            // last_id = ... # logic to get last_id
+            // db.students.find({'_id': {'$gt': last_id}}).limit(10)
           }
           break;
         case 'server/top10players':
