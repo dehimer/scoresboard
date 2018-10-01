@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import {
   Table, TableHead,  TableBody, TableFooter,
   TablePagination, TableRow, TableCell,
-  Dialog, DialogTitle
+  Dialog
 } from '@material-ui/core'
 
-// import PlayerForm from '../../components/PlayerForm';
+import EditPlayer from './components/EditPlayer'
 
 import { withStyles } from '@material-ui/core/styles';
 const CustomTableCell = withStyles(theme => ({
@@ -40,7 +40,7 @@ class AdminPanel extends Component {
     page: 0,
     rowsPerPage: 10,
     hoveredRowCode: null,
-    editOpened: false
+    playerInEdit: null
   };
 
   componentDidMount() {
@@ -78,19 +78,19 @@ class AdminPanel extends Component {
     console.log('opendEdit');
     console.log(player);
     this.setState({
-      editOpened: true
+      playerInEdit: player
     })
   }
 
   handleEditClose() {
     this.setState({
-      editOpened: false
+      playerInEdit: null
     })
   }
 
   render() {
     const { players_count: rowsLength=0, players: rows=[], classes } = this.props;
-    const { rowsPerPage, page } = this.state;
+    const { rowsPerPage, page, playerInEdit } = this.state;
 
     return (
       <div className='admin-panel'>
@@ -157,10 +157,9 @@ class AdminPanel extends Component {
             <div className='admin-panel__no-players'>Участников пока нет</div>
           )
         }
-        <Dialog open={this.state.editOpened} onClose={::this.handleEditClose} aria-labelledby='simple-dialog-title'>
-          <DialogTitle>Редактирование участника</DialogTitle>
-          <div>
-            {/*<PlayerForm onChangeHandler={::this.handleChange} player={row}/>*/}
+        <Dialog open={ !!playerInEdit } onClose={::this.handleEditClose} aria-labelledby='simple-dialog-title'>
+          <div className='admin-panel__edit-dialog-content'>
+            <EditPlayer player={ playerInEdit }/>
           </div>
         </Dialog>
       </div>

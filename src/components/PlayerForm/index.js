@@ -59,7 +59,7 @@ export default ({ onChangeHandler, player }) => (
     <FormControlLabel
       className='new-player__input'
       control={
-        <Switch checked={player.broughtNotebook} value='broughtNotebook' onChange={onChangeHandler('broughtNotebook')}/>
+        <Switch checked={ player.broughtNotebook } value='broughtNotebook' onChange={ onChangeHandler('broughtNotebook') }/>
       }
       label='Принёс ноутбук'
     />
