@@ -11,11 +11,10 @@ class AdminPanel extends Component {
   };
 
   componentDidMount() {
-    const { getPlayersCount, getPlayers } = this.props;
+    const { getPlayersCount } = this.props;
     getPlayersCount();
 
-    const { page, rowsPerPage: rowsCount } = this.state;
-    getPlayers({page, rowsCount})
+    this.updateTable();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -24,11 +23,22 @@ class AdminPanel extends Component {
   }
 
   handleChangePage(event, page) {
-    this.setState({ page });
+    this.setState({ page }, () => {
+      this.updateTable();
+    });
   }
 
   handleChangeRowsPerPage(event) {
-    this.setState({ rowsPerPage: event.target.value });
+    this.setState({ rowsPerPage: event.target.value }, () => {
+      this.updateTable();
+    });
+  }
+
+  updateTable() {
+    const { getPlayers } = this.props;
+    const { page, rowsPerPage: rowsCount } = this.state;
+
+    getPlayers({page, rowsCount})
   }
 
   render() {

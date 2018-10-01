@@ -189,8 +189,9 @@ app.get(/.*/, function root(req, res) {
             const { page, rowsCount } = filter;
 
             const [ findError, players ] = await to(
-              collections.players.find({code: { $gt: page }}).limit(rowsCount).toArray()
+              collections.players.find({code: { $gt: page*rowsCount }}).limit(rowsCount).toArray()
             );
+
             if (findError) {
               console.log(findError);
               return;
