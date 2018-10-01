@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { Table, TableBody, TableFooter, TableRow, TablePagination } from '@material-ui/core'
+import { Table, TableBody, TableFooter, TablePagination, TableRow, TableCell } from '@material-ui/core'
 
 import './index.scss'
 
@@ -32,16 +32,29 @@ class AdminPanel extends Component {
   }
 
   render() {
-    const { players_count: rowsLength=0, players=[] } = this.props;
+    const { players_count: rowsLength=0, players: rows=[] } = this.props;
     const { rowsPerPage, page } = this.state;
 
     return (
       <div className='admin-panel'>
         {
-          players.length > 0 ? (
+          rows.length > 0 ? (
             <Table>
               <TableBody>
-
+                {
+                  rows.map(row => {
+                    return (
+                      <TableRow key={row.code}>
+                        <TableCell numeric>{row.code}</TableCell>
+                        <TableCell component='th' scope='row'>
+                          {row.nickname}
+                        </TableCell>
+                        <TableCell numeric>{row.email}</TableCell>
+                        <TableCell numeric>{row.fullname}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                }
               </TableBody>
               <TableFooter>
                 <TableRow>
