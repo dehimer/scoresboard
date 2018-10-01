@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {
   Table, TableHead,  TableBody, TableFooter,
-  TablePagination, TableRow, TableCell
+  TablePagination, TableRow, TableCell,
+  Dialog, DialogTitle
 } from '@material-ui/core'
+
+// import PlayerForm from '../../components/PlayerForm';
 
 import { withStyles } from '@material-ui/core/styles';
 const CustomTableCell = withStyles(theme => ({
@@ -36,7 +39,8 @@ class AdminPanel extends Component {
   state = {
     page: 0,
     rowsPerPage: 10,
-    hoveredRowCode: null
+    hoveredRowCode: null,
+    editOpened: false
   };
 
   componentDidMount() {
@@ -73,6 +77,15 @@ class AdminPanel extends Component {
   opendEdit(player) {
     console.log('opendEdit');
     console.log(player);
+    this.setState({
+      editOpened: true
+    })
+  }
+
+  handleEditClose() {
+    this.setState({
+      editOpened: false
+    })
   }
 
   render() {
@@ -144,6 +157,12 @@ class AdminPanel extends Component {
             <div className='admin-panel__no-players'>Участников пока нет</div>
           )
         }
+        <Dialog open={this.state.editOpened} onClose={::this.handleEditClose} aria-labelledby='simple-dialog-title'>
+          <DialogTitle>Редактирование участника</DialogTitle>
+          <div>
+            {/*<PlayerForm onChangeHandler={::this.handleChange} player={row}/>*/}
+          </div>
+        </Dialog>
       </div>
     );
   }
