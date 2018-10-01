@@ -26,9 +26,7 @@ const styles = theme => ({
     minWidth: 700
   },
   row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default
-    }
+    cursor: 'pointer'
   }
 });
 
@@ -37,7 +35,8 @@ import './index.scss'
 class AdminPanel extends Component {
   state = {
     page: 0,
-    rowsPerPage: 10
+    rowsPerPage: 10,
+    hoveredRowCode: null
   };
 
   componentDidMount() {
@@ -71,6 +70,11 @@ class AdminPanel extends Component {
     getPlayers({page, rowsCount})
   }
 
+  opendEdit(player) {
+    console.log('opendEdit');
+    console.log(player);
+  }
+
   render() {
     const { players_count: rowsLength=0, players: rows=[], classes } = this.props;
     const { rowsPerPage, page } = this.state;
@@ -99,7 +103,13 @@ class AdminPanel extends Component {
                 {
                   rows.map(row => {
                     return (
-                      <TableRow  className={classes.row} key={row.code}>
+                      <TableRow
+                        className={classes.row} key={row.code}
+                        onClick={() => this.opendEdit(row)}
+                        selected={this.state.hoveredRowCode === row.code}
+                        onMouseOver={() => {this.setState({hoveredRowCode: row.code})}}
+                        onMouseOut={() => {this.setState({hoveredRowCode: null})}}
+                      >
                         <TableCell numeric>{row.code}</TableCell>
                         <TableCell>{row.nickname}</TableCell>
                         <TableCell>{row.fullname}</TableCell>
@@ -119,11 +129,10 @@ class AdminPanel extends Component {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    component='div'
                     className='admin-panel__pagination'
-                    colSpan={3}
                     count={rowsLength}
                     rowsPerPage={rowsPerPage}
+                    rowsPerPageOptions={[10, 50, 100]}
                     page={page}
                     onChangePage={::this.handleChangePage}
                     onChangeRowsPerPage={::this.handleChangeRowsPerPage}
