@@ -45,7 +45,7 @@ app.get(/.*/, function root(req, res) {
 
   const collections = {
     players: db.collection('players'),
-    settings: db.collection('settings'),
+    settings: db.collection('settings')
   };
 
 
@@ -185,8 +185,18 @@ app.get(/.*/, function root(req, res) {
           break;
         case 'server/get_players':
           {
-            // last_id = ... # logic to get last_id
-            // db.students.find({'_id': {'$gt': last_id}}).limit(10)
+            const { filter } = action.data;
+            const { page, rowsCount } = filter;
+
+            const [ findError, players ] = await to(
+              collections.players.find({code: { $gt: page }}).limit(rowsCount).toArray()
+            );
+            if (findError) {
+              console.log(findError);
+              return;
+            }
+
+            socket.emit('action', { type: 'players', data: players })
           }
           break;
         case 'server/top10players':
