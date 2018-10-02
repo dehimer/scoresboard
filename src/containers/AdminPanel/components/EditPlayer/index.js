@@ -33,6 +33,16 @@ export default class EditPlayer extends Component {
 
   componentDidMount() {
     console.log('componentDidMount');
+    const { player } = this.props;
+    const nextState = Object.keys(this.state).reduce((fields, fieldName) => {
+      fields[fieldName] = fieldName === 'broughtNotebook' ? !!player[fieldName] : player[fieldName];
+
+      return fields;
+    }, {});
+    console.log('nextState');
+    console.log(nextState);
+
+    this.setState(nextState);
   }
 
   componentWillUnmount() {
@@ -41,8 +51,7 @@ export default class EditPlayer extends Component {
 
   render() {
     const disabled = Object.keys(this.state).some(fieldName => (this.requiredFields[fieldName] && !this.state[fieldName]));
-    console.log('handleChange');
-    console.log(!!this.handleChange);
+
     return (
       <Card>
         <CardContent>

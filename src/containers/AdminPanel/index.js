@@ -75,8 +75,6 @@ class AdminPanel extends Component {
   }
 
   opendEdit(player) {
-    console.log('opendEdit');
-    console.log(player);
     this.setState({
       playerInEdit: player
     })

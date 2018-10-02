@@ -5,8 +5,6 @@ const defaultState = {
 
 export default function reducer(state = defaultState, action) {
   const { type, data } = action;
-  console.log('action');
-  console.log(action);
   switch(type){
     case 'player_added':
       return { ...state, added_player: data };
