@@ -1,18 +1,6 @@
 $form-items-width: 400px;
 
 .edit-player {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  &__header {
-    width: $form-items-width;
-    font-size: 20px;
-    margin-top: 0px;
-  }
-
   &__input {
     width: $form-items-width;
     margin: 10px;
@@ -21,7 +9,9 @@ $form-items-width: 400px;
   &__controls {
     display: flex;
     justify-content: space-between;
+
+    button {
+      width: inherit;
+    }
   }
-
-
 }

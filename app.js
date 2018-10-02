@@ -88,7 +88,7 @@ app.get(/.*/, function root(req, res) {
               return;
             }
 
-            socket.emit('action', { type: 'player_added', data: userData })
+            io.sockets.emit('action', { type: 'player_added', data: userData })
           }
           break;
         case 'server/find_player':
@@ -133,7 +133,7 @@ app.get(/.*/, function root(req, res) {
               return;
             }
 
-            socket.emit('action', { type: 'player_updated', data: { ...player, ...data } })
+            io.sockets.emit('action', { type: 'player_updated', data: { ...player, ...data } })
           }
           break;
         case 'server/set_tournament_number':

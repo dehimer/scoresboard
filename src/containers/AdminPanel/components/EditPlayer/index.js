@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, CardContent, Card } from '@material-ui/core'
 import PlayerForm from '../../../../components/PlayerForm'
 
+import './index.scss'
 
 export default class EditPlayer extends Component {
   requiredFields = ['nickname', 'fullname', 'birthday', 'city', 'phone', 'email'];
