@@ -22,7 +22,9 @@ export default class EditPlayer extends Component {
 
   handleClick() {
     const { onUpdate } = this.props;
-    onUpdate({ ...this.state });
+    const { scores, data } = this.state;
+
+    onUpdate({ ...data, scores: +scores || 0 });
   }
 
   handleCancel() {

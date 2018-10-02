@@ -105,7 +105,9 @@ class AdminPanel extends Component {
   }
 
   resetScores() {
-
+    const { resetScores } = this.props;
+    resetScores();
+    this.setState({ scoresInDelete: false })
   }
 
   render() {
