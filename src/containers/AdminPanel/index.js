@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {
+  AppBar, Toolbar, Button,
   Table, TableHead,  TableBody, TableFooter,
   TablePagination, TableRow, TableCell,
   Dialog
 } from '@material-ui/core'
 
 import EditPlayer from './components/EditPlayer'
+import ResetScoresDialog from './components/ResetScoresDialog'
 
 import { withStyles } from '@material-ui/core/styles';
 const CustomTableCell = withStyles(theme => ({
@@ -40,7 +42,8 @@ class AdminPanel extends Component {
     page: 0,
     rowsPerPage: 10,
     hoveredRowCode: null,
-    playerInEdit: null
+    playerInEdit: null,
+    scoresInDelete: false
   };
 
   componentDidMount() {
@@ -51,14 +54,23 @@ class AdminPanel extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { updated_player: updated_player_prev, added_player: added_player_prev } = this.props;
-    const { updated_player: updated_player_next, added_player: added_player_next } = nextProps;
+    const {
+      updated_player: updated_player_prev,
+      added_player: added_player_prev,
+      players_update_ts: players_update_ts_prev
+    } = this.props;
+
+    const {
+      updated_player: updated_player_next,
+      added_player: added_player_next,
+      players_update_ts: players_update_ts_next
+    } = nextProps;
 
     if (JSON.stringify(updated_player_next) !== JSON.stringify(updated_player_prev)) {
       this.updateTable();
     } else if (JSON.stringify(added_player_prev) !== JSON.stringify(added_player_next)) {
-      const { getPlayersCount } = this.props;
-      getPlayersCount();
+      this.updateTable();
+    } else if (players_update_ts_next !== players_update_ts_prev) {
       this.updateTable();
     }
   }
@@ -76,9 +88,10 @@ class AdminPanel extends Component {
   }
 
   updateTable() {
-    const { getPlayers } = this.props;
+    const { getPlayers, getPlayersCount } = this.props;
     const { page, rowsPerPage: rowsCount } = this.state;
 
+    getPlayersCount();
     getPlayers({page, rowsCount})
   }
 
@@ -91,24 +104,23 @@ class AdminPanel extends Component {
     this.setState({ playerInEdit: null });
   }
 
-  opendEdit(player) {
-    this.setState({
-      playerInEdit: player
-    })
-  }
+  resetScores() {
 
-  handleEditClose() {
-    this.setState({
-      playerInEdit: null
-    })
   }
 
   render() {
     const { players_count: rowsLength=0, players: rows=[], classes } = this.props;
-    const { rowsPerPage, page, playerInEdit } = this.state;
+    const { rowsPerPage, page, playerInEdit, scoresInDelete } = this.state;
 
     return (
       <div className='admin-panel'>
+        <AppBar position='static'>
+          <Toolbar variant='dense'>
+            <Button variant='contained' color='secondary' onClick={() => this.setState({ scoresInDelete: true }) }>
+              Сбросить баллы
+            </Button>
+          </Toolbar>
+        </AppBar>
         {
           rows.length > 0 ? (
             <Table className={classes.table}>
@@ -133,7 +145,7 @@ class AdminPanel extends Component {
                     return (
                       <TableRow
                         className={classes.row} key={row.code}
-                        onClick={() => this.opendEdit(row)}
+                        onClick={() => this.setState({ playerInEdit: row })}
                         selected={this.state.hoveredRowCode === row.code}
                         onMouseOver={() => {this.setState({hoveredRowCode: row.code})}}
                         onMouseOut={() => {this.setState({hoveredRowCode: null})}}
@@ -172,24 +184,39 @@ class AdminPanel extends Component {
             <div className='admin-panel__no-players'>Участников пока нет</div>
           )
         }
-        <Dialog open={ !!playerInEdit } onClose={::this.handleEditClose} aria-labelledby='simple-dialog-title'>
+        <Dialog open={ !!playerInEdit } onClose={() => this.setState({ playerInEdit: null })} aria-labelledby='simple-dialog-title'>
           <div className='admin-panel__edit-dialog-content'>
             <EditPlayer onUpdate={::this.updatePlayer} player={ playerInEdit }/>
           </div>
         </Dialog>
+
+        {
+          scoresInDelete
+            ? <ResetScoresDialog
+              handleCancel={() => this.setState({ scoresInDelete: false })}
+              handleConfirm={::this.resetScores}/>
+            : null
+        }
       </div>
     );
   }
 }
 
 const mapStateToProps = function (state) {
-  const { players_count, players, added_player, updated_player } = state.server;
+  const {
+    players_count,
+    players,
+    added_player,
+    updated_player,
+    players_update_ts
+  } = state.server;
 
   return {
     added_player,
     updated_player,
     players_count,
-    players
+    players,
+    players_update_ts
   }
 };
 
@@ -203,6 +230,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updatePlayer: (player) => {
       dispatch({ type: 'server/update_player', data: player });
+    },
+    resetScores: () => {
+      dispatch({ type: 'server/reset_scores' });
     }
   }
 };

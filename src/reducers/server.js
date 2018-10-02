@@ -18,10 +18,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, players_count: data };
     case 'players':
       return { ...state, players: data };
-    case 'top10_players':
-      return { ...state, top10_players: data };
-    case 'all_players':
-      return { ...state, all_players: data };
+    case 'players_update_ts':
+      return { ...state, players_update_ts: data }
     default:
       return state;
   }

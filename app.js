@@ -247,9 +247,23 @@ app.get(/.*/, function root(req, res) {
             io.sockets.emit('action', { type: 'player_updated', data: { ...player, scores } })
           }
           break;
-        case 'server/remove_player':
-          break;
-        case 'server/clear':
+        case 'server/reset_scores':
+          {
+            const [updateErr] = await to(
+              collections.players.updateMany({}, {
+                $set: {
+                  scores: 0
+                }
+              })
+            );
+
+            if (updateErr) {
+              console.log(updateErr);
+              return;
+            }
+
+            io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
+          }
           break;
       }
     });
