@@ -16,12 +16,11 @@ class SetScores extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      updated_player: updated_player_next,
-      found_player: found_player_next
+      updated_player: updated_player_next
     } = nextProps;
     const {
       updated_player: updated_player_prev,
-      found_player: found_player_prev
+      findPlayer
     } = this.props;
 
     let updated_player_changed = false;
@@ -36,30 +35,8 @@ class SetScores extends Component {
     if (updated_player_changed) {
       this.setState({
         showSnackbar: true
-      })
-    }
-
-
-    let found_player_changed = false;
-    if (found_player_next) {
-      if (!found_player_prev) {
-        found_player_changed = true;
-      } else if (found_player_prev.code !== found_player_next.code && found_player_next.code > 0) {
-        found_player_changed = true;
-      } else if (found_player_prev.scores !== found_player_next.scores) {
-        found_player_changed = true;
-      }
-    }
-
-    if (found_player_changed) {
-      const { scores='' } = found_player_next;
-      const { player } = this.state;
-
-      this.setState({
-        player: {
-          ...player,
-          scores
-        }
+      }, () => {
+        findPlayer({ code: updated_player_next.code })
       })
     }
   }
@@ -71,9 +48,15 @@ class SetScores extends Component {
   }
 
   handleClick() {
-    const { setScores } = this.props;
+    const { addScores } = this.props;
     const { code, scores } = this.state.player;
-    setScores({ code: +code, scores: +scores });
+    addScores({ code: +code, scores: +scores });
+    this.setState({
+      player: {
+        code: code,
+        scores: ''
+      }
+    })
   }
 
   handleChange = name => event => {
@@ -100,18 +83,18 @@ class SetScores extends Component {
 
     const userFound = found_player && found_player.code > 0;
 
-    let foundPlayerEmail = null;
+    let foundPlayerInfo = null;
     if (idInputTouched) {
       if (userFound) {
-        foundPlayerEmail = (
+        foundPlayerInfo = (
           <Chip
-            label={ `Пользователь найден: ${found_player.email}` }
+            label={ `Пользователь: ${found_player.email} (${found_player.scores} баллов)` }
             color='primary'
             variant='outlined'
           />
         )
       } else {
-        foundPlayerEmail = (
+        foundPlayerInfo = (
           <Chip
             label='Пользователь с указанным ID не существует'
             color='secondary'
@@ -150,7 +133,7 @@ class SetScores extends Component {
                 onChange={ this.handleChange('code') }
               />
 
-              { foundPlayerEmail }
+              { foundPlayerInfo }
 
               <TextField
                 className='set-scores__input' type='text' label='Количество баллов'
@@ -161,7 +144,7 @@ class SetScores extends Component {
 
               <div className='set-scores__spacer'/>
 
-              <Button disabled={!userFound} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
+              <Button disabled={!userFound || !player.scores} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
                 Начислить
               </Button>
             </form>
@@ -183,8 +166,8 @@ const mapStateToProps = function (state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setScores: (player) => {
-      dispatch({ type: 'server/update_player', data: player });
+    addScores: (player) => {
+      dispatch({ type: 'server/add_scores', data: player });
     },
     findPlayer: (player) => {
       dispatch({ type: 'server/find_player', data: player });

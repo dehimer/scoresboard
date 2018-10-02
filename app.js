@@ -204,7 +204,6 @@ app.get(/.*/, function root(req, res) {
             const { filter } = action.data;
             const { page, rowsCount } = filter;
 
-            // TODO: HOW DO PAGINATION BY SCORES
             const [ findError, players ] = await to(
               collections.players.find({}).sort({scores: -1}).skip(page*rowsCount).limit(rowsCount).toArray()
             );
@@ -215,6 +214,37 @@ app.get(/.*/, function root(req, res) {
             }
 
             socket.emit('action', { type: 'players', data: players });
+          }
+          break;
+        case 'server/add_scores':
+          {
+            const { code, scores: additionalScores } = action.data;
+
+            const [findErr, player] = await to(collections.players.findOne({ code }));
+            if (findErr) {
+              console.log(findErr);
+              console.log(`Player with ID ${code} is not found`);
+              return;
+            }
+
+            const scores = additionalScores + (player.scores || 0);
+
+            const [updateErr] = await to(
+              collections.players.updateOne({
+                code
+              }, {
+                $set: {
+                  scores
+                }
+              })
+            );
+
+            if (updateErr) {
+              console.log(updateErr);
+              return;
+            }
+
+            io.sockets.emit('action', { type: 'player_updated', data: { ...player, scores } })
           }
           break;
         case 'server/remove_player':
