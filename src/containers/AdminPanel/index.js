@@ -57,6 +57,8 @@ class AdminPanel extends Component {
     if (JSON.stringify(updated_player_next) !== JSON.stringify(updated_player_prev)) {
       this.updateTable();
     } else if (JSON.stringify(added_player_prev) !== JSON.stringify(added_player_next)) {
+      const { getPlayersCount } = this.props;
+      getPlayersCount();
       this.updateTable();
     }
   }
@@ -181,14 +183,13 @@ class AdminPanel extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { players_count, players, added_player, updated_player, tournament_number_updated } = state.server;
+  const { players_count, players, added_player, updated_player } = state.server;
 
   return {
     added_player,
     updated_player,
     players_count,
-    players,
-    tournament_number_updated
+    players
   }
 };
 

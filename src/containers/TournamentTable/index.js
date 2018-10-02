@@ -15,6 +15,19 @@ class TournamentTable extends Component {
     this.updateTable();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { updated_player: updated_player_prev, added_player: added_player_prev } = this.props;
+    const { updated_player: updated_player_next, added_player: added_player_next } = nextProps;
+
+    if (JSON.stringify(updated_player_next) !== JSON.stringify(updated_player_prev)) {
+      this.updateTable();
+    } else if (JSON.stringify(added_player_prev) !== JSON.stringify(added_player_next)) {
+      const { getPlayersCount } = this.props;
+      getPlayersCount();
+      this.updateTable();
+    }
+  }
+
   updateTable() {
     const { getPlayers } = this.props;
     const { page, rowsPerPage: rowsCount } = this.state;
@@ -99,12 +112,14 @@ class TournamentTable extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { players, players_count, tournament_number } = state.server;
+  const { players, players_count, tournament_number, added_player, updated_player } = state.server;
 
   return {
     players,
     players_count,
-    tournament_number
+    tournament_number,
+    added_player,
+    updated_player
   }
 };
 
