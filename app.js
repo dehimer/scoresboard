@@ -204,8 +204,9 @@ app.get(/.*/, function root(req, res) {
             const { filter } = action.data;
             const { page, rowsCount } = filter;
 
+            // TODO: HOW DO PAGINATION BY SCORES
             const [ findError, players ] = await to(
-              collections.players.find({code: { $gt: page*rowsCount }}).sort({scores: -1}).limit(rowsCount).toArray()
+              collections.players.find({}).sort({scores: -1}).skip(page*rowsCount).limit(rowsCount).toArray()
             );
 
             if (findError) {

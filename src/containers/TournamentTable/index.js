@@ -47,10 +47,6 @@ class TournamentTable extends Component {
     });
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if ()
-  // }
-
   render() {
     const { players_count, players=[], topten, tournament_number } = this.props;
     const { rowsPerPage, page } = this.state;
