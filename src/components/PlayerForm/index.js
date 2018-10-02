@@ -56,6 +56,16 @@ export default ({ onChangeHandler, player }) => (
       value={ player.link }
       onChange={ onChangeHandler('link') }
     />
+    {
+      typeof player.scores !== 'undefined' ? (
+        <TextField
+          className='new-player__input' type='text' label='Баллы'
+          variant='outlined' margin='dense'
+          value={ player.scores }
+          onChange={ onChangeHandler('scores') }
+        />
+      ) : null
+    }
     <FormControlLabel
       className='new-player__input'
       control={

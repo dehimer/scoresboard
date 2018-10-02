@@ -16,7 +16,8 @@ export default class EditPlayer extends Component {
     phone: '',
     notebook: '',
     link: '',
-    broughtNotebook: false
+    broughtNotebook: false,
+    scores: ''
   };
 
   handleClick() {
