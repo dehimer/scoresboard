@@ -1,3 +1,7 @@
+<b>How to install</b>
+1. At first install mongodb
+2. Install packages with <code>npm i</code> command
+
 <b>How to create and run build:</b>
 
 <code>npm run build</code>
@@ -8,6 +12,8 @@
 <b>How to run as dev:</b>
 
 <code>npm run dev</code>
+
+Dont forget to run mongod!
 
 <hr>
 <b>How to run as windows service:</b>
