@@ -19,7 +19,7 @@
 3) found and start scoresboard service in services list of windows
 
 <hr>
-<b>Pages (localhost:3000):</b>
+<b>Pages (on localhost:3000):</b>
 
 1) Register new player or get ID for registered: 
 <code>/registration</code>
