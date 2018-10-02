@@ -188,7 +188,7 @@ app.get(/.*/, function root(req, res) {
             const { page, rowsCount } = filter;
 
             const [ findError, players ] = await to(
-              collections.players.find({code: { $gt: page*rowsCount }}).limit(rowsCount).toArray()
+              collections.players.find({ code: { $gt: page*rowsCount }}).limit(rowsCount).toArray()
             );
 
             if (findError) {
@@ -199,9 +199,22 @@ app.get(/.*/, function root(req, res) {
             socket.emit('action', { type: 'players', data: players })
           }
           break;
-        case 'server/top10players':
-          break;
-        case 'server/all_players':
+        case 'server/get_top_players':
+          {
+            const { filter } = action.data;
+            const { page, rowsCount } = filter;
+
+            const [ findError, players ] = await to(
+              collections.players.find({code: { $gt: page*rowsCount }}).sort({scores: -1}).limit(rowsCount).toArray()
+            );
+
+            if (findError) {
+              console.log(findError);
+              return;
+            }
+
+            socket.emit('action', { type: 'players', data: players });
+          }
           break;
         case 'server/remove_player':
           break;

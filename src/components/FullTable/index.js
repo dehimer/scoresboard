@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TournamentTable from '../TournamentTable'
+import TournamentTable from '../../containers/TournamentTable/index'
 
 export default () => (
   <TournamentTable/>
