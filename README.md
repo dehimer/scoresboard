@@ -17,3 +17,15 @@
 2) run cmd console as admin and execute command in directory:
 <code>npm run install-windows-service</code>
 3) found and start scoresboard service in services list of windows
+
+<hr>
+<b>Pages (localhost:3000):</b>
+
+1) Register new player or get ID for registered: 
+<code>/registration</code>
+2) Set Scores for player by its ID 
+<code>/game</code>
+3) Set tournament number:
+<code>/settournament</code>
+4) Admin panel with table of users for edit
+<code>/adminpanel</code>
