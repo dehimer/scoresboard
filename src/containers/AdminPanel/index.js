@@ -179,12 +179,13 @@ class AdminPanel extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { players_count, players, updated_player } = state.server;
+  const { players_count, players, updated_player, tournament_number_updated } = state.server;
 
   return {
     players_count,
     players,
-    updated_player
+    updated_player,
+    tournament_number_updated
   }
 };
 

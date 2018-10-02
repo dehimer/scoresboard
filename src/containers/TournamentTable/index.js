@@ -9,14 +9,13 @@ class TournamentTable extends Component {
   };
 
   componentDidMount() {
-    const { getPlayersCount } = this.props;
+    const { getPlayersCount, getTournamentNumber } = this.props;
+    getTournamentNumber();
     getPlayersCount();
-    console.log('componentDidMount');
     this.updateTable();
   }
 
   updateTable() {
-    console.log('updateTable');
     const { getPlayers } = this.props;
     const { page, rowsPerPage: rowsCount } = this.state;
 
@@ -35,14 +34,18 @@ class TournamentTable extends Component {
     });
   }
 
+  // componentWillReceiveProps(nextProps) {
+  //   if ()
+  // }
+
   render() {
-    console.log('render');
-    const { players_count, players=[], topten } = this.props;
+    const { players_count, players=[], topten, tournament_number } = this.props;
     const { rowsPerPage, page } = this.state;
 
     return (
       <div className='top-table'>
         <h3>Tournament Table</h3>
+        <div>Турнир: { tournament_number }</div>
         {
           players.length ? (
             <Table>
@@ -96,11 +99,12 @@ class TournamentTable extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { players, players_count } = state.server;
+  const { players, players_count, tournament_number } = state.server;
 
   return {
     players,
-    players_count
+    players_count,
+    tournament_number
   }
 };
 
@@ -110,8 +114,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: 'server/get_players_count' });
     },
     getPlayers: (filter) => {
-      console.log('getPlayers');
       dispatch({ type: 'server/get_top_players', data: { filter }});
+    },
+    getTournamentNumber: () => {
+      dispatch({ type: 'server/get_tournament_number' });
     }
   }
 };

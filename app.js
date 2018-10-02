@@ -152,7 +152,7 @@ app.get(/.*/, function root(req, res) {
               return;
             }
 
-            socket.emit('action', { type: 'tournament_number_updated', data: tournamentNumber })
+            io.sockets.emit('action', { type: 'tournament_number', data: tournamentNumber })
           }
           break;
         case 'server/get_tournament_number':

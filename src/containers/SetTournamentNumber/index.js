@@ -32,21 +32,16 @@ class SetTournamentNumber extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { updated_tournament_number: tournament_number_next, tournament_number } = nextProps;
-    const { updated_tournament_number: tournament_number_prev } = this.props;
-
+    console.log('componentWillReceiveProps');
+    const { tournament_number: tournament_number_prev } = this.props;
+    const { tournament_number: tournament_number_next } = nextProps;
+    console.log(`${tournament_number_prev} -> ${tournament_number_next}`);
     const tournament_number_changed = !isNaN(+tournament_number_next) && tournament_number_next !== tournament_number_prev;
-
+    console.log(`tournament_number_changed: ${tournament_number_changed}`);
     if (tournament_number_changed) {
       this.setState({
         showSnackbar: true,
         tournamentNumber: tournament_number_next
-      })
-    }
-
-    if (tournament_number && !this.props.tournament_number) {
-      this.setState({
-        tournamentNumber: tournament_number
       })
     }
   }
@@ -87,7 +82,7 @@ class SetTournamentNumber extends Component {
 
               <div className='set-scores__spacer'/>
 
-              <Button disabled={!inputTouched || !tournamentNumber || tournamentNumber === this.props.updated_tournament_number} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
+              <Button disabled={!inputTouched || !tournamentNumber || tournamentNumber === this.props.tournament_number} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
                 Установить
               </Button>
             </form>
@@ -99,11 +94,10 @@ class SetTournamentNumber extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { tournament_number, updated_tournament_number } = state.server;
+  const { tournament_number } = state.server;
 
   return {
-    tournament_number,
-    updated_tournament_number
+    tournament_number
   }
 };
 
