@@ -23,6 +23,11 @@ export default class EditPlayer extends Component {
     onUpdate({ ...this.state });
   }
 
+  handleCancel() {
+    const { onUpdate } = this.props;
+    onUpdate();
+  }
+
   handleChange = name => event => {
     const value = (name === 'broughtNotebook') ? event.target.checked : event.target.value;
 
@@ -51,9 +56,15 @@ export default class EditPlayer extends Component {
           <form className='edit-player'>
             <PlayerForm onChangeHandler={::this.handleChange} player={this.state}/>
 
-            <Button disabled={disabled} className='edit-player__input' onClick={::this.handleClick} variant='contained' color='primary'>
-              Сохранить изменения
-            </Button>
+            <div className='edit-player__controls'>
+              <Button className='edit-player__input' onClick={::this.handleCancel} variant='contained'>
+                Отмена
+              </Button>
+
+              <Button disabled={disabled} className='edit-player__input' onClick={::this.handleClick} variant='contained' color='primary'>
+                Сохранить изменения
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

@@ -79,9 +79,12 @@ class AdminPanel extends Component {
   }
 
   updatePlayer(data) {
-    const { updatePlayer } = this.props;
-    updatePlayer({ code: this.state.playerInEdit.code, ...data});
-    this.setState({playerInEdit: null});
+    if (data) {
+      const { updatePlayer } = this.props;
+      updatePlayer({ code: this.state.playerInEdit.code, ...data});
+    }
+
+    this.setState({ playerInEdit: null });
   }
 
   opendEdit(player) {

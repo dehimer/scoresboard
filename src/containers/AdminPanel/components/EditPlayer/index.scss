@@ -17,4 +17,11 @@ $form-items-width: 400px;
     width: $form-items-width;
     margin: 10px;
   }
+
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+  }
+
+
 }
