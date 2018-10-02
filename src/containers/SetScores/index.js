@@ -184,7 +184,7 @@ const mapStateToProps = function (state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     setScores: (player) => {
-      dispatch({ type: 'server/set_player_scores', data: player });
+      dispatch({ type: 'server/update_player', data: player });
     },
     findPlayer: (player) => {
       dispatch({ type: 'server/find_player', data: player });

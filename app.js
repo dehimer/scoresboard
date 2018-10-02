@@ -116,10 +116,9 @@ app.get(/.*/, function root(req, res) {
             socket.emit('action', { type: 'found_player', data: {...player, broughtNotebook} })
           }
           break;
-        case 'server/set_player_scores':
+        case 'server/update_player':
           {
-            const { code, scores } = action.data;
-            console.log(`code: ${code}; scores: ${scores}`);
+            const { code, ...data } = action.data;
 
             const [findErr, player] = await to(collections.players.findOne({ code }));
             if (findErr) {
@@ -128,13 +127,13 @@ app.get(/.*/, function root(req, res) {
               return;
             }
 
-            const [updateErr] = await to(collections.players.updateOne({ code }, { $set: { scores } }));
+            const [updateErr] = await to(collections.players.updateOne({ code }, { $set: data }));
             if (updateErr) {
               console.log(updateErr);
               return;
             }
 
-            socket.emit('action', { type: 'player_updated', data: { ...player, scores } })
+            socket.emit('action', { type: 'player_updated', data: { ...player, ...data } })
           }
           break;
         case 'server/set_tournament_number':

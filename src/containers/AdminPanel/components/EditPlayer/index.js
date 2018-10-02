@@ -19,8 +19,8 @@ export default class EditPlayer extends Component {
   };
 
   handleClick() {
-    const { register } = this.props;
-    register({ ...this.state });
+    const { onUpdate } = this.props;
+    onUpdate({ ...this.state });
   }
 
   handleChange = name => event => {
@@ -32,25 +32,18 @@ export default class EditPlayer extends Component {
   };
 
   componentDidMount() {
-    console.log('componentDidMount');
     const { player } = this.props;
     const nextState = Object.keys(this.state).reduce((fields, fieldName) => {
       fields[fieldName] = fieldName === 'broughtNotebook' ? !!player[fieldName] : player[fieldName];
 
       return fields;
     }, {});
-    console.log('nextState');
-    console.log(nextState);
 
     this.setState(nextState);
   }
 
-  componentWillUnmount() {
-    console.log('componentWillUnmount');
-  }
-
   render() {
-    const disabled = Object.keys(this.state).some(fieldName => (this.requiredFields[fieldName] && !this.state[fieldName]));
+    const disabled = Object.keys(this.state).some(fieldName => (this.requiredFields.includes(fieldName) && !this.state[fieldName]));
 
     return (
       <Card>

@@ -32,7 +32,7 @@ export default class NewPlayer extends Component {
   };
 
   render() {
-    const disabled = Object.keys(this.state).some(fieldName => (this.requiredFields[fieldName] && !this.state[fieldName]));
+    const disabled = Object.keys(this.state).some(fieldName => (this.requiredFields.includes(fieldName) && !this.state[fieldName]));
 
     return (
       <Card>

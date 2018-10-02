@@ -51,8 +51,12 @@ class AdminPanel extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps');
-    console.log(nextProps);
+    const { updated_player: updated_player_prev } = this.props;
+    const { updated_player: updated_player_next } = nextProps;
+
+    if (JSON.stringify(updated_player_next) !== JSON.stringify(updated_player_prev)) {
+      this.updateTable();
+    }
   }
 
   handleChangePage(event, page) {
@@ -72,6 +76,12 @@ class AdminPanel extends Component {
     const { page, rowsPerPage: rowsCount } = this.state;
 
     getPlayers({page, rowsCount})
+  }
+
+  updatePlayer(data) {
+    const { updatePlayer } = this.props;
+    updatePlayer({ code: this.state.playerInEdit.code, ...data});
+    this.setState({playerInEdit: null});
   }
 
   opendEdit(player) {
@@ -157,7 +167,7 @@ class AdminPanel extends Component {
         }
         <Dialog open={ !!playerInEdit } onClose={::this.handleEditClose} aria-labelledby='simple-dialog-title'>
           <div className='admin-panel__edit-dialog-content'>
-            <EditPlayer player={ playerInEdit }/>
+            <EditPlayer onUpdate={::this.updatePlayer} player={ playerInEdit }/>
           </div>
         </Dialog>
       </div>
@@ -166,11 +176,12 @@ class AdminPanel extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { players_count, players } = state.server;
+  const { players_count, players, updated_player } = state.server;
 
   return {
     players_count,
-    players
+    players,
+    updated_player
   }
 };
 
@@ -181,6 +192,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getPlayers: (filter) => {
       dispatch({ type: 'server/get_players', data: { filter } });
+    },
+    updatePlayer: (player) => {
+      dispatch({ type: 'server/update_player', data: player });
     }
   }
 };
