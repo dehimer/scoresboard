@@ -1,0 +1,33 @@
+$form-items-width: 400px;
+
+.import-csv-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.import-csv {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__header {
+    width: $form-items-width;
+    font-size: 25px;
+    margin-top: 0px;
+  }
+
+  &__input {
+    width: $form-items-width;
+    margin: 10px;
+  }
+
+  &__spacer {
+    margin-top: 10px;
+  }
+}
