@@ -87,9 +87,6 @@ class TournamentTable extends Component {
   render() {
     const { players_count, players=[], topten, tournament_number } = this.props;
     const { rowsPerPage, page, dt } = this.state;
-    console.log(players_count);
-    console.log(rowsPerPage);
-    console.log(topten);
 
     return (
       <div className='top-table'>
@@ -120,17 +117,6 @@ class TournamentTable extends Component {
                   );
                 })
               }
-
-              {/*<TablePagination
-                    component=
-                    className='admin-panel__pagination'
-                    count={ players_count }
-                    rowsPerPage={ rowsPerPage }
-                    rowsPerPageOptions={[10, 50, 100]}
-                    page={ page }
-                    onChangePage={::this.handleChangePage}
-                    onChangeRowsPerPage={::this.handleChangeRowsPerPage}
-                  />*/}
             </div>
           ) : (
             <div className='top-table__no-players'>Участников пока нет</div>
