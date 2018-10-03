@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {
-  AppBar, Toolbar, Button,
   Table, TableHead,  TableBody, TableFooter,
   TablePagination, TableRow, TableCell,
   Dialog
 } from '@material-ui/core'
 
-import EditPlayer from './components/EditPlayer'
-import ResetScoresDialog from './components/ResetScoresDialog'
+import MenuBar from '../../components/MenuBar'
+import EditPlayer from './components/EditPlayer/index'
+import ResetScoresDialog from './components/ResetScoresDialog/index'
 
 import { withStyles } from '@material-ui/core/styles';
 const CustomTableCell = withStyles(theme => ({
@@ -116,13 +116,7 @@ class AdminPanel extends Component {
 
     return (
       <div className='admin-panel'>
-        <AppBar position='static'>
-          <Toolbar variant='dense'>
-            <Button variant='contained' color='secondary' onClick={() => this.setState({ scoresInDelete: true }) }>
-              Сбросить баллы
-            </Button>
-          </Toolbar>
-        </AppBar>
+        <MenuBar resetScores={() => this.setState({ scoresInDelete: true })}/>
         {
           rows.length > 0 ? (
             <Table className={classes.table}>

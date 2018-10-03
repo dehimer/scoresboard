@@ -35,3 +35,7 @@ Dont forget to run mongod!
 <code>/settournament</code>
 4) Admin panel with table of users for edit
 <code>/adminpanel</code>
+5) Shot List of Top
+<code>/table</code>
+6) Full List of Top
+<code>/table-full</code>
