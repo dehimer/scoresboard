@@ -13,9 +13,12 @@ class Registration extends Component {
   };
 
   register(player) {
-    this.props.addPlayer(player);
+    console.log('register');
+    console.log(player);
     this.setState({
       player
+    }, () => {
+      this.props.addPlayer(player);
     })
   }
 
@@ -36,7 +39,7 @@ class Registration extends Component {
     const { added_player: added_player_next, found_player: found_player_next } = nextProps;
     const { added_player: added_player_prev, found_player: found_player_prev } = this.props;
 
-    if (added_player_next) {
+    if (added_player_next && this.state.player.email === added_player_next.email) {
       if (!added_player_prev || added_player_next.code !== added_player_prev.code) {
         this.setState({
           player: added_player_next
