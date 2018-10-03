@@ -3,7 +3,7 @@ import React from 'react';
 
 import './index.scss'
 
-export default ({ onChangeHandler, player }) => (
+export default ({ onChangeHandler, player, editMode }) => (
   <React.Fragment>
     <TextField
       className='player__input' type='text' label='Никнейм'
@@ -26,12 +26,16 @@ export default ({ onChangeHandler, player }) => (
       value={ player.birthday }
       onChange={ onChangeHandler('birthday') }
     />
-    <TextField
-      className='player__input' type='text' label='Город проживания'
-      variant='outlined' margin='dense'
-      value={player.city}
-      onChange={ onChangeHandler('city') }
-    />
+    {
+      editMode ? (
+        <TextField
+          className='player__input' type='text' label='Город проживания'
+          variant='outlined' margin='dense'
+          value={ player.city }
+          onChange={ onChangeHandler('city') }
+        />
+      ) : null
+    }
     <TextField
       className='player__input' type='email' label='E-mail'
       variant='outlined' margin='dense'
@@ -44,20 +48,28 @@ export default ({ onChangeHandler, player }) => (
       value={ player.phone }
       onChange={ onChangeHandler('phone') }
     />
-    <TextField
-      className='player__input' type='text' label='Ноутбук (марка и модель)'
-      variant='outlined' margin='dense'
-      value={ player.notebook }
-      onChange={ onChangeHandler('notebook') }
-    />
-    <TextField
-      className='new-player__input' type='text' label='Ссылка на страницу в соц. сетях'
-      variant='outlined' margin='dense'
-      value={ player.link }
-      onChange={ onChangeHandler('link') }
-    />
     {
-      typeof player.scores !== 'undefined' ? (
+      editMode ? (
+        <TextField
+          className='player__input' type='text' label='Ноутбук (марка и модель)'
+          variant='outlined' margin='dense'
+          value={ player.notebook }
+          onChange={ onChangeHandler('notebook') }
+        />
+      ) : null
+    }
+    {
+      editMode ? (
+        <TextField
+          className='new-player__input' type='text' label='Ссылка на страницу в соц. сетях'
+          variant='outlined' margin='dense'
+          value={ player.link }
+          onChange={ onChangeHandler('link') }
+        />
+      ) : null
+    }
+    {
+      editMode ? (
         <TextField
           className='new-player__input' type='text' label='Баллы'
           variant='outlined' margin='dense'

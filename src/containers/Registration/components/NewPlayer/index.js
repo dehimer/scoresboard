@@ -5,17 +5,14 @@ import PlayerForm from '../../../../components/PlayerForm'
 import './index.scss'
 
 export default class NewPlayer extends Component {
-  requiredFields = ['nickname', 'fullname', 'birthday', 'city', 'phone', 'email', 'acceptedRules'];
+  requiredFields = ['nickname', 'fullname', 'birthday', 'phone', 'email', 'acceptedRules'];
 
   state = {
     nickname: '',
     fullname: '',
     birthday: '',
-    city: '',
     email: '',
     phone: '',
-    notebook: '',
-    link: '',
     broughtNotebook: false,
     acceptedRules: true
   };

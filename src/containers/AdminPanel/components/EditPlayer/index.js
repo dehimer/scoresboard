@@ -5,7 +5,7 @@ import PlayerForm from '../../../../components/PlayerForm/index'
 import './index.scss'
 
 export default class EditPlayer extends Component {
-  requiredFields = ['nickname', 'fullname', 'birthday', 'city', 'phone', 'email'];
+  requiredFields = ['nickname', 'fullname', 'birthday', 'phone', 'email'];
 
   state = {
     nickname: '',
@@ -22,7 +22,7 @@ export default class EditPlayer extends Component {
 
   handleClick() {
     const { onUpdate } = this.props;
-    const { scores, data } = this.state;
+    const { scores, ...data } = this.state;
 
     onUpdate({ ...data, scores: +scores || 0 });
   }
@@ -43,7 +43,7 @@ export default class EditPlayer extends Component {
   componentDidMount() {
     const { player } = this.props;
     const nextState = Object.keys(this.state).reduce((fields, fieldName) => {
-      fields[fieldName] = fieldName === 'broughtNotebook' ? !!player[fieldName] : player[fieldName];
+      fields[fieldName] = fieldName === 'broughtNotebook' ? !!player[fieldName] : player[fieldName] || '';
 
       return fields;
     }, {});
@@ -58,7 +58,7 @@ export default class EditPlayer extends Component {
       <Card>
         <CardContent>
           <form className='edit-player'>
-            <PlayerForm onChangeHandler={::this.handleChange} player={this.state}/>
+            <PlayerForm onChangeHandler={::this.handleChange} player={this.state} editMode={true}/>
 
             <div className='edit-player__controls'>
               <Button className='edit-player__input' onClick={::this.handleCancel} variant='contained'>
