@@ -55,7 +55,7 @@ class TournamentTable extends Component {
     getPlayers({ page, rowsCount });
   }
 
-  handleChangePage(event, page) {
+  handleChangePage(page) {
     this.setState({ page }, () => {
       this.updateTable();
     });
@@ -136,6 +136,35 @@ class TournamentTable extends Component {
             <div className='top-table__no-players'>Участников пока нет</div>
           )
         }
+
+        {
+          topten ? null : (
+            <div className='top-table__navigation'>
+              <div
+                className='top-table__navigation-arrow'
+                onClick={() => {
+                  this.handleChangePage(page ? page - 1: page)
+                }}
+              >
+                &lt;
+              </div>
+              <div className='top-table__navigation-page'>
+                { page + 1 }
+              </div>
+              <div
+                className='top-table__navigation-arrow'
+                onClick={() => {
+                  const nextPage = page + 1;
+                  const maxMage = players_count/rowsPerPage;
+                  this.handleChangePage(nextPage > maxMage ? page : nextPage);
+                }}
+              >
+                &gt;
+              </div>
+            </div>
+          )
+        }
+
       </div>
     );
   }

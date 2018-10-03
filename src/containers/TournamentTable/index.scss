@@ -114,4 +114,21 @@
     top: 54px;
     left: 54px;
   }
+
+  &__navigation {
+    display: flex;
+    font-family: Predator;
+    font-size: 50px;
+    position: absolute;
+    bottom: 400px;
+    right: 70px;
+    width: 200px;
+    justify-content: center;
+
+    &-arrow {
+      cursor: pointer;
+      width: 50px;
+      text-align: center;
+    }
+  }
 }
