@@ -1,5 +1,6 @@
 import to from 'await-to-js';
 const http = require('http');
+const csv = require('csvtojson');
 const express = require('express');
 const app = express();
 
@@ -30,6 +31,7 @@ app.get(/.*/, function root(req, res) {
 });
 
 
+
 (async () => {
   // READ CONFIGS
   const config  = require('./config');
@@ -47,7 +49,6 @@ app.get(/.*/, function root(req, res) {
     players: db.collection('players'),
     settings: db.collection('settings')
   };
-
 
   // STARTUP SERVERS
   // run http server
@@ -280,5 +281,59 @@ app.get(/.*/, function root(req, res) {
           break;
       }
     });
+  });
+
+  app.post('/csv-import', async function(req, res) {
+    console.log('Start import from csv');
+    const maxCodePlayers = await to(collections.players.find({}, {code: 1}).sort({ code: -1 }).limit(1).toArray());
+    console.log(maxCodePlayers[0]);
+    let code = maxCodePlayers[0] ? maxCodePlayers[0].code : 0;
+
+    csv({
+      noheader: true,
+      output: 'csv'
+    })
+      .fromStream(req)
+      .subscribe(async (jsonObj) => {
+        code += 1;
+
+        const [
+          nickname,
+          fio,
+          birthday,
+          city,
+          email,
+          phone,
+          notebook,
+          link,
+          broughtNotebook,
+          requestid,
+          sended,
+          refer,
+          utm_referrer
+        ] = jsonObj;
+
+        if (email) {
+          await collections.players.insertOne({
+            code,
+            nickname,
+            fio,
+            birthday,
+            city,
+            email,
+            phone,
+            notebook,
+            link,
+            broughtNotebook,
+            requestid,
+            sended,
+            refer,
+            utm_referrer,
+            scores: 0
+          })
+        }
+      }, ()=> {}, () => {
+        io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
+      })
   });
 })();
