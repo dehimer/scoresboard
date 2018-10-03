@@ -88,6 +88,13 @@ class TournamentTable extends Component {
     const { players_count, players=[], topten, tournament_number } = this.props;
     const { rowsPerPage, page, dt } = this.state;
 
+    let filledPlayers = players;
+    if (filledPlayers.length < rowsPerPage) {
+      filledPlayers = filledPlayers.concat(Array(rowsPerPage - filledPlayers.length).fill({}));
+    }
+
+    const ts = new Date().getUTCMilliseconds();
+
     return (
       <div className='top-table'>
         <div className='top-table__blank'>
@@ -97,30 +104,26 @@ class TournamentTable extends Component {
         <div className='top-table__tournament-number'>{ tournament_number }</div>
         <div className='top-table__date-time'>{ dt }</div>
         {
-          players.length ? (
-            <div className='top-table__table'>
-              {
-                players.map((player, idx) => {
-                  return (
-                    <div
-                      className='top-table__table-row'
-                      key={player.code}
-                    >
-                      <div className='top-table__table-cell--idx'>{idx + page + 1}.</div>
-                      <div className='top-table__table-cell--nickname'>{player.nickname}</div>
-                      <div className='top-table__table-cell--code'>{player.code}</div>
-                      <div className='top-table__table-cell--scores'>{player.scores}</div>
-                      <div className='top-table__table-cell--line'>
-                        <Line />
-                      </div>
+          <div className='top-table__table'>
+            {
+              filledPlayers.map((player, idx) => {
+                return (
+                  <div
+                    className='top-table__table-row'
+                    key={player.code || ts+idx}
+                  >
+                    <div className='top-table__table-cell--idx'>{rowsPerPage * page + idx + 1}.</div>
+                    <div className='top-table__table-cell--nickname'>{player.nickname}</div>
+                    <div className='top-table__table-cell--code'>{player.code}</div>
+                    <div className='top-table__table-cell--scores'>{player.scores}</div>
+                    <div className='top-table__table-cell--line'>
+                      <Line />
                     </div>
-                  );
-                })
-              }
-            </div>
-          ) : (
-            <div className='top-table__no-players'>Участников пока нет</div>
-          )
+                  </div>
+                );
+              })
+            }
+          </div>
         }
 
         {
