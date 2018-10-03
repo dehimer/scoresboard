@@ -1,0 +1,24 @@
+.top-table {
+  height: 100vh;
+  width: 100vw;
+  background-image: url("images/predators_bg.png");
+  background-color: black;
+
+  &__predator-logo-img {
+    position: absolute;
+    top: 54px;
+    left: 54px;
+  }
+
+  &__predator-logo-name {
+    position: absolute;
+    top: 87px;
+    left: 147px;
+  }
+
+  &__acer-logo-img {
+    position: absolute;
+    right: 54px;
+    bottom: 49px;
+  }
+}

@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow} from '@material-ui/core';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from '@material-ui/core';
+import PredatorLogoImg from './svg/PredatorLogoImg'
+import PredatorLogoName from './svg/PredatorLogoName'
+import AcerLogoImg from './svg/AcerLogoImg'
+
+import './index.scss'
 
 class TournamentTable extends Component {
   state = {
@@ -62,7 +67,18 @@ class TournamentTable extends Component {
 
     return (
       <div className='top-table'>
-        <h3>Tournament Table</h3>
+        <div className='top-table__predator-logo-img'>
+          <PredatorLogoImg/>
+        </div>
+
+        <div className='top-table__predator-logo-name'>
+          <PredatorLogoName/>
+        </div>
+
+        <div className='top-table__acer-logo-img'>
+          <AcerLogoImg/>
+        </div>
+
         <div>Турнир: { tournament_number }</div>
         {
           players.length ? (
