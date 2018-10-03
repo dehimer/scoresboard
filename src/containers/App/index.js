@@ -6,6 +6,7 @@ import SetTournamentNumber from '../SetTournamentNumber'
 import AdminPanel from '../AdminPanel'
 import Top10Table from '../../components/Top10Table'
 import FullTable from '../../components/FullTable'
+import ImportCSV from '../ImportCSV'
 
 export default class App extends Component {
   render() {
@@ -18,6 +19,7 @@ export default class App extends Component {
           <Route exact path='/adminpanel' component={ AdminPanel } />
           <Route exact path='/table' component={ Top10Table } />
           <Route exact path='/table-full' component={ FullTable } />
+          <Route exact path='/import-csv' component={ ImportCSV } />
         </Switch>
       </div>
     )

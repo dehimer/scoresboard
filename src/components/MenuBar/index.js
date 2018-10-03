@@ -20,6 +20,12 @@ export default (props) => {
           Сбросить баллы
         </Button>
 
+        <Link to='/import-csv'>
+          <Button variant='contained'>
+            Импорт CSV
+          </Button>
+        </Link>
+
         <Link to='/game'>
           <Button variant='contained'>
             Начислить баллы
