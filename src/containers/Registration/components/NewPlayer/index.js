@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Button, CardContent, Card } from '@material-ui/core'
+import {Button, CardContent, Card, Switch, FormControlLabel} from '@material-ui/core'
 import PlayerForm from '../../../../components/PlayerForm'
 
 import './index.scss'
 
 export default class NewPlayer extends Component {
-  requiredFields = ['nickname', 'fullname', 'birthday', 'city', 'phone', 'email'];
+  requiredFields = ['nickname', 'fullname', 'birthday', 'city', 'phone', 'email', 'acceptedRules'];
 
   state = {
     nickname: '',
@@ -16,8 +16,10 @@ export default class NewPlayer extends Component {
     phone: '',
     notebook: '',
     link: '',
-    broughtNotebook: false
+    broughtNotebook: false,
+    acceptedRules: true
   };
+
   handleClick() {
     const { register } = this.props;
     register({ ...this.state });
@@ -41,6 +43,21 @@ export default class NewPlayer extends Component {
             <h3 className='new-player__header'>Не регистрировался на сайте</h3>
 
             <PlayerForm onChangeHandler={::this.handleChange} player={this.state}/>
+
+            <FormControlLabel
+              className='new-player__input'
+              control={
+                <Switch
+                  checked={ this.state.acceptedRules } value='acceptedRules'
+                  onChange={ (e) => {
+                    this.setState({
+                      acceptedRules: e.target.checked
+                    })
+                  } }
+                />
+              }
+              label={<div>Я принимаю <a href='/media/pdf/Правила конкурса Лига Predators.pdf' target='_blank'>условия</a> пользовательского соглашения</div>}
+            />
 
             <Button disabled={disabled} className='new-player__input' onClick={::this.handleClick} variant='contained' color='primary'>
               Зарегистрировать и показать ID
