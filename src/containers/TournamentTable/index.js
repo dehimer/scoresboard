@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, TableCell, TableFooter, TablePagination, TableRow } from '@material-ui/core';
 import Blank from './svg/Blank'
+import Line from './svg/Line'
 
 import './index.scss'
 
 class TournamentTable extends Component {
   state = {
     page: 0,
-    rowsPerPage: 10,
+    rowsPerPage: 14,
     dt: ''
   };
 
   componentDidMount() {
-    console.log('componentDidMount');
     const { getTournamentNumber } = this.props;
     getTournamentNumber();
     this.updateDT();
@@ -69,7 +68,6 @@ class TournamentTable extends Component {
   }
 
   updateDT() {
-    console.log('updateDT');
     const today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth() + 1;
@@ -83,28 +81,18 @@ class TournamentTable extends Component {
     }
 
     const dt = [dd, mm, yyyy].join('.');
-    console.log(`dt: ${dt}`);
     this.setState({ dt });
   }
 
   render() {
     const { players_count, players=[], topten, tournament_number } = this.props;
     const { rowsPerPage, page, dt } = this.state;
+    console.log(players_count);
+    console.log(rowsPerPage);
+    console.log(topten);
 
     return (
       <div className='top-table'>
-        {/*<div className='top-table__predator-logo-img'>
-          <PredatorLogoImg/>
-        </div>
-
-        <div className='top-table__predator-logo-name'>
-          <PredatorLogoName/>
-        </div>
-
-        <div className='top-table__acer-logo-img'>
-          <AcerLogoImg/>
-        </div>*/}
-
         <div className='top-table__blank'>
           <Blank/>
         </div>
@@ -113,40 +101,37 @@ class TournamentTable extends Component {
         <div className='top-table__date-time'>{ dt }</div>
         {
           players.length ? (
-            <Table>
-              <TableBody>
-                {
-                  players.map(player => {
-                    return (
-                      <TableRow
-                        key={player.code}
-                      >
-                        <TableCell>{player.scores}</TableCell>
-                        <TableCell>{player.code}</TableCell>
-                        <TableCell>{player.nickname}</TableCell>
-                      </TableRow>
-                    );
-                  })
-                }
-              </TableBody>
+            <div className='top-table__table'>
               {
-                !topten ? (
-                  <TableFooter>
-                    <TableRow>
-                      <TablePagination
-                        className='admin-panel__pagination'
-                        count={ players_count }
-                        rowsPerPage={ rowsPerPage }
-                        rowsPerPageOptions={[10, 50, 100]}
-                        page={ page }
-                        onChangePage={::this.handleChangePage}
-                        onChangeRowsPerPage={::this.handleChangeRowsPerPage}
-                      />
-                    </TableRow>
-                  </TableFooter>
-                ) : null
+                players.map((player, idx) => {
+                  return (
+                    <div
+                      className='top-table__table-row'
+                      key={player.code}
+                    >
+                      <div className='top-table__table-cell--idx'>{idx + page + 1}.</div>
+                      <div className='top-table__table-cell--nickname'>{player.nickname}</div>
+                      <div className='top-table__table-cell--code'>{player.code}</div>
+                      <div className='top-table__table-cell--scores'>{player.scores}</div>
+                      <div className='top-table__table-cell--line'>
+                        <Line />
+                      </div>
+                    </div>
+                  );
+                })
               }
-            </Table>
+
+              {/*<TablePagination
+                    component=
+                    className='admin-panel__pagination'
+                    count={ players_count }
+                    rowsPerPage={ rowsPerPage }
+                    rowsPerPageOptions={[10, 50, 100]}
+                    page={ page }
+                    onChangePage={::this.handleChangePage}
+                    onChangeRowsPerPage={::this.handleChangeRowsPerPage}
+                  />*/}
+            </div>
           ) : (
             <div className='top-table__no-players'>Участников пока нет</div>
           )
