@@ -10,18 +10,38 @@
   url('fonts/Predator SVG/Predator-Regular.svg') format('svg');
 }
 
+@font-face {
+  font-family: 'Predator-Light';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/Predator EOT/Predator-Light.eot');
+  src: url('fonts/Predator EOT/Predator-Light.eot?#iefix') format('embedded-opentype'),
+  url('fonts/Predator Opentype/Predator-Light.otf') format('woff2'),
+  url('fonts/Predator WOFF/Predator-Light.woff') format('woff'),
+  url('fonts/Predator Truetype/Predator-Light.ttf') format('truetype'),
+  url('fonts/Predator SVG/Predator-Light.svg') format('svg');
+}
+
 .top-table {
   height: 100vh;
   width: 100vw;
   background: black url("images/predators_bg.png");
   color: white;
-  font-family: Predator;
 
   &__tournament-number {
     position: absolute;
     top: 165px;
     left: 700px;
     font-size: 50px;
+    font-family: Predator-Light;
+  }
+
+  &__date-time {
+    position: absolute;
+    top: 169px;
+    left: 1099px;
+    font-size: 40px;
+    font-family: Predator-Light;
   }
 
   &__blank {

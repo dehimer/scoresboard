@@ -8,12 +8,15 @@ import './index.scss'
 class TournamentTable extends Component {
   state = {
     page: 0,
-    rowsPerPage: 10
+    rowsPerPage: 10,
+    dt: ''
   };
 
   componentDidMount() {
+    console.log('componentDidMount');
     const { getTournamentNumber } = this.props;
     getTournamentNumber();
+    this.updateDT();
     this.updateTable();
   }
 
@@ -21,13 +24,15 @@ class TournamentTable extends Component {
     const {
       updated_player: updated_player_prev,
       added_player: added_player_prev,
-      players_update_ts: players_update_ts_prev
+      players_update_ts: players_update_ts_prev,
+      tournament_number: tournament_number_prev
     } = this.props;
 
     const {
       updated_player: updated_player_next,
       added_player: added_player_next,
-      players_update_ts: players_update_ts_next
+      players_update_ts: players_update_ts_next,
+      tournament_number: tournament_number_next
     } = nextProps;
 
     if (JSON.stringify(updated_player_next) !== JSON.stringify(updated_player_prev)) {
@@ -36,6 +41,10 @@ class TournamentTable extends Component {
       this.updateTable();
     } else if (players_update_ts_next !== players_update_ts_prev) {
       this.updateTable();
+    }
+
+    if (tournament_number_prev !== tournament_number_next) {
+      this.updateDT();
     }
   }
 
@@ -59,9 +68,28 @@ class TournamentTable extends Component {
     });
   }
 
+  updateDT() {
+    console.log('updateDT');
+    const today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1;
+
+    const yyyy = today.getFullYear();
+    if(dd < 10){
+      dd = '0' + dd;
+    }
+    if(mm < 10){
+      mm = '0' + mm;
+    }
+
+    const dt = [dd, mm, yyyy].join('.');
+    console.log(`dt: ${dt}`);
+    this.setState({ dt });
+  }
+
   render() {
     const { players_count, players=[], topten, tournament_number } = this.props;
-    const { rowsPerPage, page } = this.state;
+    const { rowsPerPage, page, dt } = this.state;
 
     return (
       <div className='top-table'>
@@ -82,6 +110,7 @@ class TournamentTable extends Component {
         </div>
 
         <div className='top-table__tournament-number'>{ tournament_number }</div>
+        <div className='top-table__date-time'>{ dt }</div>
         {
           players.length ? (
             <Table>
