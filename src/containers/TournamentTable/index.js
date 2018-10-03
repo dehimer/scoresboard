@@ -85,7 +85,7 @@ class TournamentTable extends Component {
   }
 
   render() {
-    const { players_count, players=[], topten, tournament_number } = this.props;
+    const { top_players_count, players=[], topten, tournament_number } = this.props;
     const { rowsPerPage, page, dt } = this.state;
 
     let filledPlayers = players;
@@ -144,8 +144,8 @@ class TournamentTable extends Component {
                 className='top-table__navigation-arrow'
                 onClick={() => {
                   const nextPage = page + 1;
-                  const maxMage = players_count/rowsPerPage;
-                  this.handleChangePage(nextPage > maxMage ? page : nextPage);
+                  const maxPage = top_players_count/rowsPerPage;
+                  this.handleChangePage(nextPage > maxPage ? page : nextPage);
                 }}
               >
                 &gt;
@@ -162,7 +162,7 @@ class TournamentTable extends Component {
 const mapStateToProps = function (state) {
   const {
     players,
-    players_count,
+    top_players_count,
     tournament_number,
     added_player,
     updated_player,
@@ -171,7 +171,7 @@ const mapStateToProps = function (state) {
 
   return {
     players,
-    players_count,
+    top_players_count,
     tournament_number,
     added_player,
     updated_player,
@@ -182,7 +182,7 @@ const mapStateToProps = function (state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     getPlayersCount: () => {
-      dispatch({ type: 'server/get_players_count' });
+      dispatch({ type: 'server/get_top_players_count' });
     },
     getPlayers: (filter) => {
       dispatch({ type: 'server/get_top_players', data: { filter }});

@@ -20,8 +20,8 @@ class Registration extends Component {
     })
   }
 
-  findPlayer(player) {
-    this.props.findPlayer(player);
+  findAndUpdatePlayer(player) {
+    this.props.findPlayer({ ...player, updateBroughtNotebook: true });
     this.setState({
       player
     })
@@ -67,7 +67,7 @@ class Registration extends Component {
       content = (
         <React.Fragment>
           <NewPlayer register={::this.register}/>
-          <RegisteredPlayer checkId={::this.findPlayer}/>
+          <RegisteredPlayer checkId={::this.findAndUpdatePlayer}/>
         </React.Fragment>
       )
     }

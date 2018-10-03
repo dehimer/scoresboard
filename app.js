@@ -92,7 +92,9 @@ app.get(/.*/, function root(req, res) {
           break;
         case 'server/find_player':
           {
-            const { broughtNotebook, ...data } = action.data;
+            const { broughtNotebook, updateBroughtNotebook, ...data } = action.data;
+            console.log(updateBroughtNotebook);
+            console.log(broughtNotebook);
 
             const [findErr, player] = await to(collections.players.findOne(data));
             if (findErr) {
@@ -106,10 +108,13 @@ app.get(/.*/, function root(req, res) {
               return;
             }
 
-            const [updateErr] = await to(collections.players.updateOne({ ...data }, { $set: { broughtNotebook } }));
-            if (updateErr) {
-              console.log(updateErr);
-              return;
+            if (updateBroughtNotebook) {
+              const [updateErr] = await to(collections.players.updateOne({ ...data }, { $set: { broughtNotebook } }));
+              if (updateErr) {
+                console.log(updateErr);
+                return;
+              }
+              io.sockets.emit('action', { type: 'player_updated', data: {...player, broughtNotebook} })
             }
 
             socket.emit('action', { type: 'found_player', data: {...player, broughtNotebook} })
@@ -204,7 +209,7 @@ app.get(/.*/, function root(req, res) {
             const { page, rowsCount } = filter;
 
             const [ findError, players ] = await to(
-              collections.players.find({}).sort({scores: -1}).skip(page*rowsCount).limit(rowsCount).toArray()
+              collections.players.find({ broughtNotebook: true }).sort({scores: -1}).skip(page*rowsCount).limit(rowsCount).toArray()
             );
 
             if (findError) {
@@ -213,6 +218,17 @@ app.get(/.*/, function root(req, res) {
             }
 
             socket.emit('action', { type: 'players', data: players });
+          }
+          break;
+        case 'server/get_top_players_count':
+          {
+            const [countErr, playersCount] = await to(collections.players.countDocuments({ broughtNotebook: true }));
+            if (countErr) {
+              console.log(countErr);
+              return;
+            }
+
+            io.sockets.emit('action', { type: 'top_players_count', data: playersCount })
           }
           break;
         case 'server/add_scores':
