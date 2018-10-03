@@ -22,6 +22,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, players: data };
     case 'players_update_ts':
       return { ...state, players_update_ts: data };
+    case 'players_import_ts':
+      return { ...state, players_import_ts: data };
     default:
       return state;
   }

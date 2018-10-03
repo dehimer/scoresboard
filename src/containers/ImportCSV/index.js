@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+
 import { post } from 'axios';
 
 import MenuBar from '../../components/MenuBar'
-import { Button, Card, CardContent } from '@material-ui/core';
+import {Button, Card, CardContent, Snackbar} from '@material-ui/core';
+
 
 import './index.scss'
 
-export default class ImportCSV extends Component {
-  state ={
-    file: null
+class ImportCSV extends Component {
+  state = {
+    file: null,
+    showSnackbar: false
   };
 
   onChange(e) {
@@ -36,11 +40,39 @@ export default class ImportCSV extends Component {
     return post(url, formData, config)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.players_import_ts !== this.props.players_import_ts) {
+      this.setState({
+        file: null,
+        showSnackbar: true
+      });
+    }
+  }
+
+  handleCloseSnackbar() {
+    this.setState({
+      showSnackbar: false
+    })
+  }
+
   render() {
     return (
       <div>
         <MenuBar/>
         <div className='import-csv-wrapper'>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center'
+            }}
+            open={this.state.showSnackbar}
+            autoHideDuration={6000}
+            onClose={::this.handleCloseSnackbar}
+            ContentProps={{
+              'aria-describedby': 'message-id'
+            }}
+            message={<span id='message-id'>Импорт прошёл успешно</span>}
+          />
           <Card>
             <CardContent>
               <form className='import-csv' onSubmit={::this.onFormSubmit}>
@@ -63,4 +95,22 @@ export default class ImportCSV extends Component {
     )
   }
 }
+
+
+const mapStateToProps = function (state) {
+  const { players_import_ts } = state.server;
+
+  return {
+    players_import_ts
+  }
+};
+
+const mapDispatchToProps = (/*dispatch*/) => {
+  return {}
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ImportCSV);
 

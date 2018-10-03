@@ -333,7 +333,8 @@ app.get(/.*/, function root(req, res) {
           })
         }
       }, ()=> {}, () => {
-        io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
+        io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) });
+        io.sockets.emit('action', { type: 'players_import_ts', data: +(new Date()) })
       })
   });
 })();
