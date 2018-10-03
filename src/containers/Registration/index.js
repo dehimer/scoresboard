@@ -13,8 +13,6 @@ class Registration extends Component {
   };
 
   register(player) {
-    console.log('register');
-    console.log(player);
     this.setState({
       player
     }, () => {

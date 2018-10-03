@@ -68,7 +68,6 @@ app.get(/.*/, function root(req, res) {
     console.log('connection');
 
     socket.on('action', async (action) => {
-      console.log(action);
       switch (action.type) {
         case 'server/add_player':
           {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Route, Switch} from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Registration from '../Registration'
 import SetScores from '../SetScores'
 import SetTournamentNumber from '../SetTournamentNumber'
