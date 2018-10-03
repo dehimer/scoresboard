@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import PredatorLogoImg from './svg/PredatorLogoImg'
-import PredatorLogoName from './svg/PredatorLogoName'
-import AcerLogoImg from './svg/AcerLogoImg'
+import { Table, TableBody, TableCell, TableFooter, TablePagination, TableRow } from '@material-ui/core';
+import Blank from './svg/Blank'
 
 import './index.scss'
 
@@ -67,7 +65,7 @@ class TournamentTable extends Component {
 
     return (
       <div className='top-table'>
-        <div className='top-table__predator-logo-img'>
+        {/*<div className='top-table__predator-logo-img'>
           <PredatorLogoImg/>
         </div>
 
@@ -77,19 +75,16 @@ class TournamentTable extends Component {
 
         <div className='top-table__acer-logo-img'>
           <AcerLogoImg/>
+        </div>*/}
+
+        <div className='top-table__blank'>
+          <Blank/>
         </div>
 
-        <div>Турнир: { tournament_number }</div>
+        <div className='top-table__tournament-number'>{ tournament_number }</div>
         {
           players.length ? (
             <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Очки</TableCell>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Ник</TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 {
                   players.map(player => {
