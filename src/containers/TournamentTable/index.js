@@ -127,6 +127,12 @@ class TournamentTable extends Component {
         }
 
         {
+          topten ? (
+            <div className='top-table__black-hover'/>
+          ) : null
+        }
+
+        {
           topten ? null : (
             <div className='top-table__navigation'>
               <div

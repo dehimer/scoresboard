@@ -93,8 +93,6 @@ app.get(/.*/, function root(req, res) {
         case 'server/find_player':
           {
             const { broughtNotebook, updateBroughtNotebook, ...data } = action.data;
-            console.log(updateBroughtNotebook);
-            console.log(broughtNotebook);
 
             const [findErr, player] = await to(collections.players.findOne(data));
             if (findErr) {
