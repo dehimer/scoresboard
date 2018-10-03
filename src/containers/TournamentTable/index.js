@@ -8,7 +8,7 @@ import './index.scss'
 class TournamentTable extends Component {
   state = {
     page: 0,
-    rowsPerPage: 14,
+    rowsPerPage: 10,
     dt: ''
   };
 
