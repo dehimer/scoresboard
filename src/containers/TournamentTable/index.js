@@ -163,7 +163,9 @@ class TournamentTable extends Component {
         {
           topten ? null : (
             <div className='top-table__download'>
-              ⇓
+              <a href='/csv-export' target='_blank'>
+                ⇓
+              </a>
             </div>
           )
         }

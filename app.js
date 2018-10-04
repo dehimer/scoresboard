@@ -24,14 +24,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
   })();
 }
 
-app.use(express.static(__dirname + '/'));
-
-app.get(/.*/, function root(req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
-
-
-
 (async () => {
   // READ CONFIGS
   const config  = require('./config');
@@ -331,10 +323,26 @@ app.get(/.*/, function root(req, res) {
             scores: 0,
             acceptedRules: true
           })
+        } else {
+          console.log(`import csv with headers: ${jsonObj}`);
         }
       }, ()=> {}, () => {
         io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) });
         io.sockets.emit('action', { type: 'players_import_ts', data: +(new Date()) })
       })
+  });
+
+  app.get('/csv-export', async function(req, res) {
+    let csv = 'USERID,NAME,FBID,ACCOUNT,SUBSCRIPTION,PRICE,STATE,TIMEPERIOD\n23,John Doe,1234,500,SUBSCRIPITON,100,ACTIVE,30\n'
+
+    res.setHeader('Content-disposition', 'attachment; filename=out.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csv);
+  });
+
+  app.use(express.static(__dirname + '/'));
+
+  app.get(/.*/, function root(req, res) {
+    res.sendFile(__dirname + '/index.html');
   });
 })();
