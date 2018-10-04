@@ -291,8 +291,16 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
   app.post('/csv-import', async function(req, res) {
     console.log('Start import from csv');
-    const maxCodePlayers = await to(collections.players.find({}, {code: 1}).sort({ code: -1 }).limit(1).toArray());
+    const [findErr, maxCodePlayers] = await to(collections.players.find({}, {code: 1}).sort({ code: -1 }).limit(1).toArray());
+    if (findErr) {
+      console.log(findErr);
+      res.status(500).send('Ошибка при попытке экспорта csv');
+      return;
+    }
     console.log(maxCodePlayers[0]);
+
+    await collections.players.drop();
+
     let code = maxCodePlayers[0] ? maxCodePlayers[0].code : 0;
     csv({
       noheader: true,
@@ -300,7 +308,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
     })
       .fromStream(req)
       .subscribe(async (jsonObj) => {
-        console.log(jsonObj);
         code += 1;
 
         const [
