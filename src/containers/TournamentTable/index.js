@@ -160,6 +160,14 @@ class TournamentTable extends Component {
           )
         }
 
+        {
+          topten ? null : (
+            <div className='top-table__download'>
+              ⇓
+            </div>
+          )
+        }
+
       </div>
     );
   }
