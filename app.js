@@ -288,7 +288,6 @@ app.get(/.*/, function root(req, res) {
     const maxCodePlayers = await to(collections.players.find({}, {code: 1}).sort({ code: -1 }).limit(1).toArray());
     console.log(maxCodePlayers[0]);
     let code = maxCodePlayers[0] ? maxCodePlayers[0].code : 0;
-
     csv({
       noheader: true,
       output: 'csv'
@@ -299,7 +298,7 @@ app.get(/.*/, function root(req, res) {
 
         const [
           nickname,
-          fio,
+          fullname,
           birthday,
           city,
           email,
@@ -313,12 +312,12 @@ app.get(/.*/, function root(req, res) {
           utm_referrer
         ] = jsonObj;
 
-        if (email) {
+        if (email && email !== 'Email') {
           await collections.players.insertOne({
             code,
             nickname,
-            fio,
-            birthday,
+            fullname,
+            birthday: birthday.split('-').reverse().join('-'),
             city,
             email,
             phone,
