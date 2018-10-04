@@ -27,6 +27,12 @@ export default class EditPlayer extends Component {
     onUpdate({ ...data, scores: +scores || 0 });
   }
 
+  handleRemove() {
+    const { onDelete } = this.props;
+
+    onDelete({ ...this.state });
+  }
+
   handleCancel() {
     const { onUpdate } = this.props;
     onUpdate();
@@ -63,6 +69,9 @@ export default class EditPlayer extends Component {
             <div className='edit-player__controls'>
               <Button className='edit-player__input' onClick={::this.handleCancel} variant='contained'>
                 Отмена
+              </Button>
+              <Button variant='contained' color='secondary' onClick={ ::this.handleRemove }>
+                Удалить
               </Button>
 
               <Button disabled={disabled} className='edit-player__input' onClick={::this.handleClick} variant='contained' color='primary'>

@@ -104,6 +104,15 @@ class AdminPanel extends Component {
     this.setState({ playerInEdit: null });
   }
 
+  deletePlayer(data) {
+    if (data) {
+      const { deletePlayer } = this.props;
+      deletePlayer({ code: this.state.playerInEdit.code });
+    }
+
+    this.setState({ playerInEdit: null });
+  }
+
   resetScores() {
     const { resetScores } = this.props;
     resetScores();
@@ -182,7 +191,7 @@ class AdminPanel extends Component {
         }
         <Dialog open={ !!playerInEdit } onClose={() => this.setState({ playerInEdit: null })} aria-labelledby='simple-dialog-title'>
           <div className='admin-panel__edit-dialog-content'>
-            <EditPlayer onUpdate={::this.updatePlayer} player={ playerInEdit }/>
+            <EditPlayer onUpdate={::this.updatePlayer} onDelete={::this.deletePlayer} player={ playerInEdit }/>
           </div>
         </Dialog>
 
@@ -226,6 +235,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updatePlayer: (player) => {
       dispatch({ type: 'server/update_player', data: player });
+    },
+    deletePlayer: (player) => {
+      dispatch({ type: 'server/delete_player', data: player });
     },
     resetScores: () => {
       dispatch({ type: 'server/reset_scores' });

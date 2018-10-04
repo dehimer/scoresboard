@@ -131,6 +131,20 @@ if(process.env.npm_lifecycle_event === 'dev'){
             io.sockets.emit('action', { type: 'player_updated', data: { ...player, ...data } })
           }
           break;
+        case 'server/delete_player':
+        {
+          const { code } = action.data;
+
+          const [findErr] = await to(collections.players.removeOne({ code }));
+          if (findErr) {
+            console.log(findErr);
+            console.log(`Player with ID ${code} is not found`);
+            return;
+          }
+
+          io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
+        }
+          break;
         case 'server/set_tournament_number':
           {
             const tournamentNumber = action.data;
@@ -333,9 +347,52 @@ if(process.env.npm_lifecycle_event === 'dev'){
   });
 
   app.get('/csv-export', async function(req, res) {
-    let csv = 'USERID,NAME,FBID,ACCOUNT,SUBSCRIPTION,PRICE,STATE,TIMEPERIOD\n23,John Doe,1234,500,SUBSCRIPITON,100,ACTIVE,30\n'
+    const [findErr, players] = await to(collections.players.find({ broughtNotebook: true }).toArray());
 
-    res.setHeader('Content-disposition', 'attachment; filename=out.csv');
+    if (findErr) {
+      console.log(findErr);
+      res.status(500).send('Ошибка при попытке экспорта csv');
+      return;
+    }
+
+    let csv = 'nickname,fio,Date,city,Email,Phone,notebook,socialnetworks,checkbox,requestid,sended,referer,utm_referrer\n';
+    for (const player of players) {
+      const {
+        nickname,
+        fullname,
+        birthday='',
+        city,
+        email,
+        phone,
+        notebook,
+        link,
+        requestid,
+        sended,
+        refer,
+        utm_referrer
+      } = player;
+
+      const csvRow = [
+        nickname,
+        fullname,
+        birthday.split('-').reverse().join('-'),
+        city,
+        email,
+        phone,
+        notebook,
+        link,
+        'yes',
+        requestid,
+        sended,
+        refer,
+        utm_referrer
+      ].join(',');
+      console.log(csvRow);
+
+      csv += `${csvRow}\n`;
+    }
+
+    res.setHeader('Content-disposition', 'attachment; filename=predator.csv');
     res.set('Content-Type', 'text/csv');
     res.status(200).send(csv);
   });
