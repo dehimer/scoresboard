@@ -214,7 +214,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
             const { page, rowsCount } = filter;
 
             const [ findError, players ] = await to(
-              collections.players.find({ broughtNotebook: true }).sort({scores: -1}).skip(page*rowsCount).limit(rowsCount).toArray()
+              collections.players.find({ broughtNotebook: true, scores: { $gt: 0 } }).sort({ scores: -1 }).skip(page*rowsCount).limit(rowsCount).toArray()
             );
 
             if (findError) {
@@ -227,7 +227,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
           break;
         case 'server/get_top_players_count':
           {
-            const [countErr, playersCount] = await to(collections.players.countDocuments({ broughtNotebook: true }));
+            const [countErr, playersCount] = await to(collections.players.countDocuments({ broughtNotebook: true, scores: { $gt: 0 } }));
             if (countErr) {
               console.log(countErr);
               return;
@@ -300,6 +300,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
     })
       .fromStream(req)
       .subscribe(async (jsonObj) => {
+        console.log(jsonObj);
         code += 1;
 
         const [
@@ -355,7 +356,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
       return;
     }
 
-    let csv = 'nickname,fio,Date,city,Email,Phone,notebook,socialnetworks,checkbox,requestid,sended,referer,utm_referrer\n';
+    let csv = 'nickname,fio,Date,city,Email,Phone,notebook,socialnetworks,checkbox,requestid,sended,referer,utm_referrer\r\n';
     for (const player of players) {
       const {
         nickname,
@@ -387,9 +388,8 @@ if(process.env.npm_lifecycle_event === 'dev'){
         refer,
         utm_referrer
       ].join(',');
-      console.log(csvRow);
 
-      csv += `${csvRow}\n`;
+      csv += `${csvRow}\r\n`;
     }
 
     res.setHeader('Content-disposition', 'attachment; filename=predator.csv');
