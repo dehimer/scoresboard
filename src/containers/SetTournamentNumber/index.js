@@ -39,14 +39,21 @@ class SetTournamentNumber extends Component {
 
     if (tournament_number_changed) {
       this.setState({
-        showSnackbar: true,
+        showSnackbar: this.state.inputTouched,
         tournamentNumber: tournament_number_next
       })
     }
   }
 
   componentDidMount() {
-    this.props.getTournamentNumber();
+    const { tournament_number } = this.props;
+    if (typeof tournament_number !== 'undefined'){
+      this.setState({
+        tournamentNumber: tournament_number
+      })
+    } else {
+      this.props.getTournamentNumber();
+    }
   }
 
   render() {
@@ -55,7 +62,7 @@ class SetTournamentNumber extends Component {
     return (
       <div>
         <MenuBar/>
-        <div className='set-scores-wrapper'>
+        <div className='set-tournament-number-wrapper'>
           <Snackbar
             anchorOrigin={{
               vertical: 'top',
@@ -71,19 +78,19 @@ class SetTournamentNumber extends Component {
           />
           <Card>
             <CardContent>
-              <form className='set-scores'>
-                <h3 className='set-scores__header'>Установка номера турнира</h3>
+              <form className='set-tournament-number'>
+                <h3 className='set-tournament-number__header'>Установка номера турнира</h3>
 
                 <TextField
-                  className='set-scores__input' type='text' label='Номер турнира'
+                  className='set-tournament-number__input' type='text' label='Номер турнира'
                   variant='outlined' margin='dense'
                   value={ tournamentNumber }
                   onChange={ ::this.handleChange }
                 />
 
-                <div className='set-scores__spacer'/>
+                <div className='set-tournament-number__spacer'/>
 
-                <Button disabled={!inputTouched || !tournamentNumber || tournamentNumber === this.props.tournament_number} className='set-scores__input' onClick={::this.handleClick}  variant='contained' color='primary'>
+                <Button disabled={!inputTouched || !tournamentNumber || tournamentNumber === this.props.tournament_number} className='set-tournament-number__input' onClick={::this.handleClick}  variant='contained' color='primary'>
                   Установить
                 </Button>
               </form>
@@ -108,8 +115,8 @@ const mapDispatchToProps = (dispatch) => {
     setTournamentNumber: (tournamentNumber) => {
       dispatch({ type: 'server/set_tournament_number', data: tournamentNumber });
     },
-    getTournamentNumber: (tournamentNumber) => {
-      dispatch({ type: 'server/get_tournament_number', data: tournamentNumber });
+    getTournamentNumber: () => {
+      dispatch({ type: 'server/get_tournament_number' });
     }
   }
 };

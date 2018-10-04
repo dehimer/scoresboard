@@ -36,6 +36,11 @@ export default (props) => {
             Задать номер турнира
           </Button>
         </Link>
+        <Link to='/setscoreslimit'>
+          <Button variant='contained'>
+            Задать лимит баллов
+          </Button>
+        </Link>
         <Link to='/table'>
           <Button variant='contained'>
              Топ 10

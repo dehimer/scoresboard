@@ -12,6 +12,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, found_player: data };
     case 'player_updated':
       return { ...state, updated_player: data };
+    case 'scores_limit':
+      return { ...state, scores_limit: data };
     case 'tournament_number':
       return { ...state, tournament_number: data };
     case 'players_count':

@@ -42,6 +42,19 @@ if(process.env.npm_lifecycle_event === 'dev'){
     settings: db.collection('settings')
   };
 
+
+  // set defaults
+  const tournamentNumberCount = await collections.settings.countDocuments({ type: 'tournamentNumber' });
+  if (!tournamentNumberCount) {
+    await collections.settings.insertOne({ type: 'tournamentNumber', value: 1 });
+  }
+
+  const scoresLimitCount = await collections.settings.countDocuments({ type: 'scoresLimit' });
+  if (!scoresLimitCount) {
+    await collections.settings.insertOne({ type: 'scoresLimit', value: 10000 });
+  }
+
+
   // STARTUP SERVERS
   // run http server
   const server = http.createServer(app);
@@ -132,17 +145,52 @@ if(process.env.npm_lifecycle_event === 'dev'){
           }
           break;
         case 'server/delete_player':
-        {
-          const { code } = action.data;
+          {
+            const { code } = action.data;
 
-          const [findErr] = await to(collections.players.removeOne({ code }));
+            const [findErr] = await to(collections.players.removeOne({ code }));
+            if (findErr) {
+              console.log(findErr);
+              console.log(`Player with ID ${code} is not found`);
+              return;
+            }
+
+            io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
+          }
+          break;
+        case 'server/set_scores_limit':
+          {
+            const scoresLimit = action.data;
+
+            const [updateErr] = await to(collections.settings.replaceOne({
+              type: 'scoresLimit'
+            }, {
+              type: 'scoresLimit',
+              value: scoresLimit
+            }, { upsert: true }));
+
+            if (updateErr) {
+              console.log(updateErr);
+              return;
+            }
+
+            socket.emit('action', { type: 'scores_limit', data: scoresLimit })
+          }
+          break;
+        case 'server/get_scores_limit':
+        {
+          const [findErr, scoresLimit] = await to(collections.settings.findOne({
+            type: 'scoresLimit'
+          }));
+
           if (findErr) {
             console.log(findErr);
-            console.log(`Player with ID ${code} is not found`);
             return;
           }
 
-          io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
+          const { value: scores_limit } = scoresLimit;
+
+          socket.emit('action', { type: 'scores_limit', data: scores_limit })
         }
           break;
         case 'server/set_tournament_number':
@@ -240,12 +288,23 @@ if(process.env.npm_lifecycle_event === 'dev'){
           {
             const { code, scores: additionalScores } = action.data;
 
-            const [findErr, player] = await to(collections.players.findOne({ code }));
-            if (findErr) {
-              console.log(findErr);
+            const [findPlayerErr, player] = await to(collections.players.findOne({ code }));
+            if (findPlayerErr) {
+              console.log(findPlayerErr);
               console.log(`Player with ID ${code} is not found`);
               return;
             }
+
+            const [findScoresLimitErr, scoresLimitSetting] = await to(collections.settings.findOne({
+              type: 'scoresLimit'
+            }));
+
+            if (findScoresLimitErr) {
+              console.log(findScoresLimitErr);
+              return;
+            }
+
+            const { value: scoresLimit } = scoresLimitSetting;
 
             const scores = additionalScores + (player.scores || 0);
 
@@ -254,7 +313,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
                 code
               }, {
                 $set: {
-                  scores
+                  scores: scores > scoresLimit ? scoresLimit : scores,
                 }
               })
             );

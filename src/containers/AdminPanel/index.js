@@ -40,7 +40,7 @@ import './index.scss'
 class AdminPanel extends Component {
   state = {
     page: 0,
-    rowsPerPage: 10,
+    rowsPerPage: 100,
     hoveredRowCode: null,
     playerInEdit: null,
     scoresInDelete: false
@@ -177,7 +177,7 @@ class AdminPanel extends Component {
                     className='admin-panel__pagination'
                     count={rowsLength}
                     rowsPerPage={rowsPerPage}
-                    rowsPerPageOptions={[10, 50, 100]}
+                    rowsPerPageOptions={[10, 50, 100, 500, 1000]}
                     page={page}
                     onChangePage={::this.handleChangePage}
                     onChangeRowsPerPage={::this.handleChangeRowsPerPage}
