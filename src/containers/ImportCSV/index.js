@@ -43,7 +43,6 @@ class ImportCSV extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.players_import_ts !== this.props.players_import_ts) {
       this.setState({
-        file: null,
         showSnackbar: true
       });
     }

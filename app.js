@@ -324,12 +324,13 @@ app.get(/.*/, function root(req, res) {
             phone,
             notebook,
             link,
-            broughtNotebook,
+            broughtNotebook: false && broughtNotebook,
             requestid,
             sended,
             refer,
             utm_referrer,
-            scores: 0
+            scores: 0,
+            acceptedRules: true
           })
         }
       }, ()=> {}, () => {
