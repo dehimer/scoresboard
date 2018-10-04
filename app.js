@@ -197,7 +197,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
             const { page, rowsCount } = filter;
 
             const [ findError, players ] = await to(
-              collections.players.find({ code: { $gt: page*rowsCount }}).limit(rowsCount).toArray()
+              collections.players.find({}).sort({ scores: -1 }).skip(page*rowsCount).limit(rowsCount).toArray()
             );
 
             if (findError) {
