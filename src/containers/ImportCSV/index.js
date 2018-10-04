@@ -12,7 +12,8 @@ import './index.scss'
 class ImportCSV extends Component {
   state = {
     file: null,
-    showSnackbar: false
+    showSnackbar: false,
+    inInport: false
   };
 
   onChange(e) {
@@ -21,8 +22,8 @@ class ImportCSV extends Component {
 
   onFormSubmit(e) {
     e.preventDefault();
-    this.fileUpload(this.state.file).then((response)=>{
-      console.log(response.data);
+    this.setState({ inInport: true }, () => {
+      this.fileUpload(this.state.file);
     })
   }
 
@@ -43,7 +44,8 @@ class ImportCSV extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.players_import_ts !== this.props.players_import_ts) {
       this.setState({
-        showSnackbar: true
+        showSnackbar: true,
+        inInport: false
       });
     }
   }
@@ -55,6 +57,8 @@ class ImportCSV extends Component {
   }
 
   render() {
+    const { showSnackbar, inInport } = this.state;
+
     return (
       <div>
         <MenuBar/>
@@ -64,7 +68,7 @@ class ImportCSV extends Component {
               vertical: 'top',
               horizontal: 'center'
             }}
-            open={this.state.showSnackbar}
+            open={showSnackbar}
             autoHideDuration={6000}
             onClose={::this.handleCloseSnackbar}
             ContentProps={{
@@ -83,7 +87,7 @@ class ImportCSV extends Component {
 
                 <div className='import-csv__spacer'/>
 
-                <Button disabled={!this.state.file} type='submit' className='import-csv__input' variant='contained' color='primary'>
+                <Button disabled={!this.state.file || inInport} type='submit' className='import-csv__input' variant='contained' color='primary'>
                   Импорт
                 </Button>
               </form>

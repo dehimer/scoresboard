@@ -359,8 +359,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
     })
       .fromStream(req)
       .subscribe(async (jsonObj) => {
-        code += 1;
-
         const [
           nickname,
           fullname,
@@ -378,6 +376,8 @@ if(process.env.npm_lifecycle_event === 'dev'){
         ] = jsonObj;
 
         if (email && email !== 'Email') {
+          code += 1;
+
           await collections.players.insertOne({
             code,
             nickname,
