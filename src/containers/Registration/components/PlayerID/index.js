@@ -1,6 +1,8 @@
 import {Button, Card, CardContent, Typography} from '@material-ui/core'
 import React from 'react';
 
+import './index.scss'
+
 export default ({ player, cleanupPlayer}) => {
   return (
     <Card>
@@ -37,7 +39,7 @@ export default ({ player, cleanupPlayer}) => {
           )
         }
 
-        <Button className='new-player__input' onClick={cleanupPlayer} variant='contained'>
+        <Button className='player-id__button' onClick={cleanupPlayer} variant='contained'>
           Назад
         </Button>
       </CardContent>

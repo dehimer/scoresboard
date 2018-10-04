@@ -19,7 +19,9 @@ export default class NewPlayer extends Component {
 
   handleClick() {
     const { register } = this.props;
-    register({ ...this.state });
+    const { email, ...data } = this.state;
+
+    register({ ...data, email: email.toLowerCase() });
   }
 
   handleChange = name => event => {

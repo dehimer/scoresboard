@@ -11,12 +11,16 @@ export default class RegisteredPlayer extends Component {
 
   handleClick() {
     const { checkId } = this.props;
-    checkId({ ...this.state });
+    const { email, ...data } = this.state;
+
+    checkId({ ...data, email: email.toLowerCase() });
   }
 
   handleChange = name => event => {
+    const value = (name === 'broughtNotebook') ? event.target.checked : event.target.value;
+
     this.setState({
-      [name]: (name === 'broughtNotebook') ? event.target.checked : event.target.value
+      [name]: value
     });
   };
 
