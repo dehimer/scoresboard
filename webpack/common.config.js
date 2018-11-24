@@ -12,24 +12,24 @@ const TARGET = process.env.npm_lifecycle_event;
 
 const PATHS = {
   app: path.join(__dirname, '../src'),
-  build: path.join(__dirname, '../dist'),
+  build: path.join(__dirname, '../dist')
 };
 
 process.env.BABEL_ENV = TARGET;
 
 const common = {
   entry: [
-    PATHS.app,
+    PATHS.app
   ],
 
   output: {
     path: PATHS.build,
-    filename: 'bundle.js',
+    filename: 'bundle.js'
   },
 
   resolve: {
     extensions: ['', '.jsx', '.js', '.json', '.scss'],
-    modulesDirectories: ['node_modules', PATHS.app],
+    modulesDirectories: ['node_modules', PATHS.app]
   },
 
   module: {
@@ -38,54 +38,54 @@ const common = {
         test: /\.js$/,
         loaders: ['eslint'],
         include: [
-          path.resolve(__dirname, '../src'),
-        ],
+          path.resolve(__dirname, '../src')
+        ]
       }
     ],
     loaders: [{
       test: /bootstrap-sass[\/\\]assets[\/\\]javascripts[\/\\]/,
-      loader: 'imports?jQuery=jquery',
+      loader: 'imports?jQuery=jquery'
     }, {
       test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url?limit=10000&mimetype=application/font-woff',
+      loader: 'url?limit=10000&mimetype=application/font-woff'
     }, {
       test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url?limit=10000&mimetype=application/font-woff2',
+      loader: 'url?limit=10000&mimetype=application/font-woff2'
     }, {
       test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url?limit=10000&mimetype=application/octet-stream',
+      loader: 'url?limit=10000&mimetype=application/octet-stream'
     }, {
       test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url?limit=10000&mimetype=application/font-otf',
+      loader: 'url?limit=10000&mimetype=application/font-otf'
     }, {
       test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'file',
+      loader: 'file'
     }, {
       test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url?limit=10000&mimetype=image/svg+xml',
+      loader: 'url?limit=10000&mimetype=image/svg+xml'
     }, {
       test: /\.js$/,
       loaders: ['babel-loader'],
-      exclude: /node_modules/,
+      exclude: /node_modules/
     }, {
       test: /\.png$/,
-      loader: 'file?name=[name].[ext]',
+      loader: 'file?name=[name].[ext]'
     }, {
       test: /\.jpg$/,
-      loader: 'file?name=[name].[ext]',
-    }],
+      loader: 'file?name=[name].[ext]'
+    }]
   },
 
   postcss: (webpack) => {
     return [
       autoprefixer({
-        browsers: ['last 2 versions'],
+        browsers: ['last 2 versions']
       }),
       postcssImport({
-        addDependencyTo: webpack,
-      }),
+        addDependencyTo: webpack
+      })
     ];
-  },
+  }
 };
 
 if (TARGET === 'dev' || !TARGET) {

@@ -22,7 +22,7 @@ Dont forget to run mongod!
 <code>npm run build</code>
 2) run cmd console as admin and execute command in directory:
 <code>npm run install-windows-service</code>
-3) found and start scoresboard service in services list of windows
+3) find and start scoresboard service in services list of windows
 
 <hr>
 <b>Pages (on localhost:3000):</b>
