@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux'
 
 import './index.scss'
@@ -16,7 +16,8 @@ class Registration extends Component {
     player: {
       firstName: '',
       lastName: ''
-    }
+    },
+    rfidWaiting: false
   };
 
   register() {
@@ -24,6 +25,10 @@ class Registration extends Component {
     const { player } = this.state;
 
     addPlayer({ ...player, tabletId });
+
+    this.setState({
+      rfidWaiting: true
+    })
   }
 
   handleChange = name => event => {
@@ -36,37 +41,48 @@ class Registration extends Component {
   };
 
   render() {
-    const { firstName, lastName } = this.state.player;
+    const { player, rfidWaiting } = this.state;
+    const { firstName, lastName } = player;
 
     return (
       <div className='registration'>
         <Card>
           <CardContent>
-            <Typography color='textSecondary' variant='display2'>
-              Регистрация
-            </Typography>
-            <form>
-              <MuiThemeProvider theme={theme}>
-                <TextField
-                  type='text' placeholder='Имя'
-                  variant='outlined' margin='dense'
-                  value={ firstName }
-                  onChange={ this.handleChange('firstName') }
-                />
-                <TextField
-                  type='text' placeholder='Фамилия'
-                  variant='outlined' margin='dense'
-                  value={ lastName }
-                  onChange={ this.handleChange('lastName') }
-                />
+            {
+              rfidWaiting ? (
+                <Typography color='textSecondary' variant='display4'>
+                  Поднесите карту к считывателю
+                </Typography>
+              ) : (
+                <Fragment>
+                  <Typography color='textSecondary' variant='display2'>
+                    Регистрация
+                  </Typography>
+                  <form>
+                    <MuiThemeProvider theme={theme}>
+                      <TextField
+                        type='text' placeholder='Имя'
+                        variant='outlined' margin='dense'
+                        value={ firstName }
+                        onChange={ this.handleChange('firstName') }
+                      />
+                      <TextField
+                        type='text' placeholder='Фамилия'
+                        variant='outlined' margin='dense'
+                        value={ lastName }
+                        onChange={ this.handleChange('lastName') }
+                      />
 
-                <br/>
+                      <br/>
 
-                <Button disabled={!firstName || !lastName} onClick={::this.register} variant='contained' color='primary'>
-                  Зарегистрироваться
-                </Button>
-              </MuiThemeProvider>
-            </form>
+                      <Button disabled={!firstName || !lastName} onClick={::this.register} variant='contained' color='primary'>
+                        Зарегистрироваться
+                      </Button>
+                    </MuiThemeProvider>
+                  </form>
+                </Fragment>
+              )
+            }
           </CardContent>
         </Card>
       </div>
