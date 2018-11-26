@@ -11,11 +11,12 @@ const theme = createMuiTheme({
   }
 });
 
+const emptyPlayer = { firstName: '', lastName: '' };
+
 class Registration extends Component {
   state = {
     player: {
-      firstName: '',
-      lastName: ''
+      ...emptyPlayer
     }
   };
 
@@ -24,16 +25,19 @@ class Registration extends Component {
     const { player } = this.state;
 
     updatePoint({ id, payload: { player } });
+    this.resetPlayerFields();
   }
 
   cancel() {
     const { updatePoint, match: { params: { id } } } = this.props;
     updatePoint({ id, payload: { player: null } });
+    this.resetPlayerFields();
+  }
 
+  resetPlayerFields() {
     this.setState({
       player: {
-        firstName: '',
-        lastName: ''
+        ...emptyPlayer
       }
     })
   }
@@ -66,6 +70,18 @@ class Registration extends Component {
       content = (
         <Typography color='textSecondary' variant='display4'>
           Неверный номер точки регистрации
+        </Typography>
+      )
+    } else if (registrationPoint.error) {
+      content = (
+        <Typography color='textSecondary' variant='display4'>
+          {registrationPoint.error === 'rfidInUse' ? 'Карта уже зарегистрирована' : 'Неизвестная ошибка. Просим прощения...'}
+        </Typography>
+      )
+    } else if (registrationPoint.registered) {
+      content = (
+        <Typography color='textSecondary' variant='display4'>
+          Поздравляем! Регистрация прошла успешно.
         </Typography>
       )
     } else if (registrationPoint.player) {

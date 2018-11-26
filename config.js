@@ -33,5 +33,10 @@ module.exports = {
     7: { readerId: 9, variants: [] },
     8: { readerId: 10, variants: [] },
     9: { readerId: 11, variants: [] },
+  },
+  db: {
+    address: 'localhost',
+    port: 27017,
+    name: 'ilike'
   }
 };

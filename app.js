@@ -2,7 +2,9 @@ import to from 'await-to-js';
 const http = require('http');
 const express = require('express');
 const app = express();
-const Datastore = require('nedb');
+
+const MongoClient = require('mongodb').MongoClient;
+const Server = require('mongodb').Server;
 
 
 // RUN WEBPACK HOT LOADER
@@ -27,6 +29,18 @@ if(process.env.npm_lifecycle_event === 'dev'){
   const config  = require('./config');
   console.log(config);
 
+  // Connection URL
+  const { db: dbconfig } = config;
+
+  let mongoclient = new MongoClient(new Server(dbconfig.address, dbconfig.port), { native_parser: true });
+  mongoclient = await mongoclient.connect();
+
+  const db = mongoclient.db(dbconfig.name);
+
+  const collections = {
+    players: db.collection('players'),
+  };
+
 
   // STARTUP SERVERS
   // run http server
@@ -43,8 +57,73 @@ if(process.env.npm_lifecycle_event === 'dev'){
   io.attach(server);
 
   // SETUP
-  const playersStore = new Datastore({ filename: './db/players', autoload: true });
   const { readers, registrationPoints, activities } = config;
+
+  const updateRegistrationPoint = () => {
+    io.sockets.emit('action', { type: 'registrationPoints', data: registrationPoints });
+  };
+  const resetRegistrationPoint = (registrationPoint) => {
+    setTimeout(() => {
+      delete registrationPoint.error;
+      delete registrationPoint.error;
+      delete registrationPoint.registered;
+      delete registrationPoint.player;
+
+      updateRegistrationPoint();
+    }, 3000);
+  };
+
+
+  // RFID READERS
+  // TODO should be replaced by real event handler from readers
+  const rfidReaderEventEmulator = (readerId) => {
+    setTimeout(() => {
+      const rfid = parseInt(Math.random()*100); // TODO should be used real rfid id
+      // scan registrationPoints
+      Object.keys(registrationPoints).forEach(async (pointId) => {
+        const registrationPoint = registrationPoints[pointId];
+
+        // save new players
+        if (registrationPoint.readerId === readerId && registrationPoint.player) {
+          const { player } = registrationPoint;
+
+          const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
+          console.log([errCount, playersCount]);
+          if (errCount) {
+            registrationPoint.error = true;
+            updateRegistrationPoint();
+            resetRegistrationPoint(registrationPoint);
+
+            return;
+          }
+
+          if (playersCount > 0) {
+            registrationPoint.error = 'rfidInUse';
+            updateRegistrationPoint();
+            resetRegistrationPoint(registrationPoint);
+
+            return;
+          }
+
+          const [errInsert, insertedPlayer] = await to(collections.players.insertOne({ ...player, rfid }));
+          console.log([errInsert, insertedPlayer]);
+          if (errInsert) {
+            registrationPoint.error = true;
+            updateRegistrationPoint();
+            resetRegistrationPoint(registrationPoint);
+
+            return;
+          }
+          registrationPoint.registered = true;
+
+          updateRegistrationPoint();
+          resetRegistrationPoint(registrationPoint);
+        }
+      });
+
+      // scan activities
+    }, parseInt(Math.random()*10000)+300);
+  };
 
 
   // process sockets messages
@@ -63,6 +142,8 @@ if(process.env.npm_lifecycle_event === 'dev'){
             registrationPoints[id] = { ...registrationPoints[id], ...payload };
 
             socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
+
+            rfidReaderEventEmulator(registrationPoints[id].readerId);
           }
           break;
         /*
