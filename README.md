@@ -39,3 +39,7 @@ Dont forget to run mongod!
 <code>/table</code>
 6) Full List of Top
 <code>/table-full</code>
+
+
+TODO:
+1) Fill config file

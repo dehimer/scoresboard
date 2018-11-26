@@ -8,6 +8,7 @@ export default function reducer(state = defaultState, action) {
   switch(type){
     case 'player_added':
       return { ...state, added_player: data };
+    /*
     case 'found_player':
       return { ...state, found_player: data };
     case 'player_updated':
@@ -26,6 +27,7 @@ export default function reducer(state = defaultState, action) {
       return { ...state, players_update_ts: data };
     case 'players_import_ts':
       return { ...state, players_import_ts: data };
+      */
     default:
       return state;
   }
