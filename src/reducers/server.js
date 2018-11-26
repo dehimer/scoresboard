@@ -1,13 +1,12 @@
-const defaultState = {
-  top10players:[],
-  all_players: []
-};
+const defaultState = {};
 
 export default function reducer(state = defaultState, action) {
   const { type, data } = action;
   switch(type){
-    case 'player_added':
-      return { ...state, added_player: data };
+    case 'registrationPoints':
+      return { ...state, registrationPoints: data };
+    case 'activities':
+      return { ...state, activities: data };
     /*
     case 'found_player':
       return { ...state, found_player: data };

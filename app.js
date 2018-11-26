@@ -27,8 +27,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
   const config  = require('./config');
   console.log(config);
 
-  // Connection URL
-  const playersStore = new Datastore({ filename: './db/players', autoload: true });
 
   // STARTUP SERVERS
   // run http server
@@ -44,32 +42,27 @@ if(process.env.npm_lifecycle_event === 'dev'){
   var io = socket_io();
   io.attach(server);
 
+  // SETUP
+  const playersStore = new Datastore({ filename: './db/players', autoload: true });
+  const { readers, registrationPoints, activities } = config;
+
+
   // process sockets messages
-  io.on('connection', socket => {
+  io.on('connection', (socket) => {
     console.log('connection');
+
+    socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
+    socket.emit('action', { type: 'activities', data: activities });
 
     socket.on('action', async (action) => {
       console.log(action);
       switch (action.type) {
-        case 'server/add_player':
+        case 'server/registration_point_update':
           {
-            const [errCount, playersCount] = await to(playersStore.countDocuments({}));
-            if (errCount) {
-              console.log(errCount);
+            const { id, payload } = action.data;
+            registrationPoints[id] = { ...registrationPoints[id], ...payload };
 
-              return;
-            }
-            const code = playersCount + 1;
-            const userData = { ...action.data, code };
-
-            const [errInsert] = await to(playersStore.insertOne(userData));
-            if (errInsert) {
-              console.log(errInsert);
-
-              return;
-            }
-
-            io.sockets.emit('action', { type: 'player_added', data: userData })
+            socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
           }
           break;
         /*

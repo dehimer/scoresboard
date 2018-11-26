@@ -11,4 +11,13 @@
     flex-direction: column;
     width: 1000px;
   }
+
+  &__rfid-waiting {
+    display: flex;
+    flex-direction: column;
+
+    &-button {
+      opacity: .3;
+    }
+  }
 }

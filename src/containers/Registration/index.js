@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import './index.scss'
-import { Button, Card, CardContent, TextField, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, TextField, Typography, CircularProgress } from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
@@ -16,18 +16,25 @@ class Registration extends Component {
     player: {
       firstName: '',
       lastName: ''
-    },
-    rfidWaiting: false
+    }
   };
 
-  register() {
-    const { addPlayer, match: { params: { tabletId } } } = this.props;
+  submit() {
+    const { updatePoint, match: { params: { id } } } = this.props;
     const { player } = this.state;
 
-    addPlayer({ ...player, tabletId });
+    updatePoint({ id, payload: { player } });
+  }
+
+  cancel() {
+    const { updatePoint, match: { params: { id } } } = this.props;
+    updatePoint({ id, payload: { player: null } });
 
     this.setState({
-      rfidWaiting: true
+      player: {
+        firstName: '',
+        lastName: ''
+      }
     })
   }
 
@@ -41,65 +48,97 @@ class Registration extends Component {
   };
 
   render() {
-    const { player, rfidWaiting } = this.state;
+    const { registrationPoints, match: { params: { id } } } = this.props;
+    console.log(registrationPoints);
+    console.log(id);
+    const registrationPoint = registrationPoints && registrationPoints[id];
+    console.log(registrationPoint);
+
+    const { player } = this.state;
     const { firstName, lastName } = player;
+
+
+    let content = null;
+
+    if(!registrationPoints) {
+      content = ( <CircularProgress size={50} />)
+    } else if (!registrationPoint) {
+      content = (
+        <Typography color='textSecondary' variant='display4'>
+          Неверный номер точки регистрации
+        </Typography>
+      )
+    } else if (registrationPoint.player) {
+      content = (
+        <div className='registration__rfid-waiting'>
+          <Typography color='textSecondary' variant='display4'>
+            Поднесите карту к считывателю
+          </Typography>
+
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+
+          <MuiThemeProvider theme={theme}>
+            <Button className='registration__rfid-waiting-button' onClick={::this.cancel}>
+              Отмена
+            </Button>
+          </MuiThemeProvider>
+        </div>
+      )
+    } else {
+      content = (
+        <Card>
+          <CardContent>
+            <Typography color='textSecondary' variant='display2'>
+              Регистрация
+            </Typography>
+            <form>
+              <MuiThemeProvider theme={theme}>
+                <TextField
+                  type='text' placeholder='Имя'
+                  variant='outlined' margin='dense'
+                  value={ firstName }
+                  onChange={ this.handleChange('firstName') }
+                />
+                <TextField
+                  type='text' placeholder='Фамилия'
+                  variant='outlined' margin='dense'
+                  value={ lastName }
+                  onChange={ this.handleChange('lastName') }
+                />
+
+                <br/>
+
+                <Button disabled={!firstName || !lastName} onClick={::this.submit} variant='contained' color='primary'>
+                  Зарегистрироваться
+                </Button>
+              </MuiThemeProvider>
+            </form>
+          </CardContent>
+        </Card>
+      )
+    }
 
     return (
       <div className='registration'>
-        <Card>
-          <CardContent>
-            {
-              rfidWaiting ? (
-                <Typography color='textSecondary' variant='display4'>
-                  Поднесите карту к считывателю
-                </Typography>
-              ) : (
-                <Fragment>
-                  <Typography color='textSecondary' variant='display2'>
-                    Регистрация
-                  </Typography>
-                  <form>
-                    <MuiThemeProvider theme={theme}>
-                      <TextField
-                        type='text' placeholder='Имя'
-                        variant='outlined' margin='dense'
-                        value={ firstName }
-                        onChange={ this.handleChange('firstName') }
-                      />
-                      <TextField
-                        type='text' placeholder='Фамилия'
-                        variant='outlined' margin='dense'
-                        value={ lastName }
-                        onChange={ this.handleChange('lastName') }
-                      />
-
-                      <br/>
-
-                      <Button disabled={!firstName || !lastName} onClick={::this.register} variant='contained' color='primary'>
-                        Зарегистрироваться
-                      </Button>
-                    </MuiThemeProvider>
-                  </form>
-                </Fragment>
-              )
-            }
-          </CardContent>
-        </Card>
+        { content }
       </div>
     );
   }
 }
 
 const mapStateToProps = function (state) {
-  const { added_player } = state.server;
+  const { registrationPoints } = state.server;
 
-  return { added_player }
+  return { registrationPoints };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addPlayer: (player) => {
-      dispatch({ type: 'server/add_player', data: player });
+    updatePoint: (data) => {
+      dispatch({ type: 'server/registration_point_update', data });
     }
   }
 };
