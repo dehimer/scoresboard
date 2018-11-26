@@ -13,7 +13,7 @@ export default class App extends Component {
     return (
       <div className='app'>
         <Switch>
-          <Route exact path='/registration' component={ Registration } />
+          <Route exact path='/registration/:tabletId' component={ Registration } />
           {/*<Route exact path='/activity' component={ SetScores } />*/}
           {/*<Route exact path='/adminpanel' component={ AdminPanel } />*/}
           {/*<Route exact path='/table-5' component={ Top10Table } />*/}

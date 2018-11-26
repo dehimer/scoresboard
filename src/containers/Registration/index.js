@@ -7,7 +7,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   typography: {
-    fontSize: 50
+    fontSize: 100
   }
 });
 
@@ -20,37 +20,41 @@ class Registration extends Component {
   };
 
   register() {
-    this.props.addPlayer(this.state.player);
+    const { addPlayer, match: { params: { tabletId } } } = this.props;
+    const { player } = this.state;
+
+    addPlayer({ ...player, tabletId });
   }
 
   handleChange = name => event => {
     const value = event.target.value;
+    const { player } = this.state;
 
     this.setState({
-      [name]: value
+      player: { ...player, [name]: value }
     });
   };
 
   render() {
-    const { firstName, lastName } = this.state;
+    const { firstName, lastName } = this.state.player;
 
     return (
       <div className='registration'>
         <Card>
           <CardContent>
-            <Typography color='textSecondary' variant='headline'>
+            <Typography color='textSecondary' variant='display2'>
               Регистрация
             </Typography>
             <form>
               <MuiThemeProvider theme={theme}>
                 <TextField
-                  type='text' label='Имя'
+                  type='text' placeholder='Имя'
                   variant='outlined' margin='dense'
                   value={ firstName }
                   onChange={ this.handleChange('firstName') }
                 />
                 <TextField
-                  type='text' label='Фамилия'
+                  type='text' placeholder='Фамилия'
                   variant='outlined' margin='dense'
                   value={ lastName }
                   onChange={ this.handleChange('lastName') }
