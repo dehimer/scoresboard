@@ -13,7 +13,7 @@ class Activity extends Component {
     const { match: { params: { id } } } = this.props;
     return (
       <div className='activity'>
-        {id}
+        {id}¤
       </div>
     );
   }
