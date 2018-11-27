@@ -38,7 +38,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   const db = mongoclient.db(dbconfig.name);
 
   const collections = {
-    players: db.collection('players'),
+    players: db.collection('players')
   };
 
 
@@ -78,7 +78,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   // TODO should be replaced by real event handler from readers
   const rfidReaderEventEmulator = (readerId) => {
     setTimeout(() => {
-      const rfid = parseInt(Math.random()*100); // TODO should be used real rfid id
+      const rfid = parseInt(Math.random()*10); // TODO should be used real rfid id
       // scan registrationPoints
       Object.keys(registrationPoints).forEach(async (pointId) => {
         const registrationPoint = registrationPoints[pointId];
