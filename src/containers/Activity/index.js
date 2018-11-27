@@ -21,6 +21,8 @@ class Activity extends Component {
       console.log(activity);
       const { variants=[] } = activity;
 
+      // checkBalance, singleVariant, multipleVariants
+
       console.log('variants');
       console.log(variants);
       return (
