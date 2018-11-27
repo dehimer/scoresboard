@@ -88,7 +88,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
           const { player } = registrationPoint;
 
           const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
-          console.log([errCount, playersCount]);
+
           if (errCount) {
             registrationPoint.error = true;
             updateRegistrationPoint();
@@ -105,8 +105,11 @@ if(process.env.npm_lifecycle_event === 'dev'){
             return;
           }
 
-          const [errInsert, insertedPlayer] = await to(collections.players.insertOne({ ...player, rfid }));
-          console.log([errInsert, insertedPlayer]);
+          const { startBalance } = config;
+          const [errInsert] = await to(collections.players.insertOne({
+            ...player, rfid, spend: 0, balance: startBalance, startBalance
+          }));
+
           if (errInsert) {
             registrationPoint.error = true;
             updateRegistrationPoint();
@@ -132,6 +135,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
     socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
     socket.emit('action', { type: 'activities', data: activities });
+    socket.emit('action', { type: 'currency', data: config.currency });
 
     socket.on('action', async (action) => {
       console.log(action);

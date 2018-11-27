@@ -1,27 +1,13 @@
 $fonts-path: '../../assets/fonts';
+$bravorg-path: '#{$fonts-path}/BauhausC-Bold';
 
-$bravorg-path: '#{$fonts-path}/BravoRG/BravoRG';
 @font-face {
-    font-family: 'BravoRG';
-    src: url('#{$bravorg-path}.ttf');
-
-    src: url('#{$bravorg-path}.eot'); /* IE9 Compat Modes */
-    src: url('#{$bravorg-path}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('#{$bravorg-path}.woff2') format('woff2'), /* Super Modern Browsers */
-       url('#{$bravorg-path}.woff') format('woff'), /* Pretty Modern Browsers */
-       url('#{$bravorg-path}.ttf')  format('truetype'), /* Safari, Android, iOS */
-       url('#{$bravorg-path}.svg#svgFontName') format('svg'); /* Legacy iOS */
+  font-family: 'BauhausC';
+  src: url('#{$bravorg-path}.otf') format('opentype');
 }
 
-$bravorg-path: '#{$fonts-path}/BravoSCT/BravoSCT';
 @font-face {
-    font-family: 'BravoSCT';
-    src: url('#{$bravorg-path}.ttf');
-
-    src: url('#{$bravorg-path}.eot'); /* IE9 Compat Modes */
-    src: url('#{$bravorg-path}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('#{$bravorg-path}.woff2') format('woff2'), /* Super Modern Browsers */
-       url('#{$bravorg-path}.woff') format('woff'), /* Pretty Modern Browsers */
-       url('#{$bravorg-path}.ttf')  format('truetype'), /* Safari, Android, iOS */
-       url('#{$bravorg-path}.svg#svgFontName') format('svg'); /* Legacy iOS */
+  font-family: 'BauhausC-Bold';
+  font-weight: bold;
+  src: url('#{$bravorg-path}.otf') format('opentype');
 }

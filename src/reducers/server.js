@@ -7,6 +7,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, registrationPoints: data };
     case 'activities':
       return { ...state, activities: data };
+    case 'currency':
+      return { ...state, currency: data };
     /*
     case 'found_player':
       return { ...state, found_player: data };

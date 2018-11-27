@@ -5,4 +5,19 @@
 
   align-items: center;
   justify-content: center;
+
+  font-size: 50px;
+  font-family: BauhausC-Bold;
+
+  &__variants {
+    padding: 50px;
+  }
+
+  &__variant {
+    display: flex;
+    flex-direction: row;
+    padding: 50px;
+    background-color: blue;
+    color: white;
+  }
 }
