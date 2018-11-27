@@ -22,6 +22,11 @@ class Activity extends Component {
     variantSelected(data);
   }
 
+  onUnselectVariant(activityId) {
+    const { variantUnselect } = this.props;
+    variantUnselect(activityId);
+  }
+
   render() {
     const { activities, currency, match: { params: { id } } } = this.props;
 
@@ -38,7 +43,7 @@ class Activity extends Component {
           <div className='content'>
           {
             selected ? (
-              <RfidWaiting selected={selected}/>
+              <RfidWaiting selected={selected} reset={() => this.onUnselectVariant(id)}/>
             ) : (
               variants.length === 1 ? (
                 variants[0].balanceChecking ? (
@@ -78,6 +83,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     variantSelected: (data) => {
       dispatch({ type: 'server/variant_selected', data });
+    },
+    variantUnselect: (activityId) => {
+      dispatch({ type: 'server/variant_unselect', data: activityId });
     }
   }
 };
