@@ -2,6 +2,7 @@
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
 
   align-items: center;
   justify-content: center;
@@ -11,15 +12,9 @@
   background-image: url("../../assets/images/bg.jpg");
   background-size: cover;
 
-  &__variants {
-    padding: 50px;
-  }
+  padding-bottom: 100px;
+}
 
-  &__variant {
-    display: flex;
-    flex-direction: row;
-    padding: 50px;
-    background-color: blue;
-    color: white;
-  }
+.logo {
+  height: 400px;
 }

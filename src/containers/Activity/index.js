@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-// import { Button, Card, CardContent, TextField, Chip, Snackbar } from '@material-ui/core';
+
+import logo from '../../assets/images/logo.png';
+import Balance from './components/Balance';
+import SingleVariant from './components/SingleVariant';
+import MultipleVariants from './components/MultipleVariants';
 
 
 import './index.scss'
@@ -27,21 +31,18 @@ class Activity extends Component {
       console.log(variants);
       return (
         <div className='activity'>
-          <div className='activity__variants'>
-            {
-              variants.map((variant, idx) => (
-                <div key={idx} className='activity__variant'>
-                  <div>
-                    {variant.text}
-                  </div>
-                  <div>
-                    {variant.price}
-                  </div>
-                  <div>{currency}</div>
-                </div>
-              ))
-            }
-          </div>
+          <div className='logo'><img src={logo}/></div>
+          {
+            variants.length === 1 ? (
+              variants[0].balanceChecking ? (
+                <Balance text={variants[0].text} currency={currency}/>
+              ) : (
+                <SingleVariant variant={variants[0]} currency={currency}/>
+              )
+            ) : (
+              <MultipleVariants variants={variants} currency={currency}/>
+            )
+          }
         </div>
       );
     } else {
