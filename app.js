@@ -57,7 +57,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   io.attach(server);
 
   // SETUP
-  const { readers, registrationPoints, activities } = config;
+  const { registrationPoints, activities } = config;
 
   const updateRegistrationPoint = () => {
     io.sockets.emit('action', { type: 'registrationPoints', data: registrationPoints });
@@ -76,56 +76,53 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
   // RFID READERS
   // TODO should be replaced by real event handler from readers
-  const rfidReaderEventEmulator = (readerId) => {
-    setTimeout(() => {
-      const rfid = parseInt(Math.random()*10); // TODO should be used real rfid id
-      // scan registrationPoints
-      Object.keys(registrationPoints).forEach(async (pointId) => {
-        const registrationPoint = registrationPoints[pointId];
+  const rfidReaderEvent = (readerId, rfid) => {
+    console.log(`rfidReaderEvent ${readerId} ${rfid}`);
 
-        // save new players
-        if (registrationPoint.readerId === readerId && registrationPoint.player) {
-          const { player } = registrationPoint;
+    // scan registrationPoints
+    Object.keys(registrationPoints).forEach(async (pointId) => {
+      const registrationPoint = registrationPoints[pointId];
 
-          const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
+      // save new players
+      if (registrationPoint.readerId === readerId && registrationPoint.player) {
+        const { player } = registrationPoint;
 
-          if (errCount) {
-            registrationPoint.error = true;
-            updateRegistrationPoint();
-            resetRegistrationPoint(registrationPoint);
+        const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
 
-            return;
-          }
-
-          if (playersCount > 0) {
-            registrationPoint.error = 'rfidInUse';
-            updateRegistrationPoint();
-            resetRegistrationPoint(registrationPoint);
-
-            return;
-          }
-
-          const { startBalance } = config;
-          const [errInsert] = await to(collections.players.insertOne({
-            ...player, rfid, spend: 0, balance: startBalance, startBalance
-          }));
-
-          if (errInsert) {
-            registrationPoint.error = true;
-            updateRegistrationPoint();
-            resetRegistrationPoint(registrationPoint);
-
-            return;
-          }
-          registrationPoint.registered = true;
-
+        if (errCount) {
+          registrationPoint.error = true;
           updateRegistrationPoint();
           resetRegistrationPoint(registrationPoint);
-        }
-      });
 
-      // scan activities
-    }, parseInt(Math.random()*10000)+300);
+          return;
+        }
+
+        if (playersCount > 0) {
+          registrationPoint.error = 'rfidInUse';
+          updateRegistrationPoint();
+          resetRegistrationPoint(registrationPoint);
+
+          return;
+        }
+
+        const { startBalance } = config;
+        const [errInsert] = await to(collections.players.insertOne({
+          ...player, rfid, spend: 0, balance: startBalance, startBalance
+        }));
+
+        if (errInsert) {
+          registrationPoint.error = true;
+          updateRegistrationPoint();
+          resetRegistrationPoint(registrationPoint);
+
+          return;
+        }
+        registrationPoint.registered = true;
+
+        updateRegistrationPoint();
+        resetRegistrationPoint(registrationPoint);
+      }
+    });
   };
 
 
@@ -146,8 +143,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
             registrationPoints[id] = { ...registrationPoints[id], ...payload };
 
             socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
-
-            rfidReaderEventEmulator(registrationPoints[id].readerId);
           }
           break;
         case 'server/variant_selected':
@@ -339,6 +334,12 @@ if(process.env.npm_lifecycle_event === 'dev'){
   });
 
   app.use(express.static(__dirname + '/'));
+
+  app.get('/reader/:id/:rfid', function(req, res) {
+    const { id, rfid } = req.params;
+    rfidReaderEvent(id, rfid);
+    res.send(`reader ${id} sent ${rfid} rfid`);
+  });
 
   app.get(/.*/, function root(req, res) {
     res.sendFile(__dirname + '/index.html');
