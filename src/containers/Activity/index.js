@@ -17,21 +17,14 @@ class Activity extends Component {
     const { activities, currency, match: { params: { id } } } = this.props;
 
     if (activities) {
-      console.log(`id: ${id}`);
-      console.log('activities');
-      console.log(activities);
       const activity = activities && activities[id];
-      console.log('activity');
-      console.log(activity);
-      const { variants=[] } = activity;
-
-      // checkBalance, singleVariant, multipleVariants
-
-      console.log('variants');
+      const { variants=[], header } = activity;
+      console.log(header);
       console.log(variants);
       return (
         <div className='activity'>
           <div className='logo'><img src={logo}/></div>
+          { header ? <div className='header'>{header}</div> : null }
           <div className='content'>
           {
             variants.length === 1 ? (
