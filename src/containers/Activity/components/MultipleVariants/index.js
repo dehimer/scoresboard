@@ -1,5 +1,6 @@
 import React from 'react';
 import InputWrapper from '../../../../components/InputWrapper';
+import DottendPrice from '../../../../components/DottedPrice';
 
 import './index.scss';
 
@@ -15,7 +16,7 @@ export default ({ variants, currency }) => (
             {
               variant.hiddenPrice ? null : (
                 <div>
-                  {variant.price}
+                  <DottendPrice>{variant.price}</DottendPrice>
                   {currency}
                 </div>
               )
