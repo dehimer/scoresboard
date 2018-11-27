@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import logo from '../../assets/images/logo.png';
+
 import Balance from './components/Balance';
 import SingleVariant from './components/SingleVariant';
 import MultipleVariants from './components/MultipleVariants';
@@ -13,14 +14,18 @@ class Activity extends Component {
   state = {
   };
 
+  onSelectVariant(variant) {
+    console.log('onSelectVariant');
+    console.log(variant);
+  }
+
   render() {
     const { activities, currency, match: { params: { id } } } = this.props;
 
     if (activities) {
       const activity = activities && activities[id];
       const { variants=[], header } = activity;
-      console.log(header);
-      console.log(variants);
+
       return (
         <div className='activity'>
           <div className='logo'><img src={logo}/></div>
@@ -31,10 +36,18 @@ class Activity extends Component {
               variants[0].balanceChecking ? (
                 <Balance text={variants[0].text} currency={currency}/>
               ) : (
-                <SingleVariant variant={variants[0]} currency={currency}/>
+                <SingleVariant
+                  select={::this.onSelectVariant}
+                  variant={variants[0]}
+                  currency={currency}
+                />
               )
             ) : (
-              <MultipleVariants variants={variants} currency={currency}/>
+              <MultipleVariants
+                variants={variants}
+                currency={currency}
+                select={::this.onSelectVariant}
+              />
             )
           }
           </div>

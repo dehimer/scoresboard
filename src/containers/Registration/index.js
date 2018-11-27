@@ -53,10 +53,7 @@ class Registration extends Component {
 
   render() {
     const { registrationPoints, match: { params: { id } } } = this.props;
-    console.log(registrationPoints);
-    console.log(id);
     const registrationPoint = registrationPoints && registrationPoints[id];
-    console.log(registrationPoint);
 
     const { player } = this.state;
     const { firstName, lastName } = player;
