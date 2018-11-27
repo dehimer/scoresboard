@@ -11,3 +11,7 @@ $bravorg-path: '#{$fonts-path}/BauhausC-Bold';
   font-weight: bold;
   src: url('#{$bravorg-path}.otf') format('opentype');
 }
+
+body {
+  overflow: hidden;
+}
