@@ -1,0 +1,32 @@
+.rfid-waiting {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  width: 100%;
+
+  justify-content: space-around;
+  align-items: center;
+}
+
+.question {
+  color: white;
+  font-size: 90px;
+}
+
+.action {
+  font-size: 80px;
+}
+
+.back {
+  color: #333;
+  background-color: #ccc;
+  opacity: 0.5;
+  padding: 20px 50px;
+  border-radius: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

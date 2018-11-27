@@ -152,7 +152,12 @@ if(process.env.npm_lifecycle_event === 'dev'){
           break;
         case 'server/variant_selected':
           {
-            console.log('variant of activity is selected')
+            console.log('variant of activity is selected');
+            const { activityId, variant } = action.data;
+            console.log(activityId);
+            console.log(variant);
+            activities[activityId].selected = variant;
+            socket.emit('action', { type: 'activities', data: activities });
           }
           break;
         /*
