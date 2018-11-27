@@ -9,7 +9,7 @@ export default ({ variants, currency }) => (
       variants.map((variant, idx) => {
         return (
           <div key={idx} className='variant'>
-            <InputWrapper>
+            <InputWrapper lined={true}>
               <div className='text'>
                 {variant.text}
               </div>

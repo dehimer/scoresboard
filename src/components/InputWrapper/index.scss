@@ -30,5 +30,15 @@
 
     border: 5px solid deepskyblue;
     background-color: yellow;
+    z-index: 2;
+  }
+
+  &__line {
+    position: absolute;
+    height: 5px;
+    width: 100vw;
+    left: 0;
+    z-index: 0;
+    background-color: deepskyblue;
   }
 }
