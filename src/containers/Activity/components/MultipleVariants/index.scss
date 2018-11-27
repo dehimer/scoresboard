@@ -11,20 +11,7 @@
 
 .variant {
   display: flex;
-  flex-direction: row;
-
-  justify-content: space-between;
-  align-items: center;
-
-  padding-left: 50px;
-  padding-right: 50px;
 
   width: 86%;
-  background-color: yellow;
-
-  height: 180px;
-  border: 5px solid deepskyblue;
-  border-radius: 50px;
-
   font-size: 60px;
 }
