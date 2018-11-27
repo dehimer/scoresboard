@@ -12,7 +12,6 @@
 
   padding: 5px;
 
-
   &__inner-border {
     display: flex;
     flex-direction: row;
@@ -40,5 +39,9 @@
     left: 0;
     z-index: 0;
     background-color: deepskyblue;
+  }
+
+  .center {
+    justify-content: center;
   }
 }

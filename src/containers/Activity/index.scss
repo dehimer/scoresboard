@@ -1,6 +1,7 @@
 .activity {
   width: 100vw;
   height: 100vh;
+
   display: flex;
   flex-direction: column;
 
@@ -17,4 +18,13 @@
 
 .logo {
   height: 400px;
+}
+
+.content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: unset;
 }

@@ -32,6 +32,7 @@ class Activity extends Component {
       return (
         <div className='activity'>
           <div className='logo'><img src={logo}/></div>
+          <div className='content'>
           {
             variants.length === 1 ? (
               variants[0].balanceChecking ? (
@@ -43,6 +44,7 @@ class Activity extends Component {
               <MultipleVariants variants={variants} currency={currency}/>
             )
           }
+          </div>
         </div>
       );
     } else {
