@@ -150,6 +150,11 @@ if(process.env.npm_lifecycle_event === 'dev'){
             rfidReaderEventEmulator(registrationPoints[id].readerId);
           }
           break;
+        case 'server/variant_selected':
+          {
+            console.log('variant of activity is selected')
+          }
+          break;
         /*
         case 'server/find_player':
           {

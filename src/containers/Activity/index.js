@@ -10,13 +10,14 @@ import MultipleVariants from './components/MultipleVariants';
 
 import './index.scss'
 
+
 class Activity extends Component {
   state = {
   };
 
   onSelectVariant(variant) {
-    console.log('onSelectVariant');
-    console.log(variant);
+    const { variantSelected } = this.props;
+    variantSelected(variant);
   }
 
   render() {
@@ -29,7 +30,9 @@ class Activity extends Component {
       return (
         <div className='activity'>
           <div className='logo'><img src={logo}/></div>
+
           { header ? <div className='header'>{header}</div> : null }
+
           <div className='content'>
           {
             variants.length === 1 ? (
@@ -37,16 +40,16 @@ class Activity extends Component {
                 <Balance text={variants[0].text} currency={currency}/>
               ) : (
                 <SingleVariant
-                  select={::this.onSelectVariant}
                   variant={variants[0]}
                   currency={currency}
+                  select={(variant) => this.onSelectVariant({...variant, activityId: id})}
                 />
               )
             ) : (
               <MultipleVariants
                 variants={variants}
                 currency={currency}
-                select={::this.onSelectVariant}
+                select={(variant) => this.onSelectVariant({...variant, activityId: id})}
               />
             )
           }
@@ -65,14 +68,11 @@ const mapStateToProps = function (state) {
   return { activities, currency }
 };
 
-const mapDispatchToProps = (/*dispatch*/) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    // addScores: (player) => {
-    //   dispatch({ type: 'server/add_scores', data: player });
-    // },
-    // findPlayer: (player) => {
-    //   dispatch({ type: 'server/find_player', data: player });
-    // }
+    variantSelected: (variant) => {
+      dispatch({ type: 'server/variant_selected', data: variant });
+    }
   }
 };
 
