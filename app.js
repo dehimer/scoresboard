@@ -74,25 +74,16 @@ if(process.env.npm_lifecycle_event === 'dev'){
   };
 
 
-  // RFID READERS
-  // TODO should be replaced by real event handler from readers
-  const rfidReaderEvent = (readerId, rfid) => {
-    console.log(`rfidReaderEvent ${readerId} ${rfid}`);
+  const checkRegistrationPoints = (readerId, rfid) => {
     // scan registrationPoints
     Object.keys(registrationPoints).forEach(async (pointId) => {
       const registrationPoint = registrationPoints[pointId];
-      console.log(registrationPoint);
+
       // save new players
-      console.log('check');
-      console.log(typeof registrationPoint.readerId);
-      console.log(typeof readerId);
       if (registrationPoint.readerId === readerId && registrationPoint.player) {
-        console.log('same');
         const { player } = registrationPoint;
 
         const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
-        console.log('errCount');
-        console.log(errCount);
         if (errCount) {
           registrationPoint.error = true;
           updateRegistrationPoint();
@@ -100,8 +91,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
           return;
         }
-        console.log('playersCount');
-        console.log(playersCount);
 
         if (playersCount > 0) {
           registrationPoint.error = 'rfidInUse';
@@ -136,6 +125,24 @@ if(process.env.npm_lifecycle_event === 'dev'){
         resetRegistrationPoint(registrationPoint);
       }
     });
+  };
+
+  const checkActivities = (readerId, rfid) => {
+    console.log(`checkActivities ${[readerId, rfid].join(', ')}`);
+    Object.keys(activities).forEach((activityId) => {
+      const activity = activities[activityId];
+
+      if (activity.readerId === readerId && activity.selected) {
+        console.log(activity);
+      }
+    });
+  };
+
+
+  // RFID READERS
+  const rfidReaderEvent = (readerId, rfid) => {
+    checkRegistrationPoints(readerId, rfid);
+    checkActivities(readerId, rfid);
   };
 
 
