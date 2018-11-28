@@ -19,13 +19,8 @@ module.exports = {
   activities: {
     1: {
       readerId: 3,
-      variants: [
-        {
-          text: 'Для проверки баланса поднесите карту к считывателю',
-          balanceChecking: true,
-          withoutAccept: true
-        }
-      ]
+      text: 'Для проверки баланса поднесите карту к считывателю',
+      balanceChecking: true
     },
     2: {
       readerId: 4,

@@ -61,17 +61,15 @@ class Activity extends Component {
         );
       } else if (selected) {
         content = (<RfidWaiting selected={selected} reset={() => this.onUnselectVariant(id)}/>);
+      } else if (activity.balanceChecking) {
+        content = (<Balance text={activity.text} player={activity.player} currency={currency}/>)
       } else if (variants.length === 1) {
         content = (
-          variants[0].balanceChecking ? (
-            <Balance text={variants[0].text} currency={currency}/>
-          ) : (
-            <SingleVariant
-              variant={variants[0]}
-              currency={currency}
-              select={(variant) => this.onSelectVariant({ variant, activityId: id })}
-            />
-          )
+          <SingleVariant
+            variant={variants[0]}
+            currency={currency}
+            select={(variant) => this.onSelectVariant({ variant, activityId: id })}
+          />
         )
       } else {
         content = (

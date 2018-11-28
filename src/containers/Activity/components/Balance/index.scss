@@ -1,12 +1,31 @@
 .balance-checking {
   display: flex;
+  flex-direction: column;
   justify-content: center;
 
   height: 100%;
   width: 100%;
-  padding-top: 10%;
 
   text-align: center;
   font-size: 60px;
   color: white;
+}
+
+.balance-info {
+  .greeting {
+    font-size: 50px;
+  }
+
+  .balance-label {
+    font-size: 60px;
+    margin-top: 80px;
+  }
+
+  .balance {
+    font-size: 100px;
+  }
+}
+
+.asking {
+  margin-bottom: 10%;
 }

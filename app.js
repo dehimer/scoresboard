@@ -135,6 +135,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   const resetActivity = (activity) => {
     setTimeout(() => {
       delete activity.error;
+      delete activity.player;
 
       updateActivity();
     }, 3000);
@@ -145,11 +146,11 @@ if(process.env.npm_lifecycle_event === 'dev'){
     Object.keys(activities).forEach(async (activityId) => {
       const activity = activities[activityId];
 
-      if (activity.readerId === readerId && activity.selected) {
+      if (activity.readerId === readerId && (activity.selected || activity.balanceChecking)) {
         console.log(activity);
 
         // find player by rfid
-        const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
+        const [errCount, player] = await to(collections.players.findOne({ rfid }));
         if (errCount) {
           activity.error = true;
           updateActivity();
@@ -161,7 +162,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
           return;
         }
 
-        if (playersCount === 0) {
+        if (!player) {
           activity.error = 'rfidInActive';
           updateActivity();
           setTimeout(() => {
@@ -172,22 +173,32 @@ if(process.env.npm_lifecycle_event === 'dev'){
           return;
         }
 
-        const date = +new Date();
-        if (activity.delay && activity.lastUsageDate) {
-          if (date - activity.lastUsageDate < activity.delay*1000*60) {
-            activity.error = 'tooOften';
-            updateActivity();
-            setTimeout(() => {
-              delete activity.error;
+        if (activity.balanceChecking) {
+          activity.player = player;
+          updateActivity();
+
+          setTimeout(() => {
+            resetActivity(activity);
+          }, 5000);
+        } else {
+          const date = +new Date();
+          if (activity.delay && activity.lastUsageDate) {
+            if (date - activity.lastUsageDate < activity.delay*1000*60) {
+              activity.error = 'tooOften';
               updateActivity();
-            }, 5000);
+              setTimeout(() => {
+                delete activity.error;
+                updateActivity();
+              }, 5000);
 
-            return;
+              return;
+            }
           }
-        }
 
-        activity.lastUsageDate = date;
-        updateActivity();
+          activity.lastUsageDate = date;
+
+          updateActivity();
+        }
       }
     });
   };
