@@ -15,6 +15,7 @@ import './index.scss'
 
 class Activity extends Component {
   onSelectVariant(data) {
+    console.log('onSelectVariant');
     const { variantSelected } = this.props;
     variantSelected(data);
   }
@@ -34,7 +35,7 @@ class Activity extends Component {
 
     if (activities) {
       const activity = activities && activities[id];
-      const { variants=[], header, selected, error, player } = activity;
+      const { variants=[], header, selected, error, player, response } = activity;
 
       let content;
 
@@ -60,7 +61,7 @@ class Activity extends Component {
       } else if (activity.balanceChecking) {
         content = (<Balance text={activity.text} player={player} currency={currency}/>)
       } else if (player) {
-        content = <PaymentResult player={player} currency={currency}/>
+        content = <PaymentResult player={player} currency={currency} response={response} selected={selected}/>
       } else if (selected) {
         content = (<RfidWaiting selected={selected} customMsg={activity.accept} reset={() => this.onUnselectVariant(id)}/>);
       } else if (variants.length === 1) {

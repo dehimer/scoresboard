@@ -72,7 +72,7 @@ module.exports = {
       ],
       response: [
         '[name]!',
-        '[spend',
+        '[spend]',
         '[balance]',
         'Наслаждайтесь концом света!'
       ],
