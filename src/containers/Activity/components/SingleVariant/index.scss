@@ -15,5 +15,10 @@
   .accept {
     width: 200px;
     cursor: pointer;
+    font-size: 50px;
+
+    .input-wrapper {
+      height: 110px;
+    }
   }
 }

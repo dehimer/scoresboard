@@ -17,3 +17,17 @@
 .balance {
   font-size: 80px;
 }
+
+.empty-balance {
+  margin-top: 60px;
+}
+
+.marginized {
+  margin-top: 100px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-around;
+  align-content: center;
+}

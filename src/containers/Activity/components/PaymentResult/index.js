@@ -14,10 +14,13 @@ export default ({ currency, player: { firstName, balance, spend, startBalance } 
         <div>Здесь всегда рады вам!</div>
       </Fragment>
     ) : (
-      <Fragment>
-        <div>Было {startBalance}{currency}, стало {balance}{currency}</div>
-        <div>NO MONEY, NO HONEY!</div>
-      </Fragment>
+      <div className='empty-balance'>
+        <div>{firstName}! Поздравляем!</div>
+        <div className='marginized'>
+          <div>Вы потратили все <DottedPrice>{startBalance}</DottedPrice>{currency}.</div>
+          <div>Теперь для вас всё бесплатно!</div>
+        </div>
+      </div>
     )
   }
   </div>
