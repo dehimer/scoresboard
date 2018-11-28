@@ -149,7 +149,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
       const { selected, balanceChecking } = activity;
 
       if (activity.readerId === readerId && (selected || balanceChecking)) {
-        console.log(activity);
 
         // find player by rfid
         const [errFind, player] = await to(collections.players.findOne({ rfid }));
@@ -177,8 +176,9 @@ if(process.env.npm_lifecycle_event === 'dev'){
           const { price } = selected;
           const { spend, balance } = player;
           let state = { spend, balance };
-
-          if (balance) {
+          console.log('player');
+          console.log(player);
+          if (balance > 0) {
             const date = +new Date();
             if (activity.delay && activity.lastUsageDate) {
               if (date - activity.lastUsageDate < activity.delay*1000*60) {
