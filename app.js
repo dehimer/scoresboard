@@ -174,39 +174,32 @@ if(process.env.npm_lifecycle_event === 'dev'){
           updateActivity();
           resetActivity(activity);
         } else {
-          const date = +new Date();
-          if (activity.delay && activity.lastUsageDate) {
-            if (date - activity.lastUsageDate < activity.delay*1000*60) {
-              activity.error = 'tooOften';
-              updateActivity();
-              resetActivity(activity);
-
-              return;
-            }
-          }
-
-          console.log('player');
-          console.log(player);
-
-          // update player state
           const { price } = selected;
           const { spend, balance } = player;
           let state = { spend, balance };
 
           if (balance) {
+            const date = +new Date();
+            if (activity.delay && activity.lastUsageDate) {
+              if (date - activity.lastUsageDate < activity.delay*1000*60) {
+                activity.error = 'tooOften';
+                updateActivity();
+                resetActivity(activity);
+
+                return;
+              }
+            }
+
+            activity.lastUsageDate = date;
+
             state = {
               spend: spend + price,
               balance: balance - price
             };
 
-            console.log('state');
-            console.log(state);
-            const [errUpdate, result] = await to(collections.players.updateOne({ rfid }, {
+            const [errUpdate] = await to(collections.players.updateOne({ rfid }, {
               $set: { ...state }
             }));
-
-            console.log('result');
-            console.log(result);
 
             if (errUpdate) {
               activity.error = true;
@@ -217,7 +210,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
             }
           }
 
-          activity.lastUsageDate = date;
           activity.player = {...player, ...state};
 
           updateActivity();
