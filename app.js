@@ -57,7 +57,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   io.attach(server);
 
   // SETUP
-  const { registrationPoints, activities } = config;
+  const { readers, registrationPoints, activities } = config;
 
   const updateRegistrationPoint = () => {
     io.sockets.emit('action', { type: 'registrationPoints', data: registrationPoints });
@@ -230,8 +230,13 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
   // RFID READERS
   const rfidReaderEvent = (readerId, rfid) => {
-    checkRegistrationPoints(readerId, rfid);
-    checkActivities(readerId, rfid);
+    const reader = readers.find(reader => reader.outerId === readerId);
+    if (reader) {
+      checkRegistrationPoints(reader.id, rfid);
+      checkActivities(reader.id, rfid);
+    } else {
+      console.error(`Reader with id: ${readerId} is not defined in readers of config.js file`);
+    }
   };
 
 
@@ -446,10 +451,11 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
   app.use(express.static(__dirname + '/'));
 
-  app.get('/reader/:id/:rfid', function(req, res) {
-    const { id, rfid } = req.params;
-    rfidReaderEvent(id*1, rfid*1);
-    res.send(`reader ${id} sent ${rfid} rfid`);
+  app.get('/reader/:readerId/:rfid', function(req, res) {
+    const { readerId, rfid } = req.params;
+
+    rfidReaderEvent(readerId*1, rfid*1);
+    res.send(`reader ${readerId} sent ${rfid} rfid`);
   });
 
   app.get(/.*/, function root(req, res) {

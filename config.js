@@ -1,16 +1,17 @@
 module.exports = {
   readers: [
-    { id: 1, url: '192.168.1.33' },
-    { id: 2, url: '192.168.1.34' },
-    { id: 3, url: '192.168.1.35' },
-    { id: 4, url: '192.168.1.36' },
-    { id: 5, url: '192.168.1.37' },
-    { id: 6, url: '192.168.1.38' },
-    { id: 7, url: '192.168.1.39' },
-    { id: 8, url: '192.168.1.40' },
-    { id: 9, url: '192.168.1.41' },
-    { id: 10, url: '192.168.1.42' },
-    { id: 11, url: '192.168.1.43' }
+    { outerId: 1, id: 1, note: 'стойка регистрации 1' },
+    { outerId: 2, id: 2, note: 'стойка регистрации 2' },
+    { outerId: 3, id: 3, note: 'проверка баланса' },
+    { outerId: 4, id: 4, note: 'алкоголь 1' },
+    { outerId: 5, id: 5, note: 'алкоголь 2' },
+    { outerId: 6, id: 6, note: 'диван' },
+    { outerId: 7, id: 7, note: 'выкинуть деньги' },
+    { outerId: 8, id: 8, note: 'чай' },
+    { outerId: 9, id: 9, note: 'фото' },
+    { outerId: 10, id: 10, note: 'покурить' },
+    { outerId: 11, id: 11, note: 'центрифуга' },
+    { outerId: 12, id: 12, note: 'VR' }
   ],
   registrationPoints: {
     1: { readerId: 1 },
@@ -46,6 +47,27 @@ module.exports = {
     3: {
       readerId: 5,
       variants: [
+        { text: 'Пангалактический грызлодер', price: 29900432 },
+        { text: 'Single malt whiskey 2019 Y.O.', price: 43424234 },
+        { text: 'Водка «Сверхновая»', price: 34254222 },
+        { text: 'Вино «Туманность Андромеды»', price: 37751154 },
+        { text: 'Вино «Красный гигант»', price: 26654432 },
+        { text: 'Шампанское «Уле Тай»', price: 31132143 },
+        { text: 'Сок «Маковый томат»', price: 26642254 },
+        { text: 'Сок «Апельсиновый расколбас»', price: 31132142 },
+        { text: 'Сок титановых яблок', price: 34201102 },
+        { text: 'Сок «Галактическая мешанина»', price: 28341865 }
+      ],
+      response: [
+        'Прекрасный выбор, [name]!',
+        '[spend]',
+        '[balance]'
+      ],
+      delay: 2
+    },
+    4: {
+      readerId: 6,
+      variants: [
         { text: 'Хотите посидеть на диване за 10.345.321¤?', price: 10345321, hiddenPrice: true }
       ],
       response: [
@@ -56,9 +78,9 @@ module.exports = {
       ],
       delay: 5
     },
-    4: {
+    5: {
       header: 'Сколько Альтаирских рублей ¤ вы хотите выкинуть в открытый космос?',
-      readerId: 6,
+      readerId: 7,
       variants: [
         { text: 'Галактически много', price: 5154234, hiddenPrice: true },
         { text: 'Много', price: 10432754, hiddenPrice: true },
@@ -77,8 +99,8 @@ module.exports = {
       ],
       delay: 30
     },
-    5: {
-      readerId: 7, variants: [
+    6: {
+      readerId: 8, variants: [
         { text: 'Ультра-чай', price: 51234235 },
         { text: 'Бетельгезийский улун', price: 52532986 },
         { text: 'Вогонский бергамот', price: 55664023 },
@@ -91,8 +113,8 @@ module.exports = {
       ],
       delay: 2
     },
-    6: {
-      readerId: 8,
+    7: {
+      readerId: 9,
       variants: [
         {
           text: [
@@ -110,8 +132,8 @@ module.exports = {
       ],
       delay: 2
     },
-    7: {
-      readerId: 9,
+    8: {
+      readerId: 10,
       variants: [
         {
           text: 'Хотите ли вы покурить за 10.322.567¤?',
@@ -127,8 +149,8 @@ module.exports = {
       ],
       delay: 2
     },
-    8: { // центрифуга
-      readerId: 10,
+    9: {
+      readerId: 11,
       variants: [
         {
           text: [
@@ -147,8 +169,8 @@ module.exports = {
       ],
       delay: 30
     },
-    9: {
-      readerId: 11,
+    10: {
+      readerId: 12,
       variants: [
         {
           text: [
