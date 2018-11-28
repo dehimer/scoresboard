@@ -78,17 +78,21 @@ if(process.env.npm_lifecycle_event === 'dev'){
   // TODO should be replaced by real event handler from readers
   const rfidReaderEvent = (readerId, rfid) => {
     console.log(`rfidReaderEvent ${readerId} ${rfid}`);
-
     // scan registrationPoints
     Object.keys(registrationPoints).forEach(async (pointId) => {
       const registrationPoint = registrationPoints[pointId];
-
+      console.log(registrationPoint);
       // save new players
+      console.log('check');
+      console.log(typeof registrationPoint.readerId);
+      console.log(typeof readerId);
       if (registrationPoint.readerId === readerId && registrationPoint.player) {
+        console.log('same');
         const { player } = registrationPoint;
 
         const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
-
+        console.log('errCount');
+        console.log(errCount);
         if (errCount) {
           registrationPoint.error = true;
           updateRegistrationPoint();
@@ -96,11 +100,16 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
           return;
         }
+        console.log('playersCount');
+        console.log(playersCount);
 
         if (playersCount > 0) {
           registrationPoint.error = 'rfidInUse';
           updateRegistrationPoint();
-          resetRegistrationPoint(registrationPoint);
+          setTimeout(() => {
+            delete registrationPoint.error;
+            updateRegistrationPoint();
+          }, 5000);
 
           return;
         }
@@ -113,10 +122,14 @@ if(process.env.npm_lifecycle_event === 'dev'){
         if (errInsert) {
           registrationPoint.error = true;
           updateRegistrationPoint();
-          resetRegistrationPoint(registrationPoint);
+          setTimeout(() => {
+            delete registrationPoint.error;
+            updateRegistrationPoint();
+          }, 5000);
 
           return;
         }
+        console.log('done');
         registrationPoint.registered = true;
 
         updateRegistrationPoint();
@@ -337,7 +350,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
   app.get('/reader/:id/:rfid', function(req, res) {
     const { id, rfid } = req.params;
-    rfidReaderEvent(id, rfid);
+    rfidReaderEvent(id*1, rfid*1);
     res.send(`reader ${id} sent ${rfid} rfid`);
   });
 

@@ -4,15 +4,8 @@ import { connect } from 'react-redux'
 import './index.scss'
 
 import Logo from '../../components/Logo';
-import { Button, Typography, CircularProgress } from '@material-ui/core';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { CircularProgress } from '@material-ui/core';
 import InputWrapper from '../../components/InputWrapper';
-
-const theme = createMuiTheme({
-  typography: {
-    fontSize: 100
-  }
-});
 
 const emptyPlayer = { firstName: '', lastName: '' };
 
@@ -68,39 +61,34 @@ class Registration extends Component {
       content = ( <CircularProgress size={50} />)
     } else if (!registrationPoint) {
       content = (
-        <Typography color='textSecondary' variant='display4'>
+        <div className='message'>
           Неверный номер точки регистрации
-        </Typography>
+        </div>
       )
     } else if (registrationPoint.error) {
       content = (
-        <Typography color='textSecondary' variant='display4'>
+        <div className='message'>
           {registrationPoint.error === 'rfidInUse' ? 'Карта уже зарегистрирована' : 'Неизвестная ошибка. Просим прощения...'}
-        </Typography>
+        </div>
       )
     } else if (registrationPoint.registered) {
       content = (
-        <Typography color='textSecondary' variant='display4'>
+        <div className='message'>
           Поздравляем! Регистрация прошла успешно.
-        </Typography>
+        </div>
       )
     } else if (registrationPoint.player) {
       content = (
         <div className='registration__rfid-waiting'>
-          <Typography color='textSecondary' variant='display4'>
+          <div className='note'>
             Поднесите карту к считывателю
-          </Typography>
+          </div>
 
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-
-          <MuiThemeProvider theme={theme}>
-            <Button className='registration__rfid-waiting-button' onClick={::this.cancel}>
+          <div className='cancel' disabled={!firstName || !lastName} onClick={::this.cancel}>
+            <InputWrapper lined={true} centerAlign={true}>
               Отмена
-            </Button>
-          </MuiThemeProvider>
+            </InputWrapper>
+          </div>
         </div>
       )
     } else {
@@ -133,7 +121,7 @@ class Registration extends Component {
           <br/>
 
           <div className='submit' disabled={!firstName || !lastName} onClick={::this.submit}>
-            <InputWrapper lined={true}>
+            <InputWrapper lined={true} centerAlign={true}>
               Зарегистрироваться
             </InputWrapper>
           </div>
