@@ -136,6 +136,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
     setTimeout(() => {
       delete activity.error;
       delete activity.player;
+      delete activity.selected;
 
       updateActivity();
     }, 4000);
@@ -192,7 +193,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
           const { spend, balance } = player;
           let state = { spend, balance };
 
-          if (balance >= price) {
+          if (balance) {
             state = {
               spend: spend + price,
               balance: balance - price

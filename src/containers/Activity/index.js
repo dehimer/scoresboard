@@ -7,6 +7,7 @@ import SingleVariant from './components/SingleVariant';
 import MultipleVariants from './components/MultipleVariants';
 
 import RfidWaiting from './components/RfidWaiting';
+import PaymentResult from './components/PaymentResult';
 
 
 import './index.scss'
@@ -59,12 +60,7 @@ class Activity extends Component {
       } else if (activity.balanceChecking) {
         content = (<Balance text={activity.text} player={player} currency={currency}/>)
       } else if (player) {
-        content = (
-          <div>
-            <div>spend: {player.spend}</div>
-            <div>balance: {player.balance}</div>
-          </div>
-        )
+        content = <PaymentResult player={player} currency={currency}/>
       } else if (selected) {
         content = (<RfidWaiting selected={selected} customMsg={activity.accept} reset={() => this.onUnselectVariant(id)}/>);
       } else if (variants.length === 1) {

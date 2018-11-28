@@ -13,7 +13,7 @@ export default ({ selected, customMsg, reset }) => (
       ) : (
         <Fragment>
           <div className='question'>
-            { selected.text }
+            { Array.isArray(selected.text) ? selected.text.map((text, idx) => (<div key={idx}>{text}</div>)) : selected.text }
           </div>
           <div className='action'>
             <InputWrapper lined={true} centerAlign={true}>
