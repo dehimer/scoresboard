@@ -58,7 +58,8 @@ module.exports = {
     },
     4: {
       header: 'Сколько Альтаирских рублей ¤ вы хотите выкинуть в открытый космос?',
-      readerId: 6, variants: [
+      readerId: 6,
+      variants: [
         { text: 'Галактически много', price: 5154234, hiddenPrice: true },
         { text: 'Много', price: 10432754, hiddenPrice: true },
         { text: 'Мало', price: 30742275, hiddenPrice: true },

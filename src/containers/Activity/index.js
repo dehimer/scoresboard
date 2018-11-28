@@ -60,7 +60,7 @@ class Activity extends Component {
           </div>
         );
       } else if (selected) {
-        content = (<RfidWaiting selected={selected} reset={() => this.onUnselectVariant(id)}/>);
+        content = (<RfidWaiting selected={selected} customMsg={activity.accept} reset={() => this.onUnselectVariant(id)}/>);
       } else if (activity.balanceChecking) {
         content = (<Balance text={activity.text} player={activity.player} currency={currency}/>)
       } else if (variants.length === 1) {
@@ -86,7 +86,7 @@ class Activity extends Component {
 
           <Logo/>
 
-          { header ? <div className='header'>{header}</div> : null }
+          { header && !selected ? <div className='header'>{header}</div> : null }
 
           <div className='content'>
           { content }
