@@ -138,26 +138,24 @@ if(process.env.npm_lifecycle_event === 'dev'){
       delete activity.player;
 
       updateActivity();
-    }, 3000);
+    }, 4000);
   };
 
   const checkActivities = (readerId, rfid) => {
     console.log(`checkActivities ${[readerId, rfid].join(', ')}`);
     Object.keys(activities).forEach(async (activityId) => {
       const activity = activities[activityId];
+      const { selected, balanceChecking } = activity;
 
-      if (activity.readerId === readerId && (activity.selected || activity.balanceChecking)) {
+      if (activity.readerId === readerId && (selected || balanceChecking)) {
         console.log(activity);
 
         // find player by rfid
-        const [errCount, player] = await to(collections.players.findOne({ rfid }));
-        if (errCount) {
+        const [errFind, player] = await to(collections.players.findOne({ rfid }));
+        if (errFind) {
           activity.error = true;
           updateActivity();
-          setTimeout(() => {
-            delete activity.error;
-            updateActivity();
-          }, 5000);
+          resetActivity(activity);
 
           return;
         }
@@ -165,39 +163,64 @@ if(process.env.npm_lifecycle_event === 'dev'){
         if (!player) {
           activity.error = 'rfidInActive';
           updateActivity();
-          setTimeout(() => {
-            delete activity.error;
-            updateActivity();
-          }, 5000);
+          resetActivity(activity);
 
           return;
         }
 
-        if (activity.balanceChecking) {
+        if (balanceChecking) {
           activity.player = player;
           updateActivity();
-
-          setTimeout(() => {
-            resetActivity(activity);
-          }, 5000);
+          resetActivity(activity);
         } else {
           const date = +new Date();
           if (activity.delay && activity.lastUsageDate) {
             if (date - activity.lastUsageDate < activity.delay*1000*60) {
               activity.error = 'tooOften';
               updateActivity();
-              setTimeout(() => {
-                delete activity.error;
-                updateActivity();
-              }, 5000);
+              resetActivity(activity);
+
+              return;
+            }
+          }
+
+          console.log('player');
+          console.log(player);
+
+          // update player state
+          const { price } = selected;
+          const { spend, balance } = player;
+          let state = { spend, balance };
+
+          if (balance >= price) {
+            state = {
+              spend: spend + price,
+              balance: balance - price
+            };
+
+            console.log('state');
+            console.log(state);
+            const [errUpdate, result] = await to(collections.players.updateOne({ rfid }, {
+              $set: { ...state }
+            }));
+
+            console.log('result');
+            console.log(result);
+
+            if (errUpdate) {
+              activity.error = true;
+              updateActivity();
+              resetActivity(activity);
 
               return;
             }
           }
 
           activity.lastUsageDate = date;
+          activity.player = {...player, ...state};
 
           updateActivity();
+          resetActivity(activity);
         }
       }
     });

@@ -13,9 +13,6 @@ import './index.scss'
 
 
 class Activity extends Component {
-  state = {
-  };
-
   onSelectVariant(data) {
     const { variantSelected } = this.props;
     variantSelected(data);
@@ -36,7 +33,7 @@ class Activity extends Component {
 
     if (activities) {
       const activity = activities && activities[id];
-      const { variants=[], header, selected, error } = activity;
+      const { variants=[], header, selected, error, player } = activity;
 
       let content;
 
@@ -59,10 +56,17 @@ class Activity extends Component {
             }
           </div>
         );
+      } else if (activity.balanceChecking) {
+        content = (<Balance text={activity.text} player={player} currency={currency}/>)
+      } else if (player) {
+        content = (
+          <div>
+            <div>spend: {player.spend}</div>
+            <div>balance: {player.balance}</div>
+          </div>
+        )
       } else if (selected) {
         content = (<RfidWaiting selected={selected} customMsg={activity.accept} reset={() => this.onUnselectVariant(id)}/>);
-      } else if (activity.balanceChecking) {
-        content = (<Balance text={activity.text} player={activity.player} currency={currency}/>)
       } else if (variants.length === 1) {
         content = (
           <SingleVariant
