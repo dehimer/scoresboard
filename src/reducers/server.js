@@ -13,6 +13,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, allSpendMessage: data };
     case 'denyMessage':
       return { ...state, denyMessage: data };
+    case 'topten':
+      return { ...state, topten: data };
     /*
     case 'found_player':
       return { ...state, found_player: data };

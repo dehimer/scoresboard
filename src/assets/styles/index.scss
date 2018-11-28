@@ -14,4 +14,9 @@ $bravorg-path: '#{$fonts-path}/BauhausC-Bold';
 
 body {
   overflow: hidden;
+
+  font-family: BauhausC-Bold;
+  font-size: 25px;
+  background-image: url("../../assets/images/bg.jpg");
+  background-size: cover;
 }

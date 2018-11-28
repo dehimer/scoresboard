@@ -8,40 +8,35 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
-  font-family: BauhausC-Bold;
-  background-image: url("../../assets/images/bg.jpg");
-  background-size: cover;
-
   padding-bottom: 50px;
-}
 
-.header {
-  color: white;
-  position: absolute;
-  top: 150px;
-}
+  .header {
+    color: white;
+    position: absolute;
+    top: 150px;
+  }
 
-.content {
-  flex: 1;
+  .content {
+    flex: 1;
 
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-  width: 100%;
+    width: 100%;
 
-  overflow-y: unset;
-}
+    overflow-y: unset;
+  }
 
-.message {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  .message {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 
-  justify-content: center;
-  align-items: center;
+    justify-content: center;
+    align-items: center;
 
-  margin-bottom: 150px;
-  padding: 25px;
-  font-size: 40px;
+    margin-bottom: 150px;
+    padding: 25px;
+    font-size: 40px;
+  }
 }

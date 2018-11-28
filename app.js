@@ -59,8 +59,19 @@ if(process.env.npm_lifecycle_event === 'dev'){
   // SETUP
   const { readers, registrationPoints, activities } = config;
 
-  const updateRegistrationPoint = () => {
-    io.sockets.emit('action', { type: 'registrationPoints', data: registrationPoints });
+
+  const updateTop = async (socket=io.sockets) => {
+    const [errTop, top10] = await to(collections.players.find({}).sort({spend: -1}).limit(10).toArray());
+    if (errTop) {
+      console.error('Error occurred in try of update top');
+      console.log(errTop);
+      return;
+    }
+    socket.emit('action', { type: 'topten', data: top10 });
+  };
+
+  const updateRegistrationPoints = (socket=io.sockets) => {
+    socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
   };
   const resetRegistrationPoint = (registrationPoint) => {
     setTimeout(() => {
@@ -68,7 +79,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
       delete registrationPoint.registered;
       delete registrationPoint.player;
 
-      updateRegistrationPoint();
+      updateRegistrationPoints();
     }, 3000);
   };
 
@@ -84,10 +95,10 @@ if(process.env.npm_lifecycle_event === 'dev'){
         const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
         if (errCount) {
           registrationPoint.error = true;
-          updateRegistrationPoint();
+          updateRegistrationPoints();
           setTimeout(() => {
             delete registrationPoint.error;
-            updateRegistrationPoint();
+            updateRegistrationPoints();
           }, 5000);
 
           return;
@@ -95,10 +106,10 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
         if (playersCount > 0) {
           registrationPoint.error = 'rfidInUse';
-          updateRegistrationPoint();
+          updateRegistrationPoints();
           setTimeout(() => {
             delete registrationPoint.error;
-            updateRegistrationPoint();
+            updateRegistrationPoints();
           }, 5000);
 
           return;
@@ -111,26 +122,28 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
         if (errInsert) {
           registrationPoint.error = true;
-          updateRegistrationPoint();
+          updateRegistrationPoints();
           setTimeout(() => {
             delete registrationPoint.error;
-            updateRegistrationPoint();
+            updateRegistrationPoints();
           }, 5000);
 
           return;
         }
+
         console.log('done');
         registrationPoint.registered = true;
 
-        updateRegistrationPoint();
+        updateTop();
+        updateRegistrationPoints();
         resetRegistrationPoint(registrationPoint);
       }
     });
   };
 
 
-  const updateActivity = () => {
-    io.sockets.emit('action', { type: 'activities', data: activities });
+  const updateActivities = (socket) => {
+    (socket || io.sockets).emit('action', { type: 'activities', data: activities });
   };
   const resetActivity = (activity) => {
     setTimeout(() => {
@@ -138,7 +151,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
       delete activity.player;
       delete activity.selected;
 
-      updateActivity();
+      updateActivities();
     }, 4000);
   };
 
@@ -154,7 +167,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
         const [errFind, player] = await to(collections.players.findOne({ rfid }));
         if (errFind) {
           activity.error = true;
-          updateActivity();
+          updateActivities();
           resetActivity(activity);
 
           return;
@@ -162,7 +175,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
         if (!player) {
           activity.error = 'rfidInActive';
-          updateActivity();
+          updateActivities();
           resetActivity(activity);
 
           return;
@@ -170,20 +183,19 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
         if (balanceChecking) {
           activity.player = player;
-          updateActivity();
+          updateActivities();
           resetActivity(activity);
         } else {
           const { price } = selected;
           const { spend, balance } = player;
           let state = { spend, balance };
-          console.log('player');
-          console.log(player);
+
           if (balance > 0) {
             const date = +new Date();
             if (activity.delay && activity.lastUsageDate) {
               if (date - activity.lastUsageDate < activity.delay*1000*60) {
                 activity.error = 'tooOften';
-                updateActivity();
+                updateActivities();
                 resetActivity(activity);
 
                 return;
@@ -203,16 +215,18 @@ if(process.env.npm_lifecycle_event === 'dev'){
 
             if (errUpdate) {
               activity.error = true;
-              updateActivity();
+              updateActivities();
               resetActivity(activity);
 
               return;
             }
+
+            updateTop();
           }
 
           activity.player = {...player, ...state};
 
-          updateActivity();
+          updateActivities();
           resetActivity(activity);
         }
       }
@@ -236,11 +250,13 @@ if(process.env.npm_lifecycle_event === 'dev'){
   io.on('connection', (socket) => {
     console.log('connection');
 
-    socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
-    socket.emit('action', { type: 'activities', data: activities });
     socket.emit('action', { type: 'currency', data: config.currency });
     socket.emit('action', { type: 'allSpendMessage', data: config.allSpendMessage });
     socket.emit('action', { type: 'denyMessage', data: config.denyMessage });
+
+    updateRegistrationPoints(socket);
+    updateActivities(socket);
+    updateTop(socket);
 
     socket.on('action', async (action) => {
       console.log(action);

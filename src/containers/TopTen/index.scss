@@ -1,0 +1,36 @@
+.top-ten {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+
+
+  .content {
+    flex: 1;
+    padding-top: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    font-size: 50px;
+
+    .input-wrapper {
+      height: 100px;
+    }
+  }
+
+  .player {
+    width: 90%;
+    margin-bottom: 70px;
+  }
+}
