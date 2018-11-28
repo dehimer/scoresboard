@@ -27,11 +27,61 @@ class Activity extends Component {
   }
 
   render() {
-    const { activities, currency, match: { params: { id } } } = this.props;
+    const {
+      activities,
+      currency,
+      match: { params: { id } },
+      denyMessage
+    } = this.props;
 
     if (activities) {
       const activity = activities && activities[id];
-      const { variants=[], header, selected } = activity;
+      const { variants=[], header, selected, error } = activity;
+
+      let content;
+
+      if (error) {
+        console.log(error);
+        let message;
+        if (error === 'rfidInActive') {
+          message = 'Карта не зарегистрированна'
+        } else if (error === 'tooOften') {
+          message = denyMessage;
+        } else {
+          message = 'Возникла неожиданная ошибка'
+        }
+        content = (
+          <div className='message'>
+            {
+              Array.isArray(message)
+                ? message.map(msg => (<div>{msg}</div>))
+                : message
+            }
+          </div>
+        );
+      } else if (selected) {
+        content = (<RfidWaiting selected={selected} reset={() => this.onUnselectVariant(id)}/>);
+      } else if (variants.length === 1) {
+        content = (
+          variants[0].balanceChecking ? (
+            <Balance text={variants[0].text} currency={currency}/>
+          ) : (
+            <SingleVariant
+              variant={variants[0]}
+              currency={currency}
+              select={(variant) => this.onSelectVariant({ variant, activityId: id })}
+            />
+          )
+        )
+      } else {
+        content = (
+          <MultipleVariants
+            variants={variants}
+            currency={currency}
+            select={(variant) => this.onSelectVariant({ variant, activityId: id })}
+          />
+        )
+      }
 
       return (
         <div className='activity'>
@@ -41,29 +91,7 @@ class Activity extends Component {
           { header ? <div className='header'>{header}</div> : null }
 
           <div className='content'>
-          {
-            selected ? (
-              <RfidWaiting selected={selected} reset={() => this.onUnselectVariant(id)}/>
-            ) : (
-              variants.length === 1 ? (
-                variants[0].balanceChecking ? (
-                  <Balance text={variants[0].text} currency={currency}/>
-                ) : (
-                  <SingleVariant
-                    variant={variants[0]}
-                    currency={currency}
-                    select={(variant) => this.onSelectVariant({ variant, activityId: id })}
-                  />
-                )
-              ) : (
-                <MultipleVariants
-                  variants={variants}
-                  currency={currency}
-                  select={(variant) => this.onSelectVariant({ variant, activityId: id })}
-                />
-              )
-            )
-          }
+          { content }
           </div>
         </div>
       )
@@ -74,9 +102,9 @@ class Activity extends Component {
 }
 
 const mapStateToProps = function (state) {
-  const { activities, currency } = state.server;
+  const { activities, currency, allSpendMessage, denyMessage } = state.server;
 
-  return { activities, currency }
+  return { activities, currency, allSpendMessage, denyMessage }
 };
 
 const mapDispatchToProps = (dispatch) => {

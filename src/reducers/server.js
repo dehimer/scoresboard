@@ -9,6 +9,10 @@ export default function reducer(state = defaultState, action) {
       return { ...state, activities: data };
     case 'currency':
       return { ...state, currency: data };
+    case 'allSpendMessage':
+      return { ...state, allSpendMessage: data };
+    case 'denyMessage':
+      return { ...state, denyMessage: data };
     /*
     case 'found_player':
       return { ...state, found_player: data };

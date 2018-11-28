@@ -65,14 +65,12 @@ if(process.env.npm_lifecycle_event === 'dev'){
   const resetRegistrationPoint = (registrationPoint) => {
     setTimeout(() => {
       delete registrationPoint.error;
-      delete registrationPoint.error;
       delete registrationPoint.registered;
       delete registrationPoint.player;
 
       updateRegistrationPoint();
     }, 3000);
   };
-
 
   const checkRegistrationPoints = (readerId, rfid) => {
     // scan registrationPoints
@@ -87,7 +85,10 @@ if(process.env.npm_lifecycle_event === 'dev'){
         if (errCount) {
           registrationPoint.error = true;
           updateRegistrationPoint();
-          resetRegistrationPoint(registrationPoint);
+          setTimeout(() => {
+            delete registrationPoint.error;
+            updateRegistrationPoint();
+          }, 5000);
 
           return;
         }
@@ -127,13 +128,66 @@ if(process.env.npm_lifecycle_event === 'dev'){
     });
   };
 
+
+  const updateActivity = () => {
+    io.sockets.emit('action', { type: 'activities', data: activities });
+  };
+  const resetActivity = (activity) => {
+    setTimeout(() => {
+      delete activity.error;
+
+      updateActivity();
+    }, 3000);
+  };
+
   const checkActivities = (readerId, rfid) => {
     console.log(`checkActivities ${[readerId, rfid].join(', ')}`);
-    Object.keys(activities).forEach((activityId) => {
+    Object.keys(activities).forEach(async (activityId) => {
       const activity = activities[activityId];
 
       if (activity.readerId === readerId && activity.selected) {
         console.log(activity);
+
+        // find player by rfid
+        const [errCount, playersCount] = await to(collections.players.countDocuments({ rfid }));
+        if (errCount) {
+          activity.error = true;
+          updateActivity();
+          setTimeout(() => {
+            delete activity.error;
+            updateActivity();
+          }, 5000);
+
+          return;
+        }
+
+        if (playersCount === 0) {
+          activity.error = 'rfidInActive';
+          updateActivity();
+          setTimeout(() => {
+            delete activity.error;
+            updateActivity();
+          }, 5000);
+
+          return;
+        }
+
+        const date = +new Date();
+        if (activity.delay && activity.lastUsageDate) {
+          if (date - activity.lastUsageDate < activity.delay*1000*60) {
+            activity.error = 'tooOften';
+            updateActivity();
+            setTimeout(() => {
+              delete activity.error;
+              updateActivity();
+            }, 5000);
+
+            return;
+          }
+        }
+
+        activity.lastUsageDate = date;
+        updateActivity();
       }
     });
   };
@@ -153,6 +207,8 @@ if(process.env.npm_lifecycle_event === 'dev'){
     socket.emit('action', { type: 'registrationPoints', data: registrationPoints });
     socket.emit('action', { type: 'activities', data: activities });
     socket.emit('action', { type: 'currency', data: config.currency });
+    socket.emit('action', { type: 'allSpendMessage', data: config.allSpendMessage });
+    socket.emit('action', { type: 'denyMessage', data: config.denyMessage });
 
     socket.on('action', async (action) => {
       console.log(action);
