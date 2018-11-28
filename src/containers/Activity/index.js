@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-import logo from '../../assets/images/logo.png';
-
+import Logo from '../../components/Logo';
 import Balance from './components/Balance';
 import SingleVariant from './components/SingleVariant';
 import MultipleVariants from './components/MultipleVariants';
@@ -36,7 +35,8 @@ class Activity extends Component {
 
       return (
         <div className='activity'>
-          <div className='logo'><img src={logo}/></div>
+
+          <Logo/>
 
           { header ? <div className='header'>{header}</div> : null }
 
