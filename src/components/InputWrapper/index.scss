@@ -1,4 +1,5 @@
 .input-wrapper {
+  position: relative;
   display: flex;
   flex-direction: row;
 
@@ -11,6 +12,7 @@
   border-radius: 25px;
 
   padding: 3px;
+
 
   &__inner-border {
     display: flex;
@@ -35,8 +37,9 @@
   &__line {
     position: absolute;
     height: 3px;
-    width: 100vw;
-    left: 0;
+    width: 150vw;
+
+    left: -50vw;
     z-index: 0;
     background-color: deepskyblue;
   }

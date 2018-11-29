@@ -27,7 +27,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
 (async () => {
   // READ CONFIGS
   const config  = require('./config');
-  console.log(config);
 
   // Connection URL
   const { db: dbconfig } = config;
@@ -284,72 +283,44 @@ if(process.env.npm_lifecycle_event === 'dev'){
             socket.emit('action', { type: 'activities', data: activities });
           }
           break;
-        /*
-        case 'server/find_player':
-          {
-            const { broughtNotebook, updateBroughtNotebook, ...data } = action.data;
-
-            const [findErr, player] = await to(playersStore.findOne(data));
-            if (findErr) {
-              console.log(findErr);
-              console.log(`Player with ${Object.keys(data).join(' and ')} is not found`);
-              return;
-            }
-
-            if (!player) {
-              socket.emit('action', { type: 'found_player', data: { ...data, code: -1 } });
-              return;
-            }
-
-            if (updateBroughtNotebook) {
-              const [updateErr] = await to(playersStore.updateOne({ ...data }, { $set: { broughtNotebook } }));
-              if (updateErr) {
-                console.log(updateErr);
-                return;
-              }
-              io.sockets.emit('action', { type: 'player_updated', data: {...player, broughtNotebook} })
-            }
-
-            socket.emit('action', { type: 'found_player', data: {...player, broughtNotebook} })
-          }
-          break;
         case 'server/update_player':
           {
-            const { code, ...data } = action.data;
+            const { rfid, ...data } = action.data;
 
-            const [findErr, player] = await to(playersStore.findOne({ code }));
+            const [findErr, player] = await to(collections.players.findOne({ rfid }));
             if (findErr) {
               console.log(findErr);
-              console.log(`Player with ID ${code} is not found`);
+              console.log(`Player with RFID ${rfid} is not found`);
               return;
             }
 
-            const [updateErr] = await to(playersStore.updateOne({ code }, { $set: data }));
+            const [updateErr] = await to(collections.players.updateOne({ rfid }, { $set: data }));
             if (updateErr) {
               console.log(updateErr);
               return;
             }
-
+            updateTop();
             io.sockets.emit('action', { type: 'player_updated', data: { ...player, ...data } })
           }
           break;
         case 'server/delete_player':
           {
-            const { code } = action.data;
+            const { rfid } = action.data;
 
-            const [findErr] = await to(playersStore.removeOne({ code }));
+            const [findErr] = await to(collections.players.removeOne({ rfid }));
             if (findErr) {
               console.log(findErr);
-              console.log(`Player with ID ${code} is not found`);
+              console.log(`Player with RFID ${rfid} is not found`);
               return;
             }
-
+            updateTop();
             io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
           }
           break;
+
         case 'server/get_players_count':
           {
-            const [countErr, playersCount] = await to(playersStore.countDocuments({}));
+            const [countErr, playersCount] = await to(collections.players.countDocuments({}));
             if (countErr) {
               console.log(countErr);
               return;
@@ -364,7 +335,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
             const { page, rowsCount } = filter;
 
             const [ findError, players ] = await to(
-              playersStore.find({}).sort({ scores: -1 }).skip(page*rowsCount).limit(rowsCount).toArray()
+              collections.players.find({}).sort({ scores: -1 }).skip(page*rowsCount).limit(rowsCount).toArray()
             );
 
             if (findError) {
@@ -375,84 +346,6 @@ if(process.env.npm_lifecycle_event === 'dev'){
             socket.emit('action', { type: 'players', data: players })
           }
           break;
-        case 'server/get_top_players':
-          {
-            const { filter } = action.data;
-            const { page, rowsCount } = filter;
-
-            const [ findError, players ] = await to(
-              playersStore.find({ broughtNotebook: true, scores: { $gt: 0 } }).sort({ scores: -1 }).skip(page*rowsCount).limit(rowsCount).toArray()
-            );
-
-            if (findError) {
-              console.log(findError);
-              return;
-            }
-
-            socket.emit('action', { type: 'players', data: players });
-          }
-          break;
-        case 'server/get_top_players_count':
-          {
-            const [countErr, playersCount] = await to(playersStore.countDocuments({ broughtNotebook: true, scores: { $gt: 0 } }));
-            if (countErr) {
-              console.log(countErr);
-              return;
-            }
-
-            io.sockets.emit('action', { type: 'top_players_count', data: playersCount })
-          }
-          break;
-        case 'server/add_scores':
-          {
-            const { code, scores: additionalScores } = action.data;
-
-            const [findPlayerErr, player] = await to(playersStore.findOne({ code }));
-            if (findPlayerErr) {
-              console.log(findPlayerErr);
-              console.log(`Player with ID ${code} is not found`);
-              return;
-            }
-
-            const scores = additionalScores + (player.scores || 0);
-
-            const [updateErr] = await to(
-              collections.players.updateOne({
-                code
-              }, {
-                $set: {
-                  scores: scores > scoresLimit ? scoresLimit : scores,
-                }
-              })
-            );
-
-            if (updateErr) {
-              console.log(updateErr);
-              return;
-            }
-
-            io.sockets.emit('action', { type: 'player_updated', data: { ...player, scores } })
-          }
-          break;
-        case 'server/reset_scores':
-          {
-            const [updateErr] = await to(
-              collections.players.updateMany({}, {
-                $set: {
-                  scores: 0
-                }
-              })
-            );
-
-            if (updateErr) {
-              console.log(updateErr);
-              return;
-            }
-
-            io.sockets.emit('action', { type: 'players_update_ts', data: +(new Date()) })
-          }
-          break;
-        */
       }
     });
   });

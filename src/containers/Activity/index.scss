@@ -10,6 +10,8 @@
 
   padding-bottom: 50px;
 
+  overflow-x: hidden;
+
   .header {
     color: white;
     position: absolute;
@@ -38,5 +40,6 @@
     margin-bottom: 150px;
     padding: 25px;
     font-size: 40px;
+    color: white;
   }
 }

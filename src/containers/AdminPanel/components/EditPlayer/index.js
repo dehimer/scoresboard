@@ -1,30 +1,33 @@
 import React, { Component } from 'react';
 import { Button, CardContent, Card } from '@material-ui/core'
-import PlayerForm from '../../../../components/PlayerForm/index'
+import PlayerForm from '../PlayerForm/index'
 
 import './index.scss'
 
 export default class EditPlayer extends Component {
-  requiredFields = ['nickname', 'fullname', 'birthday', 'phone', 'email'];
+  requiredFields = ['rfid', 'firstName', 'lastName', 'spend', 'balance', 'startBalance'];
+  numericFields = ['rfid', 'spend', 'balance', 'startBalance'];
 
   state = {
-    nickname: '',
-    fullname: '',
-    birthday: '',
-    city: '',
-    email: '',
-    phone: '',
-    notebook: '',
-    link: '',
-    broughtNotebook: false,
-    scores: ''
+    rfid: '',
+    firstName: '',
+    lastName: '',
+    spend: '',
+    balance: '',
+    startBalance: ''
   };
 
-  handleClick() {
+  handleSave() {
     const { onUpdate } = this.props;
-    const { scores, email, ...data } = this.state;
+    const { ...data } = this.state;
 
-    onUpdate({ ...data, email: email.toLowerCase(), scores: +scores || 0 });
+    Object.keys(data).map(name => {
+      if (this.numericFields.includes(name) ) {
+        data[name] = data[name]*1;
+      }
+    });
+
+    onUpdate({ ...data });
   }
 
   handleRemove() {
@@ -49,7 +52,7 @@ export default class EditPlayer extends Component {
   componentDidMount() {
     const { player } = this.props;
     const nextState = Object.keys(this.state).reduce((fields, fieldName) => {
-      fields[fieldName] = fieldName === 'broughtNotebook' ? !!player[fieldName] : player[fieldName] || '';
+      fields[fieldName] = player[fieldName] || '';
 
       return fields;
     }, {});
@@ -74,7 +77,7 @@ export default class EditPlayer extends Component {
                 Удалить
               </Button>
 
-              <Button disabled={disabled} className='edit-player__input' onClick={::this.handleClick} variant='contained' color='primary'>
+              <Button disabled={disabled} className='edit-player__input' onClick={::this.handleSave} variant='contained' color='primary'>
                 Сохранить изменения
               </Button>
             </div>

@@ -6,20 +6,21 @@ import {
   Dialog
 } from '@material-ui/core'
 
-import MenuBar from '../../components/MenuBar'
 import EditPlayer from './components/EditPlayer/index'
-import ResetScoresDialog from './components/ResetScoresDialog/index'
 
 import { withStyles } from '@material-ui/core/styles';
 const CustomTableCell = withStyles(theme => ({
   head: {
+    fontSize: 35,
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white
   },
   body: {
-    fontSize: 14
+    fontSize: 25,
+    color: theme.palette.common.black
   }
 }))(TableCell);
+
 
 const styles = theme => ({
   root: {
@@ -32,6 +33,12 @@ const styles = theme => ({
   },
   row: {
     cursor: 'pointer'
+  },
+  overrides: {
+    MuiTableFooter: {
+      color: 'white',
+      backgroundColor: 'red'
+    }
   }
 });
 
@@ -40,8 +47,8 @@ import './index.scss'
 class AdminPanel extends Component {
   state = {
     page: 0,
-    rowsPerPage: 100,
-    hoveredRowCode: null,
+    rowsPerPage: 10,
+    hoveredRowRfid: null,
     playerInEdit: null,
     scoresInDelete: false
   };
@@ -98,7 +105,7 @@ class AdminPanel extends Component {
   updatePlayer(data) {
     if (data) {
       const { updatePlayer } = this.props;
-      updatePlayer({ code: this.state.playerInEdit.code, ...data});
+      updatePlayer({ rfid: this.state.playerInEdit.rfid, ...data});
     }
 
     this.setState({ playerInEdit: null });
@@ -107,41 +114,29 @@ class AdminPanel extends Component {
   deletePlayer(data) {
     if (data) {
       const { deletePlayer } = this.props;
-      deletePlayer({ code: this.state.playerInEdit.code });
+      deletePlayer({ rfid: this.state.playerInEdit.rfid });
     }
 
     this.setState({ playerInEdit: null });
   }
 
-  resetScores() {
-    const { resetScores } = this.props;
-    resetScores();
-    this.setState({ scoresInDelete: false })
-  }
-
   render() {
     const { players_count: rowsLength=0, players: rows=[], classes } = this.props;
-    const { rowsPerPage, page, playerInEdit, scoresInDelete } = this.state;
+    const { rowsPerPage, page, playerInEdit } = this.state;
 
     return (
       <div className='admin-panel'>
-        <MenuBar resetScores={() => this.setState({ scoresInDelete: true })}/>
         {
           rows.length > 0 ? (
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                  <CustomTableCell>ID</CustomTableCell>
-                  <CustomTableCell>Ник</CustomTableCell>
-                  <CustomTableCell>ФИО</CustomTableCell>
-                  <CustomTableCell>День рождения</CustomTableCell>
-                  <CustomTableCell>Город</CustomTableCell>
-                  <CustomTableCell>Email</CustomTableCell>
-                  <CustomTableCell>Телефон</CustomTableCell>
-                  <CustomTableCell>Модель ноутбука</CustomTableCell>
-                  <CustomTableCell>Принёс ноутбук</CustomTableCell>
-                  <CustomTableCell>Ссылка на соцсеть</CustomTableCell>
-                  <CustomTableCell>Очки</CustomTableCell>
+                  <CustomTableCell>RFID</CustomTableCell>
+                  <CustomTableCell>Имя</CustomTableCell>
+                  <CustomTableCell>Фамилия</CustomTableCell>
+                  <CustomTableCell>Потратил</CustomTableCell>
+                  <CustomTableCell>Осталось</CustomTableCell>
+                  <CustomTableCell>Изначально</CustomTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -149,23 +144,18 @@ class AdminPanel extends Component {
                   rows.map(row => {
                     return (
                       <TableRow
-                        className={classes.row} key={row.code}
+                        className={classes.row} key={row.rfid}
                         onClick={() => this.setState({ playerInEdit: row })}
-                        selected={this.state.hoveredRowCode === row.code}
-                        onMouseOver={() => {this.setState({hoveredRowCode: row.code})}}
-                        onMouseOut={() => {this.setState({hoveredRowCode: null})}}
+                        selected={ this.state.hoveredRowRfid === row.rfid }
+                        onMouseOver={() => {this.setState({ hoveredRowRfid: row.rfid })}}
+                        onMouseOut={() => {this.setState({ hoveredRowRfid: null })}}
                       >
-                        <TableCell numeric>{row.code}</TableCell>
-                        <TableCell>{row.nickname}</TableCell>
-                        <TableCell>{row.fullname}</TableCell>
-                        <TableCell>{row.birthday.split('-').reverse().join('.')}</TableCell>
-                        <TableCell>{row.email}</TableCell>
-                        <TableCell>{row.city}</TableCell>
-                        <TableCell>{row.phone}</TableCell>
-                        <TableCell>{row.notebook}</TableCell>
-                        <TableCell>{ row.broughtNotebook ? 'Да' : 'Нет'}</TableCell>
-                        <TableCell>{row.link}</TableCell>
-                        <TableCell>{row.scores}</TableCell>
+                        <CustomTableCell numeric>{row.rfid}</CustomTableCell>
+                        <CustomTableCell>{row.firstName}</CustomTableCell>
+                        <CustomTableCell>{row.lastName}</CustomTableCell>
+                        <CustomTableCell numeric>{row.spend}</CustomTableCell>
+                        <CustomTableCell numeric>{row.balance}</CustomTableCell>
+                        <CustomTableCell numeric>{row.startBalance}</CustomTableCell>
                       </TableRow>
                     );
                   })
@@ -194,14 +184,6 @@ class AdminPanel extends Component {
             <EditPlayer onUpdate={::this.updatePlayer} onDelete={::this.deletePlayer} player={ playerInEdit }/>
           </div>
         </Dialog>
-
-        {
-          scoresInDelete
-            ? <ResetScoresDialog
-              handleCancel={() => this.setState({ scoresInDelete: false })}
-              handleConfirm={::this.resetScores}/>
-            : null
-        }
       </div>
     );
   }
@@ -238,9 +220,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     deletePlayer: (player) => {
       dispatch({ type: 'server/delete_player', data: player });
-    },
-    resetScores: () => {
-      dispatch({ type: 'server/reset_scores' });
     }
   }
 };

@@ -1,6 +1,7 @@
 $form-items-width: 400px;
 
 .admin-panel {
+  background-color: white;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -9,8 +10,11 @@ $form-items-width: 400px;
   align-items: center;
   justify-content: flex-start;
 
+  color: white;
+
   table {
     height: 100%;
+    color: white;
   }
 
   &__no-players {
@@ -24,6 +28,7 @@ $form-items-width: 400px;
   &__pagination {
     position: absolute;
     right: 0;
+    color: white;
   }
 
   &__edit-dialog-content {
