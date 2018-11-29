@@ -28,14 +28,14 @@ Dont forget to run mongod!
 <b>Pages (on localhost:3000):</b>
 
 1) Register new player or get ID for registered: 
-<code>/registration</code>
-2) Set Scores for player by its ID 
-<code>/game</code>
-3) Set tournament number:
-<code>/settournament</code>
+<code>/registration_point/X</code>
+2) Activity
+<code>/activity/X</code>
+3) List of Top
+<code>/topten</code>
 4) Admin panel with table of users for edit
 <code>/adminpanel</code>
-5) Shot List of Top
-<code>/table</code>
-6) Full List of Top
-<code>/table-full</code>
+
+
+5) Emulation of red rfid card by reader
+<code>/reader/:readerId/:rfid</code>
