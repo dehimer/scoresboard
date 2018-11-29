@@ -6,7 +6,7 @@ import './index.scss'
 
 export default class EditPlayer extends Component {
   requiredFields = ['rfid', 'firstName', 'lastName', 'spend', 'balance', 'startBalance'];
-  numericFields = ['rfid', 'spend', 'balance', 'startBalance'];
+  numericFields = ['spend', 'balance', 'startBalance'];
 
   state = {
     rfid: '',

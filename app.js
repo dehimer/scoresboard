@@ -355,7 +355,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   app.get('/reader/:readerId/:rfid', function(req, res) {
     const { readerId, rfid } = req.params;
 
-    rfidReaderEvent(readerId*1, rfid*1);
+    rfidReaderEvent(readerId*1, rfid.toString());
     res.send(`reader ${readerId} sent ${rfid} rfid`);
   });
 

@@ -150,7 +150,7 @@ class AdminPanel extends Component {
                         onMouseOver={() => {this.setState({ hoveredRowRfid: row.rfid })}}
                         onMouseOut={() => {this.setState({ hoveredRowRfid: null })}}
                       >
-                        <CustomTableCell numeric>{row.rfid}</CustomTableCell>
+                        <CustomTableCell>{row.rfid}</CustomTableCell>
                         <CustomTableCell>{row.firstName}</CustomTableCell>
                         <CustomTableCell>{row.lastName}</CustomTableCell>
                         <CustomTableCell numeric>{row.spend}</CustomTableCell>
