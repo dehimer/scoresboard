@@ -6,6 +6,7 @@ import {
   Dialog
 } from '@material-ui/core'
 
+import MenuBar from '../../components/MenuBar'
 import EditPlayer from './components/EditPlayer/index'
 
 import { withStyles } from '@material-ui/core/styles';
@@ -49,8 +50,7 @@ class AdminPanel extends Component {
     page: 0,
     rowsPerPage: 10,
     hoveredRowRfid: null,
-    playerInEdit: null,
-    scoresInDelete: false
+    playerInEdit: null
   };
 
   componentDidMount() {
@@ -121,11 +121,12 @@ class AdminPanel extends Component {
   }
 
   render() {
-    const { players_count: rowsLength=0, players: rows=[], classes } = this.props;
+    const { players_count: rowsLength=0, players: rows=[], classes, deletePlayers } = this.props;
     const { rowsPerPage, page, playerInEdit } = this.state;
 
     return (
       <div className='admin-panel'>
+        <MenuBar deletePlayers={ deletePlayers }/>
         {
           rows.length > 0 ? (
             <Table className={classes.table}>
@@ -220,6 +221,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     deletePlayer: (player) => {
       dispatch({ type: 'server/delete_player', data: player });
+    },
+    deletePlayers: () => {
+      dispatch({ type: 'server/delete_all_players' });
     }
   }
 };

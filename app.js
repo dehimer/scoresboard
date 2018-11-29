@@ -56,8 +56,7 @@ if(process.env.npm_lifecycle_event === 'dev'){
   io.attach(server);
 
   // SETUP
-  const { readers, registrationPoints, activities } = config;
-
+  let { readers, registrationPoints, activities } = config;
 
   const updateTop = async (socket=io.sockets) => {
     const [errTop, top10] = await to(collections.players.find({}).sort({spend: -1}).limit(10).toArray());
@@ -344,6 +343,24 @@ if(process.env.npm_lifecycle_event === 'dev'){
             }
 
             socket.emit('action', { type: 'players', data: players })
+          }
+          break;
+        case 'server/delete_all_players':
+          {
+            const [deleteErr] = await to(collections.players.deleteMany({}));
+            if (deleteErr) {
+              console.log(deleteErr);
+              return;
+            }
+
+            registrationPoints = config.registrationPoints;
+            activities = config.activities;
+
+            updateTop();
+            updateActivities();
+            updateRegistrationPoints();
+
+            socket.emit('action', { type: 'players', data: [] })
           }
           break;
       }
