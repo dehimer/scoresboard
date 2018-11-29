@@ -94,7 +94,7 @@ class Registration extends Component {
     } else {
       content = (
         <form>
-          <div class='inputs'>
+          <div className='inputs'>
             <div className='input'>
               <InputWrapper>
                 <input
